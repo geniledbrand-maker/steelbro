@@ -1,9 +1,10 @@
-import styles from './HeroBanner.module.css';
+import styles from "./HeroBanner.module.css";
+import Navbar from "../Navbar/Navbar";
 
 export default function HeroBanner() {
     return (
         <section className={styles.banner}>
-            {/* фоновое видео/изображение */}
+            {/* Фоновое видео */}
             <video
                 autoPlay
                 muted
@@ -16,6 +17,10 @@ export default function HeroBanner() {
 
             <div className={styles.overlay}></div>
 
+            {/* ✅ Навигация прямо поверх видео */}
+            <Navbar />
+
+            {/* Контент баннера */}
             <div className={styles.content}>
                 <h1 className={styles.title}>
                     <span className={styles.white}>Превращаем металл</span>
