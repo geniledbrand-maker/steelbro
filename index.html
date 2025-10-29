@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Производство металлоконструкций и продажа металлопроката в Екатеринбурге. Изготовление, монтаж под ключ. Работаем с 2014 года.">
+    <meta name="keywords" content="металлоконструкции, металлопрокат, балки, трубы, изготовление, монтаж, Екатеринбург">
+    <title>SteelBro - Металлоконструкции и металлопрокат в Екатеринбурге</title>
+    
+    <!-- Open Graph для соцсетей -->
+    <meta property="og:title" content="SteelBro - Металлоконструкции под ключ">
+    <meta property="og:description" content="Производство, монтаж и продажа металлопроката. Работаем с 2014 года.">
+    <meta property="og:type" content="website">
+    
+    <!-- Schema.org для GEO оптимизации -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Store",
+        "name": "SteelBro",
+        "description": "Производство металлоконструкций и продажа металлопроката в Екатеринбурге",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Екатеринбург",
+            "addressCountry": "RU"
+        },
+        "telephone": "+7-343-200-00-00",
+        "email": "info@steelbro.ru",
+        "priceRange": "$$",
+        "url": "https://steelbro.ru"
+    }
+    </script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+        
+        header.scrolled {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .logo-text span {
+            color: #f97316;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #f97316;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4);
+        }
+        
+        .btn-secondary {
+            border: 2px solid #f97316;
+            background: transparent;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(249, 115, 22, 0.1);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 150px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .hero h1 {
+            font-size: 64px;
+            font-weight: bold;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #fcd34d 50%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero p {
+            font-size: 24px;
+            color: #cbd5e1;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+        
+        /* Advantages */
+        .advantages {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 40px 0;
+        }
+        
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .advantage-card {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(51, 65, 85, 0.3);
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+        
+        .advantage-card:hover {
+            background: rgba(51, 65, 85, 0.5);
+            transform: scale(1.05);
+        }
+        
+        .advantage-icon {
+            color: #f97316;
+            flex-shrink: 0;
+        }
+        
+        .advantage-card h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .advantage-card p {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        
+        /* Services Section */
+        .services {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .section-title span {
+            color: #f97316;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .service-card {
+            padding: 40px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .service-card:hover {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%);
+            transform: scale(1.05);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .service-icon {
+            color: #f97316;
+            margin-bottom: 20px;
+        }
+        
+        .service-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .service-card p {
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+        
+        .service-features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+        
+        .service-features li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .service-features li i {
+            color: #22c55e;
+        }
+        
+        .service-link {
+            color: #f97316;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: gap 0.3s;
+        }
+        
+        .service-link:hover {
+            gap: 15px;
+        }
+        
+        /* Products Section */
+        .products {
+            padding: 80px 0;
+            background: rgba(30, 41, 59, 0.3);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        .product-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-card:hover {
+            background: rgba(30, 41, 59, 0.7);
+            transform: scale(1.05);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #f97316;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
+        .product-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover .product-icon {
+            transform: scale(1.1);
+        }
+        
+        .product-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .product-price {
+            font-size: 28px;
+            font-weight: bold;
+            color: #f97316;
+            margin-bottom: 20px;
+        }
+        
+        .product-card button {
+            width: 100%;
+        }
+        
+        .products-footer {
+            text-align: center;
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 80px 0;
+        }
+        
+        .cta-box {
+            background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+            border-radius: 30px;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta h2 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+        
+        .cta p {
+            font-size: 20px;
+            color: #fed7aa;
+            margin-bottom: 40px;
+        }
+        
+        .cta-form {
+            display: flex;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+        
+        .cta-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 18px 24px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .cta-form input:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .cta-form input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .cta-form button {
+            background: white;
+            color: #ea580c;
+            font-weight: bold;
+        }
+        
+        .cta-form button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Footer */
+        footer {
+            padding: 60px 0 30px;
+            background: #0f172a;
+            border-top: 1px solid #1e293b;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h4 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-column a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .footer-column a:hover {
+            color: #f97316;
+        }
+        
+        .footer-bottom {
+            padding-top: 30px;
+            border-top: 1px solid #1e293b;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .nav-links.mobile-open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: rgba(15, 23, 42, 0.98);
+                padding: 20px;
+                gap: 20px;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .section-title {
+                font-size: 32px;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .cta-form {
+                flex-direction: column;
+            }
+            
+            .cta-form input {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <div class="logo-icon">SB</div>
+                    <div class="logo-text">Steel<span>Bro</span></div>
+                </div>
+                
+                <div class="nav-links" id="navLinks">
+                    <a href="#services">Услуги</a>
+                    <a href="#products">Каталог</a>
+                    <a href="#about">О компании</a>
+                    <a href="#contacts">Контакты</a>
+                    <button class="btn btn-primary">Заказать звонок</button>
+                </div>
+                
+                <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Металлоконструкции под ключ</h1>
+            <p>Производство, монтаж и продажа металлопроката в Екатеринбурге. Работаем с 2014 года.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="scrollToSection('cta')">Получить расчет →</button>
+                <button class="btn btn-secondary" onclick="scrollToSection('products')">Смотреть каталог</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advantages -->
+    <section class="advantages">
+        <div class="container">
+            <div class="advantages-grid">
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i data-lucide="shield" width="24" height="24"></i>
+                    </div>
+                    <div>
+                        <h3>Гарантия качества</h3>
+                        <p>Сертифицированная продукция</p>
+                    </div>
+                </div>
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i data-lucide="truck" width="24" height="24"></i>
+                    </div>
+                    <div>
+                        <h3>Быстрая доставка</h3>
+                        <p>Свой транспорт по Екатеринбургу</p>
+                    </div>
+                </div>
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i data-lucide="clock" width="24" height="24"></i>
+                    </div>
+                    <div>
+                        <h3>Работаем 24/7</h3>
+                        <p>Принимаем заказы круглосуточно</p>
+                    </div>
+                </div>
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i data-lucide="check-circle" width="24" height="24"></i>
+                    </div>
+                    <div>
+                        <h3>Опыт 10+ лет</h3>
+                        <p>Более 5000 выполненных проектов</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title">Наши <span>услуги</span></h2>
+            <p class="section-subtitle">Полный цикл работ от проектирования до монтажа металлоконструкций любой сложности</p>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i data-lucide="wrench" width="40" height="40"></i>
+                    </div>
+                    <h3>Изготовление металлоконструкций</h3>
+                    <p>Производим по вашим чертежам любой сложности</p>
+                    <ul class="service-features">
+                        <li><i data-lucide="check-circle" width="16" height="16"></i> Лестницы</li>
+                        <li><i data-lucide="check-circle" width="16" height="16"></i> Ограждения</li>
+                        <li><i data-lucide="check-circle" width="16" height="16"></i> Навесы</li>
+                        <li><i data-lucide="check-circle" width="16" height="16"></i> Каркасы</li>
+                    </ul>
+                    <a href="#" class="service-link">Подробнее <i data-lucide="arrow-right" width="16" height="16"></i></a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i data-lucide="hard-hat" width="40" height="40"></i>
+                    </div>
+                    <h3>Монтаж и установка</h3>
+                    <p>Профессиональная бригада с опытом 10+ лет</p>
+                    <ul class="service-features">
+                        <li><i data-lucide="check-circle" width="16" height="16"></i> Быстрый монтаж</li>
+                        <li><i data-lucide="check-circle" width="16" height="16"></i> Гарантия качества</li>
+                        <li><i data-lucide="check-circle" width="16" height="16"></i> Выезд замерщика</li>
+                        <li><i data-lucide="check-circle" width="16" height="16"></i> Документация</li>
+                    </ul>
+                    <a href="#" class="service-link">Подробнее <i data-lucide="arrow-right" width="16" height="16"></i></a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i data-lucide="package" width="40" height="40"></i>
+                    </div>
+                    <h3>Металлопрокат</h3>
+                    <p>Широкий ассортимент металлопроката со склада</p>
+                    <ul class="service-features">
+                        <li><i data-lucide="check-circle" width="16" height="16"></i> Балки</li>
+                        <li><i data-lucide="check-circle" width="16" height="16"></i> Трубы</li>
+                        <li><i data-lucide="check-circle" width="16" height="16"></i> Листы</li>
+                        <li><i data-lucide="check-circle" width="16" height="16"></i> Арматура</li>
+                    </ul>
+                    <a href="#" class="service-link">Подробнее <i data-lucide="arrow-right" width="16" height="16"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products -->
+    <section class="products" id="products">
+        <div class="container">
+            <h2 class="section-title">Популярные <span>товары</span></h2>
+            <p class="section-subtitle">Металлопрокат со склада в Екатеринбурге</p>
+            
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-badge">ХИТ</div>
+                    <div class="product-icon">🏗️</div>
+                    <h3>Балка двутавровая</h3>
+                    <div class="product-price">от 45 000 ₽/т</div>
+                    <button class="btn btn-primary">Заказать</button>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-badge">ХИТ</div>
+                    <div class="product-icon">🔲</div>
+                    <h3>Труба профильная</h3>
+                    <div class="product-price">от 52 000 ₽/т</div>
+                    <button class="btn btn-primary">Заказать</button>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">📄</div>
+                    <h3>Лист стальной</h3>
+                    <div class="product-price">от 48 000 ₽/т</div>
+                    <button class="btn btn-primary">Заказать</button>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-badge">ХИТ</div>
+                    <div class="product-icon">〰️</div>
+                    <h3>Арматура</h3>
+                    <div class="product-price">от 42 000 ₽/т</div>
+                    <button class="btn btn-primary">Заказать</button>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">〽️</div>
+                    <h3>Швеллер</h3>
+                    <div class="product-price">от 46 000 ₽/т</div>
+                    <button class="btn btn-primary">Заказать</button>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">📐</div>
+                    <h3>Уголок стальной</h3>
+                    <div class="product-price">от 50 000 ₽/т</div>
+                    <button class="btn btn-primary">Заказать</button>
+                </div>
+            </div>
+            
+            <div class="products-footer">
+                <button class="btn btn-secondary">Весь каталог →</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta" id="cta">
+        <div class="container">
+            <div class="cta-box">
+                <div class="cta-content">
+                    <h2>Нужна консультация?</h2>
+                    <p>Оставьте заявку и получите расчет стоимости за 15 минут</p>
+                    <form class="cta-form" onsubmit="return false;">
+                        <input type="tel" placeholder="+7 (___) ___-__-__" required>
+                        <button type="submit" class="btn">Получить расчет</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacts">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <div class="logo" style="margin-bottom: 20px;">
+                        <div class="logo-icon">SB</div>
+                        <div class="logo-text">SteelBro</div>
+                    </div>
+                    <p style="color: #94a3b8; font-size: 14px;">Производство металлоконструкций и продажа металлопроката</p>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Услуги</h4>
+                    <ul>
+                        <li><a href="#services">Изготовление</a></li>
+                        <li><a href="#services">Монтаж</a></li>
+                        <li><a href="#products">Металлопрокат</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Контакты</h4>
+                    <ul>
+                        <li><a href="tel:+73432000000"><i data-lucide="phone" width="16" height="16"></i> +7 (343) 200-00-00</a></li>
+                        <li><a href="mailto:info@steelbro.ru"><i data-lucide="mail" width="16" height="16"></i> info@steelbro.ru</a></li>
+                        <li><a href="#"><i data-lucide="map-pin" width="16" height="16"></i> Екатеринбург</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Режим работы</h4>
+                    <p style="color: #94a3b8; font-size: 14px;">Пн-Пт: 9:00 - 18:00</p>
+                    <p style="color: #94a3b8; font-size: 14px;">Сб-Вс: 10:00 - 16:00</p>
+                    <p style="color: #f97316; font-size: 14px; margin-top: 10px;">Прием заказов 24/7</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 SteelBro. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Инициализация Lucide иконок
+        lucide.createIcons();
+        
+        // Секретная комбинация Ctrl+Shift+S для доступа к аналитике
+        document.addEventListener('keydown', function(e) {
+            // Проверяем разные варианты клавиши S
+            if (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's' || e.keyCode === 83)) {
+                e.preventDefault();
+                window.location.href = 'spy.html';
+            }
+            // Секретная комбинация Ctrl+Shift+C для доступа к анализу конкурентов
+            if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c' || e.keyCode === 67)) {
+                e.preventDefault();
+                window.location.href = 'src/pages/competitors.html';
+            }
+            // Секретная комбинация Ctrl+Shift+K для доступа к анализу ключевых слов
+            if (e.ctrlKey && e.shiftKey && (e.key === 'K' || e.key === 'k' || e.keyCode === 75)) {
+                e.preventDefault();
+                window.location.href = 'src/pages/keywords.html';
+            }
+            // Секретная комбинация Ctrl+Shift+R для доступа к региональному анализу
+            if (e.ctrlKey && e.shiftKey && (e.key === 'R' || e.key === 'r' || e.keyCode === 82)) {
+                e.preventDefault();
+                window.location.href = 'src/pages/regions.html';
+            }
+        });
+        
+        // Обработка скролла для header
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Мобильное меню
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('mobile-open');
+        }
+        
+        // Плавный скролл к секциям
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        
+        // Закрытие мобильного меню при клике на ссылку
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                const navLinks = document.getElementById('navLinks');
+                navLinks.classList.remove('mobile-open');
+            });
+        });
+    </script>
+</body>
+</html>
