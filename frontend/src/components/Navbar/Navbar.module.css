@@ -1,3 +1,8 @@
+:global(body),
+.navbar,
+.navbar * {
+    font-family: 'Inter Tight', sans-serif !important;
+}
 /* ============================================================================
    Навигационное меню — SteelBro
    Версия: v2.6 (контакты 24px от края плашки)
@@ -54,7 +59,46 @@
     line-height: 1;
 }
 
+/* ---------- АНИМАЦИЯ ЛОГОТИПА ---------- */
+.logoLink {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
 
+/* лёгкое масштабирование и подсветка при наведении */
+.logoLink:active {
+    transform: scale(0.98);
+    filter: drop-shadow(0 0 3px rgba(237, 107, 6, 0.4));
+}
+
+/* ---------- АНИМАЦИЯ ЗНАЧКА ЛОГО ---------- */
+/* Только анимация для группы S */
+.logoLink:hover :global(.sGroup) {
+    transform-style: preserve-3d;
+    perspective: 800px;
+}
+
+.logoLink:hover :global(.sLetter) {
+    animation: spinS 1.2s ease-in-out;
+    transform-origin: center;
+    transform-box: fill-box;
+}
+
+@keyframes spinS {
+    0% {
+        transform: rotateY(0deg);
+    }
+    50% {
+        transform: rotateY(180deg);
+        filter: brightness(1.2);
+    }
+    100% {
+        transform: rotateY(360deg);
+    }
+}
 /* ---------- ЦЕНТРАЛЬНОЕ МЕНЮ ---------- */
 .links {
     display: flex;

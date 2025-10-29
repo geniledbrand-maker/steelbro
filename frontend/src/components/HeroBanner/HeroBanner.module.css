@@ -1,3 +1,8 @@
+/* ============================================================================
+   Hero Banner — SteelBro
+   Версия: v3.0 (отступ контента 563px от навигационной плашки)
+   ============================================================================ */
+
 .banner {
     position: relative;
     width: 100%;
@@ -7,6 +12,8 @@
     padding: 0;         /* ✅ убираем внутренние */
     z-index: 0;
 }
+
+/* ---------- Фоновое видео ---------- */
 .background {
     position: absolute;
     width: 100%;
@@ -17,6 +24,7 @@
     z-index: 0;
 }
 
+/* ---------- Полупрозрачная тень поверх видео ---------- */
 .overlay {
     position: absolute;
     width: 100%;
@@ -25,34 +33,39 @@
     z-index: 1;
 }
 
-.content {
-    position: relative;
-    z-index: 2;
-    top: 45%;
-    transform: translateY(-50%);
-    padding-left: 10%;
-    color: white;
-    font-family: 'Inter Tight', sans-serif;
-    /* убираем max-width, чтобы текст выравнивался естественно */
-    width: 100%;
-}
+/* ---------- Обёртка навигации ---------- */
 .navbarWrapper {
     position: absolute;
     top: 20px;          /* ✅ отступ сверху */
     left: 0;
     width: 100%;
     display: flex;
-    justify-content: center; /* чтобы держать по центру */
+    justify-content: center; /* центрируем по горизонтали */
     z-index: 10;
 }
+
+/* ---------- Контент баннера ---------- */
+.content {
+    position: relative;
+    z-index: 2;
+    margin-top: 463px; /* ✅ отступ между Navbar и контентом */
+    padding-left: 10%;
+    color: white;
+    font-family: 'Inter Tight', sans-serif;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+/* ---------- Заголовок ---------- */
 .title {
     font-size: 64px;
     font-weight: 700;
     line-height: 1.2;
     margin-bottom: 24px;
-    /* max-width: 700px; ← убери эту строку */
 }
-
 
 .white {
     color: #ffffff;
@@ -62,13 +75,17 @@
     color: #ed6b06;
 }
 
+/* ---------- Подзаголовок ---------- */
 .subtitle {
     font-size: 20px;
     font-weight: 500;
     line-height: 1.4;
     margin-bottom: 32px;
+    white-space: pre-line;
+    word-break: keep-all;
 }
 
+/* ---------- Кнопка "Узнать стоимость" ---------- */
 .cta {
     background: #ed6b06;
     color: #fff;
@@ -85,7 +102,21 @@
     background: #ff8722;
 }
 
-/* 📱 адаптив */
+/* ---------- Десктопный перенос ---------- */
+.desktopOnly {
+    display: inline;
+}
+
+/* ========================================================================
+   АДАПТИВ
+   ======================================================================== */
+
+@media (max-width: 1200px) {
+    .content {
+        margin-top: 480px; /* немного меньше на ноутбуках */
+    }
+}
+
 @media (max-width: 1024px) {
     .title {
         font-size: 48px;
@@ -93,31 +124,28 @@
     .subtitle {
         font-size: 18px;
     }
+    .content {
+        margin-top: 420px;
+    }
 }
 
 @media (max-width: 768px) {
     .content {
+        margin-top: 280px;
         padding: 0 6%;
         text-align: center;
+        align-items: center;
     }
+
     .title {
         font-size: 36px;
     }
+
     .subtitle {
         font-size: 16px;
     }
-}
-.subtitle {
-    white-space: pre-line;
-    word-break: keep-all;
-}
-.desktopOnly {
-    display: inline;
-}
 
-/* 📱 На мобильных убираем ручной перенос */
-@media (max-width: 768px) {
     .desktopOnly {
-        display: none;
+        display: none; /* 📱 На мобильных убираем ручной перенос */
     }
 }

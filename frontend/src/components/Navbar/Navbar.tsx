@@ -5,13 +5,31 @@ import Logo from "../Logo/Logo";
 export default function Navbar() {
     const [open, setOpen] = useState(false);
 
+    const handleLogoClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (window.location.pathname === "/") {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+            window.location.href = "/";
+        }
+    };
+
     return (
         <header className={styles.navbar}>
+            {/* ✅ Логотип с плавным переходом на главную */}
             <div className={styles.logo}>
-                <Logo />
+                <a
+                    href="/"
+                    onClick={handleLogoClick}
+                    aria-label="На главную страницу"
+                    className={styles.logoLink}
+                >
+                    <Logo />
+                </a>
             </div>
 
-            <nav className={`${styles.links} ${open ? styles.active : ""}`}>
+            {/* Меню */}
+            <nav className={[styles.links, open && styles.active].filter(Boolean).join(" ")}>
                 <a href="#">О компании</a>
                 <a href="#">Услуги</a>
                 <a href="#">Продукция</a>
@@ -19,15 +37,19 @@ export default function Navbar() {
                 <a href="#">Отрасли</a>
             </nav>
 
+            {/* Правая часть */}
             <div className={styles.actions}>
                 <button className={styles.contactBtn}>Контакты</button>
-                <button className={styles.burger} onClick={() => setOpen(!open)}>
+                <button
+                    className={styles.burger}
+                    onClick={() => setOpen(!open)}
+                    aria-label="Открыть меню"
+                >
                     <span></span>
                     <span></span>
                     <span></span>
                 </button>
             </div>
         </header>
-
     );
 }
