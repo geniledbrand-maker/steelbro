@@ -1,0 +1,279 @@
+<!-- File: Spy/test_tags_fix.html -->
+<!-- Created: 2025-01-22 -->
+<!-- Modified: 2025-01-22 -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест исправления тегов - SteelBro</title>
+    
+    <!-- CSS модули -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/sidebar.css">
+    <link rel="stylesheet" href="assets/css/modal.css">
+    
+    <style>
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+        }
+        
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .debug-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+        }
+        
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .test-button:hover {
+            background: #5a6fd8;
+        }
+        
+        .success {
+            color: #2e7d32;
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .error {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 Тест исправления тегов</h1>
+        
+        <div class="test-section">
+            <div class="test-title">1. Проверка исправления DomainStorage</div>
+            <button class="test-button" onclick="testDomainStorageFix()">Тестировать исправление</button>
+            <div id="storageTestResult" class="debug-info"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">2. Проверка отображения тегов</div>
+            <button class="test-button" onclick="testTagDisplay()">Тестировать отображение</button>
+            <div id="displayTestResult" class="debug-info"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">3. Полный тест с реальными данными</div>
+            <button class="test-button" onclick="fullTest()">Полный тест</button>
+            <div id="fullTestResult" class="debug-info"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">4. Отображение доменов с тегами</div>
+            <div id="domainsDisplay"></div>
+        </div>
+    </div>
+    
+    <!-- Подключаем исправленные модули -->
+    <script src="classes/DomainManager/DomainStorage.js"></script>
+    <script src="classes/DomainManager/DomainUI.js"></script>
+    
+    <script>
+        // Тест исправления DomainStorage
+        function testDomainStorageFix() {
+            const result = document.getElementById('storageTestResult');
+            
+            try {
+                if (typeof DomainStorage === 'undefined') {
+                    result.textContent = 'ОШИБКА: DomainStorage не загружен';
+                    return;
+                }
+                
+                const storage = new DomainStorage();
+                
+                // Создаем тестовый домен
+                const testDomain = storage.addDomain({
+                    domain: 'test-fix.com',
+                    description: 'Тестовый домен для проверки исправления',
+                    tags: ['тест', 'исправление', 'теги']
+                });
+                
+                // Обновляем домен с пустыми тегами
+                const updatedDomain = storage.updateDomain(testDomain.id, {
+                    domain: 'test-fix.com',
+                    description: 'Обновленный домен',
+                    tags: [] // Пустой массив тегов
+                });
+                
+                // Проверяем результат
+                if (updatedDomain && Array.isArray(updatedDomain.tags) && updatedDomain.tags.length === 0) {
+                    result.textContent = '✅ ИСПРАВЛЕНИЕ РАБОТАЕТ!\n' +
+                        'Теги успешно обновлены на пустой массив.\n' +
+                        'Домен: ' + updatedDomain.domain + '\n' +
+                        'Теги: ' + JSON.stringify(updatedDomain.tags);
+                } else {
+                    result.textContent = '❌ ОШИБКА: Теги не обновились правильно\n' +
+                        'Ожидалось: []\n' +
+                        'Получено: ' + JSON.stringify(updatedDomain.tags);
+                }
+                
+            } catch (error) {
+                result.textContent = 'ОШИБКА: ' + error.message;
+            }
+        }
+        
+        // Тест отображения тегов
+        function testTagDisplay() {
+            const result = document.getElementById('displayTestResult');
+            
+            try {
+                if (typeof DomainUI === 'undefined') {
+                    result.textContent = 'ОШИБКА: DomainUI не загружен';
+                    return;
+                }
+                
+                const ui = new DomainUI();
+                
+                // Тестовые данные
+                const testDomains = [
+                    {
+                        id: '1',
+                        domain: 'with-tags.com',
+                        description: 'Домен с тегами',
+                        tags: ['тег1', 'тег2', 'тег3']
+                    },
+                    {
+                        id: '2',
+                        domain: 'no-tags.com',
+                        description: 'Домен без тегов',
+                        tags: []
+                    },
+                    {
+                        id: '3',
+                        domain: 'null-tags.com',
+                        description: 'Домен с null тегами',
+                        tags: null
+                    }
+                ];
+                
+                // Тестируем отображение
+                const container = document.createElement('div');
+                ui.renderDomainList(testDomains, null, container);
+                
+                const html = container.innerHTML;
+                const hasTags = html.includes('domain-tags');
+                const hasTagSpans = html.includes('class="tag"');
+                
+                result.textContent = 'Результат теста отображения:\n' +
+                    'HTML содержит .domain-tags: ' + hasTags + '\n' +
+                    'HTML содержит .tag: ' + hasTagSpans + '\n' +
+                    'Длина HTML: ' + html.length + ' символов\n' +
+                    'Первые 500 символов HTML:\n' + html.substring(0, 500);
+                
+            } catch (error) {
+                result.textContent = 'ОШИБКА: ' + error.message;
+            }
+        }
+        
+        // Полный тест
+        function fullTest() {
+            const result = document.getElementById('fullTestResult');
+            
+            try {
+                // Очищаем localStorage
+                localStorage.removeItem('domains');
+                
+                // Создаем storage и UI
+                const storage = new DomainStorage();
+                const ui = new DomainUI();
+                
+                // Создаем тестовые домены
+                const domain1 = storage.addDomain({
+                    domain: 'metal-company.ru',
+                    description: 'Компания по металлоконструкциям',
+                    tags: ['металл', 'конструкции', 'производство']
+                });
+                
+                const domain2 = storage.addDomain({
+                    domain: 'steel-supplier.com',
+                    description: 'Поставщик стали',
+                    tags: ['сталь', 'поставки', 'опт']
+                });
+                
+                const domain3 = storage.addDomain({
+                    domain: 'no-tags.com',
+                    description: 'Домен без тегов',
+                    tags: []
+                });
+                
+                // Обновляем домен с тегами
+                storage.updateDomain(domain1.id, {
+                    domain: 'metal-company.ru',
+                    description: 'Обновленная компания по металлоконструкциям',
+                    tags: ['металл', 'конструкции', 'производство', 'обновлено']
+                });
+                
+                // Получаем все домены
+                const allDomains = storage.getAllDomains();
+                
+                // Отображаем домены
+                const container = document.getElementById('domainsDisplay');
+                ui.renderDomainList(allDomains, null, container);
+                
+                // Проверяем результат
+                const html = container.innerHTML;
+                const tagsCount = (html.match(/class="tag"/g) || []).length;
+                const domainsWithTags = allDomains.filter(d => d.tags && d.tags.length > 0).length;
+                
+                result.textContent = '✅ ПОЛНЫЙ ТЕСТ ЗАВЕРШЕН!\n' +
+                    'Создано доменов: ' + allDomains.length + '\n' +
+                    'Доменов с тегами: ' + domainsWithTags + '\n' +
+                    'Тегов в HTML: ' + tagsCount + '\n' +
+                    'Все теги: ' + storage.getAllTags().join(', ');
+                
+            } catch (error) {
+                result.textContent = 'ОШИБКА: ' + error.message;
+            }
+        }
+        
+        // Автоматический запуск тестов при загрузке
+        window.addEventListener('load', function() {
+            console.log('Тест исправления тегов загружен');
+        });
+    </script>
+</body>
+</html>
+
+<!-- End of file: Spy/test_tags_fix.html -->
+<!-- Last modified: 2025-01-22 -->

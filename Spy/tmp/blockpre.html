@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Премиум-индустриальный блок преимуществ (MAX FX)</title>
+    <style>
+        /* ============================================================
+           Премиум-индустриальный блок преимуществ
+           Цвета: фон #131312, акцент #ED6B06
+           Эффекты:
+           - Анимированный индустриальный фон (сетка + шум + лучи)
+           - Параллакс-ауры и «прожектор» за курсором
+           - Неоновая подсветка карточек, глянцевая засветка, «плазма» на бордерах
+           - SVG-иконки с живым градиентом и свечением
+           - Плавный 3D-tilt на мышь, магнетический hover
+           ВАЖНО: Это «тяжёлый» концепт, ориентирован на modern desktop.
+           ============================================================ */
+
+        :root{
+            --bg: #131312;       /* основной фон */
+            --accent: #ED6B06;   /* фирменный акцент */
+            --text: #ECECEC;     /* основной текст */
+            --muted: #9B9B96;    /* вторичный текст */
+            --card: #171716;     /* фон карточки */
+            --grid: #1b1b19;     /* линии фоновой сетки */
+            --mx: 50vw;          /* X курсора (обновляется JS) */
+            --my: 50vh;          /* Y курсора (обновляется JS) */
+            --radius: 18px;
+        }
+
+        /* -------------------------
+           БАЗА СТРАНИЦЫ + ФОН
+        ------------------------- */
+        html,body{height:100%}
+        body{
+            margin:0;
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Arial, sans-serif;
+            color:var(--text);
+            background: var(--bg);
+            overflow-x:hidden;
+        }
+
+        /* Слой 1: анимированная промышленная сетка */
+        .bg-grid{
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                /* диагональная сетка */
+                    repeating-linear-gradient(  0deg, color-mix(in srgb, var(--grid) 50%, transparent), transparent 2px, transparent 80px),
+                    repeating-linear-gradient( 90deg, color-mix(in srgb, var(--grid) 50%, transparent), transparent 2px, transparent 80px);
+            opacity: .15;
+            animation: gridMove 18s linear infinite;
+            transform: translateZ(0);
+        }
+        @keyframes gridMove{
+            0%   { background-position: 0 0, 0 0; }
+            100% { background-position: 200px 200px, 200px 200px; }
+        }
+
+        /* Слой 2: мягкие лучи/дымка (radial glow) */
+        .bg-glow{
+            position: fixed;
+            inset: -20vmax;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                    radial-gradient(60vmax 60vmax at 20% 30%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%),
+                    radial-gradient(60vmax 60vmax at 80% 70%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%);
+            filter: blur(60px) saturate(110%);
+            opacity: .7;
+            animation: glowShift 22s ease-in-out infinite alternate;
+        }
+        @keyframes glowShift{
+            0%   { transform: translate3d(-2%, -2%, 0) rotate(0.2deg); }
+            100% { transform: translate3d(2%, 2%, 0)  rotate(-0.2deg); }
+        }
+
+        /* Слой 3: динамический «прожектор» за курсором */
+        .bg-spot{
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                    radial-gradient(25vmax 25vmax at var(--mx) var(--my),
+                    color-mix(in srgb, var(--accent) 18%, transparent),
+                    transparent 60%);
+            mix-blend-mode: screen;
+            opacity:.35;
+            transition: opacity .3s ease;
+        }
+
+        /* Контейнер секции */
+        .benefits{
+            position: relative;
+            z-index: 2;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 92px 20px 120px;
+        }
+
+        /* Заголовки */
+        .benefits__title{
+            margin: 0 0 10px;
+            text-align: center;
+            font-size: clamp(28px, 4vw, 48px);
+            letter-spacing: .4px;
+            color: var(--accent);
+            text-shadow:
+                    0 0 12px color-mix(in srgb, var(--accent) 55%, transparent),
+                    0 0 38px color-mix(in srgb, var(--accent) 35%, transparent);
+            position: relative;
+        }
+        /* Металлическая «засветка» под заголовком */
+        .benefits__title::after{
+            content:"";
+            display:block;
+            width: 220px;
+            height: 2px;
+            margin: 16px auto 0;
+            background:
+                    linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 75%, #fff), transparent);
+            filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent) 70%, transparent));
+            opacity: .9;
+            animation: lineShimmer 3.6s ease-in-out infinite;
+        }
+        @keyframes lineShimmer{
+            0%,100%{ transform: scaleX(.9); opacity:.75; }
+            50%    { transform: scaleX(1.06); opacity:1; }
+        }
+
+        .benefits__subtitle{
+            margin: 0 0 56px;
+            text-align:center;
+            color: var(--muted);
+            font-size: clamp(14px, 2vw, 18px);
+            opacity: .9;
+        }
+
+        /* Сетка карточек */
+        .benefits__grid{
+            display:grid;
+            grid-template-columns: repeat(4, minmax(0,1fr));
+            gap: 28px;
+        }
+
+        /* Карточка: плазменный бордер, внутренняя неоновая аура, глянец */
+        .card{
+            position: relative;
+            background: linear-gradient(160deg, #161615 0%, #0f0f0e 100%);
+            border-radius: var(--radius);
+            overflow:hidden;
+            padding: 32px 26px;
+            isolation:isolate; /* для псевдо-слоёв */
+            transform-style: preserve-3d;
+            transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+            border: 1px solid rgba(237,107,6,.18);
+            box-shadow:
+                    inset 0 0 0 1px rgba(255,255,255,.03),
+                    0 10px 30px rgba(0,0,0,.35);
+        }
+
+        /* Плазменный «обвод» (внешний) */
+        .card::before{
+            content:"";
+            position:absolute; inset:-1px;
+            border-radius: inherit;
+            background:
+                    conic-gradient(from 0deg at 50% 50%,
+                    color-mix(in srgb, var(--accent) 55%, transparent),
+                    transparent 22%,
+                    color-mix(in srgb, var(--accent) 45%, transparent) 45%,
+                    transparent 66%,
+                    color-mix(in srgb, var(--accent) 60%, transparent) 88%,
+                    transparent 100%);
+            filter: blur(18px) saturate(120%);
+            opacity:.25;
+            z-index: -1;
+            animation: ringSpin 8s linear infinite;
+        }
+        @keyframes ringSpin{
+            to { transform: rotate(360deg); }
+        }
+
+        /* Внутренняя аура под курсором (реагирует на --mx/--my) */
+        .card::after{
+            content:"";
+            position:absolute; inset:0;
+            background:
+                    radial-gradient(24rem 24rem at calc(var(--mx) - 0px) calc(var(--my) - 0px),
+                    color-mix(in srgb, var(--accent) 22%, transparent),
+                    transparent 55%);
+            mix-blend-mode: screen;
+            pointer-events:none;
+            opacity:0;
+            transition: opacity .35s ease;
+        }
+
+        /* Блик-глянец */
+        .card .gloss{
+            position:absolute; inset:0;
+            background:
+                    linear-gradient(120deg,
+                    rgba(255,255,255,.08) 0%,
+                    rgba(255,255,255,0) 35%,
+                    rgba(255,255,255,.06) 55%,
+                    rgba(255,255,255,0) 85%);
+            mix-blend-mode: overlay;
+            transform: translateX(-120%);
+            animation: glossSweep 4.2s ease-in-out infinite;
+            pointer-events:none;
+        }
+        @keyframes glossSweep{
+            0%,10%   { transform: translateX(-120%) }
+            45%      { transform: translateX(20%) }
+            100%     { transform: translateX(120%) }
+        }
+
+        /* Контент карточки */
+        .card__icon{
+            width: 64px;
+            height: 64px;
+            margin-bottom: 18px;
+            filter: drop-shadow(0 0 14px color-mix(in srgb, var(--accent) 65%, transparent));
+            transform: translateZ(20px);
+            transition: transform .35s ease, filter .35s ease;
+        }
+        .card__title{
+            margin:0 0 8px;
+            font-size: 20px;
+            letter-spacing:.2px;
+            color: var(--accent);
+            text-shadow:
+                    0 0 10px color-mix(in srgb, var(--accent) 45%, transparent);
+            transform: translateZ(16px);
+        }
+        .card__text{
+            margin:0;
+            color: var(--text);
+            opacity:.95;
+            line-height:1.6;
+            transform: translateZ(12px);
+        }
+
+        /* Hover/Focus взаимодействия */
+        .card:focus-visible{
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+        .card:hover{
+            transform: translateY(-10px) rotateX(2deg) rotateY(-2deg);
+            box-shadow:
+                    0 20px 60px color-mix(in srgb, var(--accent) 25%, transparent),
+                    0 8px 24px rgba(0,0,0,.5);
+            border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+        }
+        .card:hover::after{ opacity: .85; }
+        .card:hover .card__icon{
+            transform: translateZ(28px) scale(1.06);
+            filter: drop-shadow(0 0 22px color-mix(in srgb, var(--accent) 85%, transparent));
+        }
+
+        /* Анимированный градиент для иконок (через currentColor + gradient fill) */
+        .grad-accent{
+            --g1: #ED6B06;
+            --g2: #ffb36f;
+            --g3: #ff7a00;
+            fill: url(#grad);
+        }
+
+        /* Сетка адаптива */
+        @media (max-width: 1180px){
+            .benefits__grid{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+        }
+        @media (max-width: 900px){
+            .benefits__grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+        }
+        @media (max-width: 560px){
+            .benefits__grid{ grid-template-columns: 1fr; }
+            .card{ padding: 26px 22px; }
+        }
+
+        /* Декоративные частицы (CSS-слой) */
+        .particles{
+            position: fixed; inset:0; pointer-events:none; z-index:1;
+            background-image:
+                    radial-gradient(2px 2px at 20% 30%, rgba(237,107,6,.35) 40%, transparent 41%),
+                    radial-gradient(2px 2px at 80% 70%, rgba(237,107,6,.25) 40%, transparent 41%),
+                    radial-gradient(2px 2px at 60% 20%, rgba(237,107,6,.28) 40%, transparent 41%),
+                    radial-gradient(2px 2px at 30% 80%, rgba(237,107,6,.18) 40%, transparent 41%);
+            animation: starDrift 24s linear infinite;
+            opacity:.45;
+            mix-blend-mode: screen;
+            filter: blur(.2px);
+        }
+        @keyframes starDrift{
+            0%   { background-position: 0 0,  0 0,  0 0,  0 0; }
+            100% { background-position: 120px 80px, -80px 40px, 80px -120px, -120px -40px; }
+        }
+    </style>
+</head>
+<body>
+<!-- Фоны и эффекты сцены -->
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-glow" aria-hidden="true"></div>
+<div class="bg-spot" aria-hidden="true"></div>
+<div class="particles" aria-hidden="true"></div>
+
+<!-- Секция преимуществ -->
+<section class="benefits" aria-label="Наши преимущества">
+    <h2 class="benefits__title">Наши преимущества</h2>
+    <p class="benefits__subtitle">Промышленная точность • Скорость производства • Документы и гарантия • Контроль качества</p>
+
+    <!-- Градиент для иконок (один раз на страницу) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <defs>
+            <!-- Анимированный градиент -->
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%">
+                    <animate attributeName="stop-color" values="#FFB36F; #ED6B06; #FF7A00; #FFB36F" dur="6s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="100%">
+                    <animate attributeName="stop-color" values="#ED6B06; #FF7A00; #FFB36F; #ED6B06" dur="6s" repeatCount="indefinite" />
+                </stop>
+            </linearGradient>
+
+            <!-- Фильтр неон-свечения -->
+            <filter id="neon" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="b1"/>
+                <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b2"/>
+                <feMerge>
+                    <feMergeNode in="b1"/>
+                    <feMergeNode in="b2"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+        </defs>
+    </svg>
+
+    <div class="benefits__grid">
+        <!-- Карточка 1 -->
+        <article class="card" tabindex="0" data-tilt>
+            <div class="gloss" aria-hidden="true"></div>
+            <svg class="card__icon" viewBox="0 0 24 24" filter="url(#neon)">
+                <path class="grad-accent" d="M3 21h18v-8l-5 3v-3l-5 3V7l-4 2V3H3v18zm2-2V5h2v5l4-2v5l5-3v5H5z"/>
+            </svg>
+            <h3 class="card__title">Собственное производство</h3>
+            <p class="card__text">Полный цикл: резка, гибка, сварка, порошковая покраска. Прозрачные сроки и контроль на каждом этапе.</p>
+        </article>
+
+        <!-- Карточка 2 -->
+        <article class="card" tabindex="0" data-tilt>
+            <div class="gloss" aria-hidden="true"></div>
+            <svg class="card__icon" viewBox="0 0 24 24" filter="url(#neon)">
+                <path class="grad-accent" d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4.5l2.1-1.2-1.3-2.3-2.4.5c-.4-.3-.9-.6-1.3-.8l-.4-2.4h-2.6l-.4 2.4c-.5.2-1 .5-1.4.8l-2.3-.5-1.3 2.3 2.1 1.2c-.1.3-.1.6-.1.9s0 .6.1.9l-2.1 1.2 1.3 2.3 2.3-.5c.4.3.9.6 1.4.8l.4 2.4h2.6l.4-2.4c.5-.2.9-.5 1.3-.8l2.4.5 1.3-2.3-2.1-1.2c.1-.3.1-.6.1-.9s0-.6-.1-.9z"/>
+            </svg>
+            <h3 class="card__title">Высокая точность</h3>
+            <p class="card__text">Современные ЧПУ-станки, чистая кромка, стабильная геометрия и повторяемость партии.</p>
+        </article>
+
+        <!-- Карточка 3 -->
+        <article class="card" tabindex="0" data-tilt>
+            <div class="gloss" aria-hidden="true"></div>
+            <svg class="card__icon" viewBox="0 0 24 24" filter="url(#neon)">
+                <path class="grad-accent" d="M12 2l4 4-8 8H4v-4L12 2zm-8 18h16v2H4v-2zm13-10a3 3 0 110 6 3 3 0 010-6z"/>
+            </svg>
+            <h3 class="card__title">Индивидуальные решения</h3>
+            <p class="card__text">Работаем по ТЗ, чертежам и эскизам. Серийные и единичные заказы под нужные сроки.</p>
+        </article>
+
+        <!-- Карточка 4 -->
+        <article class="card" tabindex="0" data-tilt>
+            <div class="gloss" aria-hidden="true"></div>
+            <svg class="card__icon" viewBox="0 0 24 24" filter="url(#neon)">
+                <path class="grad-accent" d="M12 2l7 3v6c0 5-3.8 9.7-7 11-3.2-1.3-7-6-7-11V5l7-3zm0 4l-5 2v3c0 3.6 2.6 7.6 5 8.9 2.4-1.3 5-5.3 5-8.9V8l-5-2z"/>
+            </svg>
+            <h3 class="card__title">Гарантия и документы</h3>
+            <p class="card__text">Официальная документация, паспорта, договор, стабильная поддержка и ответственность за результат.</p>
+        </article>
+    </div>
+</section>
+
+<script>
+    // ============================================================
+    // JS-логика эффектов:
+    // 1) Прожектор за курсором (обновляет CSS-переменные --mx/--my)
+    // 2) Магнитный 3D-tilt карточек (микродвижение к курсору)
+    // ============================================================
+
+    // 1) Прожектор и аура
+    (function(){
+        const root = document.documentElement;
+        const spot = document.querySelector('.bg-spot');
+        let rafId = null;
+
+        function onMove(e){
+            const x = e.clientX || (e.touches && e.touches[0]?.clientX) || innerWidth/2;
+            const y = e.clientY || (e.touches && e.touches[0]?.clientY) || innerHeight/2;
+            if(rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(()=>{
+                root.style.setProperty('--mx', x + 'px');
+                root.style.setProperty('--my', y + 'px');
+                if(spot) spot.style.opacity = .45;
+            });
+        }
+        function onLeave(){
+            if(spot) spot.style.opacity = .2;
+        }
+        window.addEventListener('mousemove', onMove, {passive:true});
+        window.addEventListener('touchmove', onMove, {passive:true});
+        window.addEventListener('mouseleave', onLeave);
+        window.addEventListener('touchend', onLeave);
+    })();
+
+    // 2) Лёгкий 3D-tilt карточек
+    (function(){
+        const cards = document.querySelectorAll('.card[data-tilt]');
+        const strength = 16; // чем больше, тем сильнее наклон
+
+        cards.forEach(card=>{
+            let raf = null;
+
+            function animate(x, y){
+                const rect = card.getBoundingClientRect();
+                const cx = rect.left + rect.width/2;
+                const cy = rect.top  + rect.height/2;
+                const dx = (x - cx) / rect.width;
+                const dy = (y - cy) / rect.height;
+                const rx = (dy * strength);
+                const ry = -(dx * strength);
+                card.style.transform = `translateY(-10px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+            }
+
+            function onEnter(){ card.style.willChange = 'transform'; }
+            function onLeave(){ card.style.willChange = 'auto'; card.style.transform = ''; }
+
+            function onMove(e){
+                const x = e.clientX || (e.touches && e.touches[0]?.clientX) || 0;
+                const y = e.clientY || (e.touches && e.touches[0]?.clientY) || 0;
+                if(raf) cancelAnimationFrame(raf);
+                raf = requestAnimationFrame(()=>animate(x,y));
+            }
+
+            card.addEventListener('mouseenter', onEnter);
+            card.addEventListener('mouseleave', onLeave);
+            card.addEventListener('mousemove', onMove, {passive:true});
+            card.addEventListener('touchmove', onMove, {passive:true});
+        });
+    })();
+</script>
+</body>
+</html>

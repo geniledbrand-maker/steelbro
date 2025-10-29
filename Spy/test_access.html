@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keys.so Spy - Тест доступности</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .status {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        .success { color: #4caf50; }
+        .error { color: #f44336; }
+        .info { color: #2196f3; }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Keys.so Spy</h1>
+        <div class="status success">✅ Файл доступен!</div>
+        <p>Если вы видите эту страницу, значит файл index.html загружается корректно.</p>
+        
+        <h2>📁 Доступные файлы для тестирования:</h2>
+        <a href="test.html" class="btn">🧪 Базовый тест</a>
+        <a href="test_functionality.html" class="btn">⚙️ Полный тест</a>
+        <a href="spy.html" class="btn">🔧 Старая версия</a>
+        
+        <h2>📊 Статус модулей:</h2>
+        <div id="moduleStatus"></div>
+        
+        <h2>🔧 Информация о сервере:</h2>
+        <div id="serverInfo"></div>
+    </div>
+
+    <script>
+        // Проверка доступности модулей
+        function checkModules() {
+            const statusDiv = document.getElementById('moduleStatus');
+            const modules = [
+                'Utils', 'DomainStorage', 'DomainUI', 'DomainManager',
+                'TabManager', 'ExportManager', 'NotificationManager',
+                'OverviewTab', 'KeywordsTab'
+            ];
+            
+            let html = '';
+            modules.forEach(module => {
+                if (typeof window[module] !== 'undefined') {
+                    html += `<div class="success">✅ ${module} - загружен</div>`;
+                } else {
+                    html += `<div class="error">❌ ${module} - не загружен</div>`;
+                }
+            });
+            
+            statusDiv.innerHTML = html;
+        }
+        
+        // Информация о сервере
+        function showServerInfo() {
+            const infoDiv = document.getElementById('serverInfo');
+            infoDiv.innerHTML = `
+                <div class="info">🌐 URL: ${window.location.href}</div>
+                <div class="info">📁 Путь: ${window.location.pathname}</div>
+                <div class="info">🕒 Время загрузки: ${new Date().toLocaleString()}</div>
+                <div class="info">🌍 User Agent: ${navigator.userAgent}</div>
+            `;
+        }
+        
+        // Запуск проверок
+        document.addEventListener('DOMContentLoaded', function() {
+            checkModules();
+            showServerInfo();
+            
+            // Попытка загрузить модули
+            const script = document.createElement('script');
+            script.src = 'assets/js/utils.js';
+            script.onload = function() {
+                document.getElementById('moduleStatus').innerHTML += 
+                    '<div class="success">✅ Utils загружен динамически</div>';
+            };
+            script.onerror = function() {
+                document.getElementById('moduleStatus').innerHTML += 
+                    '<div class="error">❌ Ошибка загрузки Utils</div>';
+            };
+            document.head.appendChild(script);
+        });
+    </script>
+</body>
+</html>

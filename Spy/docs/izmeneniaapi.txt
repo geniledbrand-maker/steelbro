@@ -1,0 +1,12 @@
+Изменения в API (Changelog)
+v1.0.2 (18.08.2025)
+Фильтрация данных, операторы IN, NOT IN, IN ARRAY, NOT IN ARRAY считаются устаревшими (deprecated). Добавлены аналоги с другим разделителем DELIM.
+Рекомендации по замене:
+IN, разделители \n, , » ONE OF, разделители \n, DELIM
+NOT IN, разделитель \n, , » NOT ONE OF, разделители \n, DELIM
+IN ARRAY, разделитель \n, , » ARRAY CONTAINS, разделители \n, DELIM
+NOT IN ARRAY, разделитель \n, , » NOT ARRAY CONTAINS, разделители \n, DELIM
+
+v1.0.1 (14.05.2025)
+Онлайн парсер Wordstat - обновление данных проекта, ID проекта передается в URL. Ранее передавался в теле запроса. https://api.keys.so/wordstat/update-project » https://api.keys.so/wordstat/<id>/update-project
+Онлайн парсер Wordstat - добавление/обновление слов, ID проекта передается в URL. Ранее передавался в теле запроса. https://api.keys.so/wordstat/update-words » https://api.keys.so/wordstat/<id>/update-words

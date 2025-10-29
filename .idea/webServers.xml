@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="2675d9de-e128-4272-8065-8a144a848b04" name="steelbro">
+        <fileTransfer rootFolder="/home/shtop/zhar-svet.com/www" accessType="SFTP" host="91.201.54.214" port="22" sshConfigId="c3367fc2-bf54-4ff0-8039-bafebee523c8" sshConfig="root@91.201.54.214:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

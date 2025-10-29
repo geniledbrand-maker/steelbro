@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keys.so Spy - Финальная проверка</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .test-section { background: white; padding: 20px; margin: 10px 0; border-radius: 10px; }
+        .result { margin: 5px 0; padding: 8px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .btn { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .btn:hover { background: #0056b3; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #218838; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Keys.so Spy - Финальная проверка кнопки "Добавить"</h1>
+        
+        <div class="test-section">
+            <h2>🎯 Проверка главной страницы</h2>
+            <div id="mainPageCheck"></div>
+            <button class="btn btn-success" onclick="checkMainPage()">Проверить главную страницу</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 Тест кнопки в реальном времени</h2>
+            <div id="buttonTest"></div>
+            <button class="btn" onclick="testButtonRealTime()">Тестировать кнопку</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 Сравнение версий</h2>
+            <div id="versionCompare"></div>
+            <a href="index.html" class="btn">Модульная версия</a>
+            <a href="simple.html" class="btn">Простая версия</a>
+        </div>
+    </div>
+
+    <script>
+        function addResult(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.textContent = message;
+            container.appendChild(div);
+        }
+
+        function clearResults(containerId) {
+            document.getElementById(containerId).innerHTML = '';
+        }
+
+        function checkMainPage() {
+            clearResults('mainPageCheck');
+            addResult('mainPageCheck', '🎯 Проверяем главную страницу...', 'info');
+            
+            // Проверяем доступность главной страницы
+            fetch('index.html')
+                .then(response => {
+                    if (response.ok) {
+                        addResult('mainPageCheck', '✅ Главная страница доступна', 'success');
+                        return response.text();
+                    } else {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                })
+                .then(html => {
+                    // Проверяем наличие кнопки в HTML
+                    if (html.includes('addDomainBtn')) {
+                        addResult('mainPageCheck', '✅ Кнопка addDomainBtn найдена в HTML', 'success');
+                    } else {
+                        addResult('mainPageCheck', '❌ Кнопка addDomainBtn НЕ найдена в HTML', 'error');
+                    }
+                    
+                    // Проверяем наличие обработчиков событий
+                    if (html.includes('addEventListener')) {
+                        addResult('mainPageCheck', '✅ Обработчики событий найдены в HTML', 'success');
+                    } else {
+                        addResult('mainPageCheck', '❌ Обработчики событий НЕ найдены в HTML', 'error');
+                    }
+                    
+                    // Проверяем наличие модального окна
+                    if (html.includes('domainModal')) {
+                        addResult('mainPageCheck', '✅ Модальное окно найдено в HTML', 'success');
+                    } else {
+                        addResult('mainPageCheck', '❌ Модальное окно НЕ найдено в HTML', 'error');
+                    }
+                    
+                    // Проверяем загрузку модулей
+                    const moduleScripts = [
+                        'assets/js/utils.js',
+                        'classes/DomainManager/DomainStorage.js',
+                        'classes/DomainManager/DomainUI.js',
+                        'classes/DomainManager/DomainManager.js'
+                    ];
+                    
+                    let modulesFound = 0;
+                    moduleScripts.forEach(script => {
+                        if (html.includes(script)) {
+                            modulesFound++;
+                        }
+                    });
+                    
+                    addResult('mainPageCheck', `✅ Модули в HTML: ${modulesFound}/${moduleScripts.length}`, 'success');
+                    
+                    // Рекомендации
+                    if (html.includes('addDomainBtn') && html.includes('addEventListener')) {
+                        addResult('mainPageCheck', '🎯 Главная страница готова к работе!', 'success');
+                        addResult('mainPageCheck', '💡 Откройте https://zhar-svet.com/Spy/index.html и проверьте кнопку', 'info');
+                    } else {
+                        addResult('mainPageCheck', '⚠️ Есть проблемы с главной страницей', 'error');
+                    }
+                })
+                .catch(error => {
+                    addResult('mainPageCheck', `❌ Ошибка загрузки главной страницы: ${error.message}`, 'error');
+                });
+        }
+
+        function testButtonRealTime() {
+            clearResults('buttonTest');
+            addResult('buttonTest', '🔧 Тестируем кнопку в реальном времени...', 'info');
+            
+            // Открываем главную страницу в новом окне
+            const testWindow = window.open('index.html', '_blank', 'width=1200,height=800');
+            
+            if (!testWindow) {
+                addResult('buttonTest', '❌ Не удалось открыть новое окно (возможно, заблокировано)', 'error');
+                return;
+            }
+            
+            testWindow.addEventListener('load', function() {
+                addResult('buttonTest', '✅ Главная страница загружена в новом окне', 'success');
+                
+                try {
+                    // Ждем загрузки всех скриптов
+                    setTimeout(() => {
+                        const addBtn = testWindow.document.getElementById('addDomainBtn');
+                        
+                        if (addBtn) {
+                            addResult('buttonTest', '✅ Кнопка "Добавить" найдена', 'success');
+                            
+                            // Проверяем видимость
+                            const rect = addBtn.getBoundingClientRect();
+                            const isVisible = rect.width > 0 && rect.height > 0;
+                            addResult('buttonTest', `✅ Кнопка видима: ${isVisible}`, 'success');
+                            
+                            // Проверяем стили
+                            const styles = testWindow.getComputedStyle(addBtn);
+                            addResult('buttonTest', `✅ Стили загружены: ${styles.backgroundColor !== ''}`, 'success');
+                            
+                            // Тестируем клик
+                            addBtn.click();
+                            addResult('buttonTest', '✅ Клик по кнопке выполнен', 'success');
+                            
+                            // Проверяем модальное окно
+                            setTimeout(() => {
+                                const modal = testWindow.document.getElementById('domainModal');
+                                if (modal) {
+                                    const isModalOpen = modal.classList.contains('active');
+                                    if (isModalOpen) {
+                                        addResult('buttonTest', '🎉 МОДАЛЬНОЕ ОКНО ОТКРЫЛОСЬ! Кнопка работает!', 'success');
+                                    } else {
+                                        addResult('buttonTest', '❌ Модальное окно НЕ открылось', 'error');
+                                        addResult('buttonTest', '🔍 Проверьте консоль браузера на ошибки', 'info');
+                                    }
+                                } else {
+                                    addResult('buttonTest', '❌ Модальное окно НЕ найдено', 'error');
+                                }
+                            }, 200);
+                            
+                        } else {
+                            addResult('buttonTest', '❌ Кнопка "Добавить" НЕ найдена', 'error');
+                        }
+                    }, 2000); // Даем время на загрузку всех скриптов
+                    
+                } catch (error) {
+                    addResult('buttonTest', `❌ Ошибка тестирования: ${error.message}`, 'error');
+                }
+            });
+            
+            testWindow.addEventListener('error', function(e) {
+                addResult('buttonTest', `❌ Ошибка загрузки: ${e.message}`, 'error');
+            });
+        }
+
+        // Автоматический запуск
+        document.addEventListener('DOMContentLoaded', function() {
+            addResult('mainPageCheck', '🎯 Готов к проверке главной страницы', 'info');
+            addResult('buttonTest', '🔧 Готов к тестированию кнопки', 'info');
+            addResult('versionCompare', '📊 Выберите версию для тестирования:', 'info');
+            
+            // Автоматическая проверка главной страницы
+            setTimeout(checkMainPage, 1000);
+        });
+    </script>
+</body>
+</html>

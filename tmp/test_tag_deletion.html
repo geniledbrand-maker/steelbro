@@ -1,0 +1,199 @@
+# File: tmp/test_tag_deletion.html
+# Created: 2025-01-22
+# Modified: 2025-01-22
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест удаления тегов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .feature-section {
+            background: #f1f8e9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+            margin: 15px 0;
+        }
+        .feature-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            border-left: 4px solid #9C27B0;
+        }
+        .tag-demo {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            margin: 2px;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .tag-demo:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            transform: scale(1.05);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+        .tag-remove-demo {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            margin-left: 5px;
+            padding: 0 4px;
+            border-radius: 50%;
+            font-size: 12px;
+            line-height: 1;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+        .tag-remove-demo:hover {
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 1;
+            color: #f44336;
+            transform: scale(1.1);
+        }
+        .highlight {
+            background: #fff3e0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .warning {
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f44336;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🗑️ Тест удаления тегов</h1>
+        
+        <div class="feature-section">
+            <h3>✅ Новая функциональность реализована!</h3>
+            <p>Теперь можно удалять теги как из доступных тегов в модальном окне, так и прямо из таблицы доменов.</p>
+        </div>
+
+        <div class="feature-info">
+            <h3>🎯 Два способа удаления тегов:</h3>
+            
+            <h4>1. Удаление из доступных тегов (в модальном окне):</h4>
+            <ul>
+                <li>Откройте модальное окно редактирования домена</li>
+                <li>В разделе "Доступные теги" нажмите <span class="highlight">×</span> рядом с тегом</li>
+                <li>Тег будет удален из <strong>всех доменов</strong> сразу</li>
+                <li>Появится подтверждение: "Удалить тег из всех доменов?"</li>
+            </ul>
+
+            <h4>2. Удаление из конкретного домена (в таблице):</h4>
+            <ul>
+                <li>В левой панели найдите домен с тегами</li>
+                <li>Нажмите <span class="highlight">×</span> рядом с тегом в карточке домена</li>
+                <li>Тег будет удален только из <strong>этого домена</strong></li>
+                <li>Появится подтверждение: "Удалить тег из домена?"</li>
+            </ul>
+        </div>
+
+        <div class="feature-info">
+            <h3>🎨 Визуальные индикаторы:</h3>
+            <p>Кнопки удаления тегов:</p>
+            <div style="margin: 10px 0;">
+                <span class="tag-demo">
+                    электроника
+                    <button class="tag-remove-demo">×</button>
+                </span>
+                <span class="tag-demo">
+                    e-commerce
+                    <button class="tag-remove-demo">×</button>
+                </span>
+                <span class="tag-demo">
+                    конкуренты
+                    <button class="tag-remove-demo">×</button>
+                </span>
+            </div>
+            <ul>
+                <li><strong>Полупрозрачные кнопки</strong> - становятся видимыми при наведении</li>
+                <li><strong>Красный цвет при hover</strong> - указывает на действие удаления</li>
+                <li><strong>Увеличение при наведении</strong> - улучшает UX</li>
+                <li><strong>Круглая форма</strong> - современный дизайн</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ Важные особенности:</h3>
+            <ul>
+                <li><strong>Подтверждение действий</strong> - все удаления требуют подтверждения</li>
+                <li><strong>Уведомления</strong> - показывают результат операции</li>
+                <li><strong>Автосохранение</strong> - изменения сохраняются в localStorage</li>
+                <li><strong>Обновление интерфейса</strong> - список доменов обновляется автоматически</li>
+            </ul>
+        </div>
+
+        <div class="code-block">
+            <strong>Основные методы удаления:</strong><br><br>
+            <strong>1. Удаление из всех доменов:</strong><br>
+            handleRemoveAvailableTag(tag) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;const confirmed = confirm(`Удалить тег "${tag}" из всех доменов?`);<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;// Удаляем тег из всех доменов<br>
+            }<br><br>
+            <strong>2. Удаление из конкретного домена:</strong><br>
+            handleRemoveTagFromDomain(data) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;const confirmed = confirm(`Удалить тег "${tag}" из домена?`);<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;// Удаляем тег только из указанного домена<br>
+            }
+        </div>
+
+        <div class="feature-info">
+            <h3>🚀 Как использовать:</h3>
+            <ol>
+                <li><strong>Откройте приложение</strong> и добавьте тестовые домены (кнопка "🧪 Тест")</li>
+                <li><strong>Удаление из таблицы:</strong> Наведите мышь на тег в карточке домена и нажмите ×</li>
+                <li><strong>Удаление из модального окна:</strong> Откройте редактирование домена и нажмите × в доступных тегах</li>
+                <li><strong>Подтвердите действие</strong> в диалоговом окне</li>
+                <li><strong>Наблюдайте результат</strong> - уведомление и обновление интерфейса</li>
+            </ol>
+        </div>
+
+        <div class="feature-section">
+            <h3>🎉 Результат:</h3>
+            <p>Пользователи теперь имеют полный контроль над тегами: могут добавлять, редактировать и удалять их как глобально (из всех доменов), так и локально (из конкретного домена) с удобным интерфейсом и подтверждениями!</p>
+        </div>
+    </div>
+</body>
+</html>
+
+# End of file: tmp/test_tag_deletion.html
+# Last modified: 2025-01-22

@@ -1,0 +1,104 @@
+---
+description: Strict prohibition on creating HTML test files
+globs: ["**/*.html", "**/*.htm"]
+alwaysApply: true
+---
+
+# NO HTML TEST FILES - CRITICAL
+
+## STRICT PROHIBITION
+
+- **NEVER** create HTML files for testing, debugging, or diagnostics
+- **NEVER** create: test.html, check.html, debug.html, diagnostic.html, api_test.html
+- **NEVER** create any temporary HTML files
+- HTML files **ONLY** for actual production application pages
+
+## WHERE TO TEST AND DEBUG INSTEAD
+
+### ✅ CORRECT APPROACH - Use console/terminal
+
+```powershell
+# PowerShell example
+Invoke-RestMethod -Uri "https://api.example.com" -Method GET | ConvertTo-Json
+
+# Node.js example
+node -e "console.log(require('./test.js').run())"
+```
+
+### ✅ CORRECT APPROACH - Show results in chat
+
+- Display output directly in chat window
+- Use code blocks for formatted output
+- Show JSON results inline
+- Explain findings in text
+
+### ✅ CORRECT APPROACH - Save to appropriate formats
+
+- Test results → `data/output/test_results.json`
+- Debug info → `logs/debug.log`
+- Temporary data → `tmp/debug.txt`
+
+## HTML FILES ALLOWED ONLY FOR
+
+- Actual application pages (src/pages/)
+- Production templates (src/templates/)
+- Email templates (if needed)
+- React/Vue components (but prefer .jsx/.tsx/.vue)
+
+## TESTING WORKFLOW
+
+1. User requests test/check/debug
+2. Determine what needs testing
+3. Run test in appropriate environment:
+   - PowerShell for system/API tests
+   - Node REPL for JS code
+   - Python shell for Python code
+   - Browser DevTools console for frontend
+4. Show results in chat window
+5. If need to save → use JSON/TXT in data/output/ or logs/
+6. **NEVER** create HTML file
+
+## EXAMPLES
+
+### Example 1 - API Test
+
+User: "Проверь работает ли keys.so API"
+
+```powershell
+# PowerShell
+$headers = @{ "Authorization" = "Bearer $API_KEY" }
+$response = Invoke-RestMethod -Uri "https://keys.so/api/test" -Headers $headers
+Write-Host "API Status: $($response.status)"
+```
+
+Output in chat: "Всё работает, API вернул статус 200"
+
+### Example 2 - Data Analysis
+
+User: "Проверь что в этом JSON файле"
+
+```powershell
+# PowerShell
+$data = Get-Content "data/input/file.json" | ConvertFrom-Json
+Write-Host "Records count: $($data.Count)"
+Write-Host "First record: $($data[0] | ConvertTo-Json)"
+```
+
+Output in chat: "В файле 150 записей, вот первая: [данные]"
+
+## IF YOU CATCH YOURSELF CREATING HTML TEST FILE
+
+**STOP** immediately and think:
+
+- Can I show this in console? → YES, do that
+- Can I show this in chat? → YES, do that
+- Can I save as JSON/TXT? → YES, do that
+- Do I really need HTML? → NO, you don't
+
+## REMEMBER
+
+- Testing ≠ HTML files
+- Debugging ≠ HTML files
+- Analysis ≠ HTML files
+- Use terminal, console, chat, JSON, TXT
+- **HTML is for applications, not for testing!**

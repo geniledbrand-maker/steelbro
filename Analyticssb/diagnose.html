@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Полная диагностика сохранения</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #d32f2f;
+            border-bottom: 3px solid #d32f2f;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            background: #e3f2fd;
+            border: 2px solid #2196F3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #2196F3;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .log {
+            background: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        .log-error {
+            color: #ef5350;
+        }
+        .log-success {
+            color: #66bb6a;
+        }
+        .log-info {
+            color: #42a5f5;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🔥 ДИАГНОСТИКА: Почему новые изделия не сохраняются</h1>
+
+    <div class="warning">
+        <strong>⚠️ ПРОБЛЕМА:</strong> Когда я добавляю НОВОЕ изделие, оно появляется в таблице,
+        но после перезагрузки страницы ИСЧЕЗАЕТ!
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 ТЕСТ 1: Проверка API напрямую</h2>
+        <p>Этот тест отправит новое изделие напрямую в API, минуя ваш интерфейс.</p>
+        <button onclick="testAPIDirectly()">▶️ Запустить тест API</button>
+        <div id="test1-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 ТЕСТ 2: Проверка текущих данных</h2>
+        <p>Загрузим текущее состояние данных и покажем структуру.</p>
+        <button onclick="checkCurrentData()">▶️ Проверить данные</button>
+        <div id="test2-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📡 ТЕСТ 3: Мониторинг сетевых запросов</h2>
+        <p>Откройте консоль браузера (F12 → Network) и добавьте изделие в вашей панели.</p>
+        <p>Затем нажмите кнопку ниже, чтобы проанализировать, что было отправлено.</p>
+        <button onclick="showNetworkInstructions()">📖 Показать инструкции</button>
+        <div id="test3-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 ТЕСТ 4: Полный цикл сохранения</h2>
+        <p>Симулирует полный процесс: добавление → сохранение → загрузка → проверка</p>
+        <button onclick="fullCycleTest()">▶️ Полный тест</button>
+        <div id="test4-result"></div>
+    </div>
+
+    <h2>📋 Лог операций</h2>
+    <div class="log" id="log"></div>
+</div>
+
+<script>
+    const log = (message, type = 'info') => {
+        const logDiv = document.getElementById('log');
+        const timestamp = new Date().toLocaleTimeString();
+        const className = type === 'error' ? 'log-error' : type === 'success' ? 'log-success' : 'log-info';
+        logDiv.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+        logDiv.scrollTop = logDiv.scrollHeight;
+        console.log(message);
+    };
+
+    // ТЕСТ 1: Прямой вызов API
+    async function testAPIDirectly() {
+        const resultDiv = document.getElementById('test1-result');
+        resultDiv.innerHTML = '<p>⏳ Выполняется...</p>';
+        log('🧪 ТЕСТ 1: Прямой вызов API', 'info');
+
+        const testProduct = {
+            name: 'ДИАГНОСТИЧЕСКИЙ_ТЕСТ_' + Date.now(),
+            complexity: 'Простая',
+            margin: 'Средняя',
+            demand: 'Средний',
+            time: '1 час'
+        };
+
+        log('📤 Отправляем: ' + JSON.stringify(testProduct), 'info');
+
+        try {
+            const response = await fetch('save_data.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    add_custom_product: testProduct
+                })
+            });
+
+            log('📡 Ответ получен. Статус: ' + response.status, 'info');
+
+            const data = await response.json();
+            log('📥 Данные: ' + JSON.stringify(data), data.success ? 'success' : 'error');
+
+            if (data.success) {
+                resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✅ API РАБОТАЕТ!</strong><br>
+                            Изделие успешно добавлено: <strong>${testProduct.name}</strong><br>
+                            Время сохранения: ${data.timestamp}<br><br>
+                            <strong>Теперь проверим, сохранилось ли оно...</strong>
+                        </div>
+                    `;
+
+                // Проверяем, действительно ли сохранилось
+                setTimeout(async () => {
+                    const checkResponse = await fetch('save_data.php');
+                    const checkData = await checkResponse.json();
+
+                    const found = checkData.selected_products.includes(testProduct.name);
+                    const foundInCustom = checkData.custom_products.some(p => p.name === testProduct.name);
+
+                    if (found && foundInCustom) {
+                        resultDiv.innerHTML += `
+                                <div class="success">
+                                    <strong>✅ ПОДТВЕРЖДЕНО!</strong><br>
+                                    Изделие найдено в:<br>
+                                    • selected_products: ✅<br>
+                                    • custom_products: ✅<br><br>
+                                    <strong>API работает на 100%!</strong><br>
+                                    Проблема НЕ в серверной части!
+                                </div>
+                            `;
+                        log('✅ Изделие найдено в обоих массивах', 'success');
+                    } else {
+                        resultDiv.innerHTML += `
+                                <div class="error">
+                                    <strong>❌ ПРОБЛЕМА!</strong><br>
+                                    Изделие НЕ найдено после сохранения:<br>
+                                    • selected_products: ${found ? '✅' : '❌'}<br>
+                                    • custom_products: ${foundInCustom ? '✅' : '❌'}
+                                </div>
+                            `;
+                        log('❌ Изделие не найдено после сохранения', 'error');
+                    }
+                }, 500);
+
+            } else {
+                resultDiv.innerHTML = `
+                        <div class="error">
+                            <strong>❌ ОШИБКА API!</strong><br>
+                            ${data.error || 'Неизвестная ошибка'}
+                        </div>
+                    `;
+                log('❌ Ошибка API: ' + (data.error || 'Неизвестная'), 'error');
+            }
+
+        } catch (error) {
+            resultDiv.innerHTML = `
+                    <div class="error">
+                        <strong>❌ ОШИБКА СЕТИ!</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            log('❌ Ошибка сети: ' + error.message, 'error');
+        }
+    }
+
+    // ТЕСТ 2: Проверка текущих данных
+    async function checkCurrentData() {
+        const resultDiv = document.getElementById('test2-result');
+        resultDiv.innerHTML = '<p>⏳ Загружаем...</p>';
+        log('🔍 ТЕСТ 2: Проверка текущих данных', 'info');
+
+        try {
+            const response = await fetch('save_data.php');
+            const data = await response.json();
+
+            log('📥 Данные загружены', 'success');
+
+            resultDiv.innerHTML = `
+                    <div class="success">
+                        <h3>📊 Текущее состояние:</h3>
+                        <strong>selected_products:</strong> ${data.selected_products.length} изделий<br>
+                        <strong>custom_products:</strong> ${data.custom_products.length} изделий<br>
+                        <strong>deleted_products:</strong> ${data.deleted_products.length} изделий<br>
+                        <strong>Последнее обновление:</strong> ${data.last_updated}<br><br>
+
+                        <h4>Список selected_products:</h4>
+                        <pre>${JSON.stringify(data.selected_products, null, 2)}</pre>
+
+                        <h4>Список custom_products:</h4>
+                        <pre>${JSON.stringify(data.custom_products, null, 2)}</pre>
+                    </div>
+                `;
+
+        } catch (error) {
+            resultDiv.innerHTML = `<div class="error">❌ Ошибка: ${error.message}</div>`;
+            log('❌ Ошибка загрузки данных: ' + error.message, 'error');
+        }
+    }
+
+    // ТЕСТ 3: Инструкции по мониторингу
+    function showNetworkInstructions() {
+        const resultDiv = document.getElementById('test3-result');
+        log('📡 ТЕСТ 3: Инструкции по мониторингу', 'info');
+
+        resultDiv.innerHTML = `
+                <div class="warning">
+                    <h3>📖 Инструкция:</h3>
+                    <ol style="text-align: left;">
+                        <li><strong>Откройте консоль браузера</strong> (F12)</li>
+                        <li><strong>Перейдите на вкладку Network (Сеть)</strong></li>
+                        <li><strong>Поставьте галочку "Preserve log"</strong></li>
+                        <li><strong>Откройте вашу панель Analyticssb в другой вкладке</strong></li>
+                        <li><strong>Добавьте новое изделие</strong></li>
+                        <li><strong>Нажмите "Сохранить"</strong></li>
+                        <li><strong>В консоли найдите запрос к save_data.php</strong></li>
+                        <li><strong>Кликните на него и посмотрите:</strong>
+                            <ul>
+                                <li>Request Method (должен быть POST)</li>
+                                <li>Request Payload (что было отправлено)</li>
+                                <li>Response (что вернул сервер)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Скопируйте данные и покажите мне</strong></li>
+                    </ol>
+
+                    <h4>❓ Что искать:</h4>
+                    <ul style="text-align: left;">
+                        <li>Отправляется ли <code>add_custom_product</code>?</li>
+                        <li>Или отправляется <code>selected_products</code> и <code>custom_products</code>?</li>
+                        <li>Есть ли в ответе <code>success: true</code>?</li>
+                    </ul>
+                </div>
+            `;
+    }
+
+    // ТЕСТ 4: Полный цикл
+    async function fullCycleTest() {
+        const resultDiv = document.getElementById('test4-result');
+        resultDiv.innerHTML = '<p>⏳ Выполняем полный цикл...</p>';
+        log('🔧 ТЕСТ 4: Полный цикл сохранения', 'info');
+
+        const testName = 'ПОЛНЫЙ_ТЕСТ_' + Date.now();
+
+        try {
+            // Шаг 1: Загружаем текущие данные
+            log('📥 Шаг 1: Загрузка текущих данных', 'info');
+            const loadResponse = await fetch('save_data.php');
+            const initialData = await loadResponse.json();
+
+            const initialCount = initialData.selected_products.length;
+            log(`✅ Загружено. Текущее количество: ${initialCount}`, 'success');
+
+            // Шаг 2: Добавляем новое изделие
+            log('📤 Шаг 2: Добавление нового изделия', 'info');
+            const addResponse = await fetch('save_data.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    add_custom_product: {
+                        name: testName,
+                        complexity: 'Тестовая',
+                        margin: 'Тестовая',
+                        demand: 'Тестовый',
+                        time: '0 минут'
+                    }
+                })
+            });
+
+            const addResult = await addResponse.json();
+            log('Результат добавления: ' + JSON.stringify(addResult), addResult.success ? 'success' : 'error');
+
+            if (!addResult.success) {
+                resultDiv.innerHTML = `<div class="error">❌ Ошибка на шаге 2: ${addResult.error}</div>`;
+                return;
+            }
+
+            // Шаг 3: Перезагружаем данные
+            log('🔄 Шаг 3: Перезагрузка данных', 'info');
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const reloadResponse = await fetch('save_data.php');
+            const reloadedData = await reloadResponse.json();
+
+            const newCount = reloadedData.selected_products.length;
+            log(`✅ Перезагружено. Новое количество: ${newCount}`, 'success');
+
+            // Шаг 4: Проверяем наличие
+            const foundInSelected = reloadedData.selected_products.includes(testName);
+            const foundInCustom = reloadedData.custom_products.some(p => p.name === testName);
+
+            log(`🔍 Проверка наличия: selected=${foundInSelected}, custom=${foundInCustom}`, 'info');
+
+            // Результат
+            if (foundInSelected && foundInCustom) {
+                resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ ПОЛНЫЙ УСПЕХ!</h3>
+                            <p><strong>Весь цикл работает идеально:</strong></p>
+                            <ul style="text-align: left;">
+                                <li>Было изделий: ${initialCount}</li>
+                                <li>Стало изделий: ${newCount}</li>
+                                <li>Добавлено: ${newCount - initialCount}</li>
+                                <li>Изделие в selected_products: ✅</li>
+                                <li>Изделие в custom_products: ✅</li>
+                            </ul>
+                            <p><strong>🎯 ВЫВОД: API работает на 100%!</strong></p>
+                            <p><strong>🔍 Проблема в интерфейсе (index.html)!</strong></p>
+                            <p>Нужно проверить JavaScript код, который сохраняет данные в вашей панели.</p>
+                        </div>
+                    `;
+                log('✅ ПОЛНЫЙ УСПЕХ! Проблема в интерфейсе', 'success');
+            } else {
+                resultDiv.innerHTML = `
+                        <div class="error">
+                            <h3>❌ ПРОБЛЕМА ОБНАРУЖЕНА!</h3>
+                            <p>Изделие НЕ сохранилось:</p>
+                            <ul style="text-align: left;">
+                                <li>В selected_products: ${foundInSelected ? '✅' : '❌'}</li>
+                                <li>В custom_products: ${foundInCustom ? '✅' : '❌'}</li>
+                            </ul>
+                            <p><strong>Проблема в серверной части!</strong></p>
+                        </div>
+                    `;
+                log('❌ Изделие не сохранилось', 'error');
+            }
+
+        } catch (error) {
+            resultDiv.innerHTML = `<div class="error">❌ Ошибка: ${error.message}</div>`;
+            log('❌ Ошибка: ' + error.message, 'error');
+        }
+    }
+
+    log('🔥 Диагностика загружена. Готов к тестам!', 'success');
+</script>
+</body>
+</html>

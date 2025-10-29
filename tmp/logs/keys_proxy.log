@@ -1,0 +1,481 @@
+[2025-10-23 08:57:07] Новый запрос
+Array
+(
+    [endpoint] => /report/simple/domain_dashboard
+    [GET] => Array
+        (
+            [endpoint] => /report/simple/domain_dashboard
+            [domain] => yandex.ru
+            [base] => msk
+        )
+
+    [POST] => Array
+        (
+        )
+
+    [method] => GET
+)
+
+---
+[2025-10-23 08:57:07] Отправка запроса к Keys.so
+Array
+(
+    [full_url] => https://api.keys.so/report/simple/domain_dashboard?domain=yandex.ru&base=msk
+    [params] => Array
+        (
+            [domain] => yandex.ru
+            [base] => msk
+        )
+
+)
+
+---
+[2025-10-23 08:57:08] Ответ от Keys.so
+Array
+(
+    [http_code] => 200
+    [curl_error] => 
+    [curl_errno] => 0
+    [response_length] => 13191
+    [response_preview] => {"id":29918164,"parentid":0,"parentName":"","concs":[{"did":92800307,"name":"m.vk.com","cnt":30286452,"it50":48490288,"vis":16134411,"perc":62.458799997228311},{"did":262623812,"name":"dzen.ru","cnt":28070175,"it50":51500756,"vis":19583571,"perc":54.504394071419071},{"did":30695597,"name":"m.youtube.com","cnt":25930317,"it50":43774118,"vis":6094247,"perc":59.236640701704147},{"did":29917304,"name":"rutube.ru","cnt":18470062,"it50":27197086,"vis":7038513,"perc":67.911915269157888},{"did":30076281
+)
+
+---
+[2025-10-23 08:57:28] Новый запрос
+Array
+(
+    [endpoint] => /report/simple/domain_dashboard
+    [GET] => Array
+        (
+            [domain] => elbiz.biz
+            [base] => msk
+            [endpoint] => /report/simple/domain_dashboard
+        )
+
+    [POST] => Array
+        (
+        )
+
+    [method] => GET
+)
+
+---
+[2025-10-23 08:57:28] Отправка запроса к Keys.so
+Array
+(
+    [full_url] => https://api.keys.so/report/simple/domain_dashboard?domain=elbiz.biz&base=msk
+    [params] => Array
+        (
+            [domain] => elbiz.biz
+            [base] => msk
+        )
+
+)
+
+---
+[2025-10-23 08:57:29] Ответ от Keys.so
+Array
+(
+    [http_code] => 200
+    [curl_error] => 
+    [curl_errno] => 0
+    [response_length] => 3667
+    [response_preview] => {"id":31093395,"parentid":0,"parentName":"","concs":[{"did":30163777,"name":"ledintero.ru","cnt":7,"it50":245,"vis":0,"perc":2.8571428571428568},{"did":51628589,"name":"ecolumen.ru","cnt":7,"it50":317,"vis":2,"perc":2.2082018927444795},{"did":121931240,"name":"kim2b.ru","cnt":6,"it50":566,"vis":2,"perc":1.0600706713780919},{"did":29920918,"name":"beldel-group.com","cnt":5,"it50":109,"vis":0,"perc":4.5871559633027523},{"did":50505295,"name":"rp-store.ru","cnt":5,"it50":101,"vis":1,"perc":4.950495
+)
+
+---
+[2025-10-23 08:58:05] Новый запрос
+Array
+(
+    [endpoint] => /report/simple/organic/keywords
+    [GET] => Array
+        (
+            [domain] => elbiz.biz
+            [base] => msk
+            [per_page] => 100
+            [endpoint] => /report/simple/organic/keywords
+        )
+
+    [POST] => Array
+        (
+        )
+
+    [method] => GET
+)
+
+---
+[2025-10-23 08:58:05] Отправка запроса к Keys.so
+Array
+(
+    [full_url] => https://api.keys.so/report/simple/organic/keywords?domain=elbiz.biz&base=msk&per_page=100
+    [params] => Array
+        (
+            [domain] => elbiz.biz
+            [base] => msk
+            [per_page] => 100
+        )
+
+)
+
+---
+[2025-10-23 08:58:05] Ответ от Keys.so
+Array
+(
+    [http_code] => 200
+    [curl_error] => 
+    [curl_errno] => 0
+    [response_length] => 3474
+    [response_preview] => {"current_page":1,"per_page":100,"last_page":1,"data":[{"id":44679500,"word":"корпус потолочного светильника","url":"\/category\/korpusa-dlya-potolochnyh-svetilnikov","pos":24,"ws":1378,"wsk":6,"superwsk":4,"docs":0,"avbid":3,"numwords":3,"adscnt":4,"isgeo":0,"isquest":0,"nw":0,"delta":0,"churl":0,"wizardscount":0,"wizards":[],"kid":44679500,"did":31093395,"serpf":"31.08.2025","kei":0},{"id":132676596,"word":"корпус для светодиодных ламп","url
+)
+
+---
+[2025-10-23 08:58:06] Новый запрос
+Array
+(
+    [endpoint] => /report/simple/organic/sitepages
+    [GET] => Array
+        (
+            [domain] => elbiz.biz
+            [base] => msk
+            [per_page] => 100
+            [endpoint] => /report/simple/organic/sitepages
+        )
+
+    [POST] => Array
+        (
+        )
+
+    [method] => GET
+)
+
+---
+[2025-10-23 08:58:06] Отправка запроса к Keys.so
+Array
+(
+    [full_url] => https://api.keys.so/report/simple/organic/sitepages?domain=elbiz.biz&base=msk&per_page=100
+    [params] => Array
+        (
+            [domain] => elbiz.biz
+            [base] => msk
+            [per_page] => 100
+        )
+
+)
+
+---
+[2025-10-23 08:58:06] Ответ от Keys.so
+Array
+(
+    [http_code] => 200
+    [curl_error] => 
+    [curl_errno] => 0
+    [response_length] => 1231
+    [response_preview] => {"current_page":1,"per_page":100,"last_page":1,"data":[{"url":"\/","it1":1,"it3":1,"it5":1,"it10":1,"it50":1,"new_url":0,"found_date":"23.08.2025","hash":"17137943726933369641","vis":18},{"url":"\/catalog","it1":0,"it3":1,"it5":1,"it10":1,"it50":1,"new_url":0,"found_date":"23.08.2025","hash":"9854397075089144404","vis":18},{"url":"\/category\/korpusa-dlya-linejnyh-svetilnikov","it1":0,"it3":0,"it5":0,"it10":0,"it50":1,"new_url":1,"found_date":"29.08.2025","hash":"6698120107934278659","vis":0},{"
+)
+
+---
+[2025-10-23 08:58:06] Новый запрос
+Array
+(
+    [endpoint] => /report/simple/context/ads/
+    [GET] => Array
+        (
+            [domain] => elbiz.biz
+            [base] => msk
+            [per_page] => 50
+            [endpoint] => /report/simple/context/ads/
+        )
+
+    [POST] => Array
+        (
+        )
+
+    [method] => GET
+)
+
+---
+[2025-10-23 08:58:06] Отправка запроса к Keys.so
+Array
+(
+    [full_url] => https://api.keys.so/report/simple/context/ads/?domain=elbiz.biz&base=msk&per_page=50
+    [params] => Array
+        (
+            [domain] => elbiz.biz
+            [base] => msk
+            [per_page] => 50
+        )
+
+)
+
+---
+[2025-10-23 08:58:07] Ответ от Keys.so
+Array
+(
+    [http_code] => 200
+    [curl_error] => 
+    [curl_errno] => 0
+    [response_length] => 66
+    [response_preview] => {"current_page":1,"per_page":50,"last_page":0,"data":[],"total":0}
+)
+
+---
+[2025-10-23 08:58:07] Новый запрос
+Array
+(
+    [endpoint] => /report/simple/organic/concurents
+    [GET] => Array
+        (
+            [domain] => elbiz.biz
+            [base] => msk
+            [per_page] => 50
+            [endpoint] => /report/simple/organic/concurents
+        )
+
+    [POST] => Array
+        (
+        )
+
+    [method] => GET
+)
+
+---
+[2025-10-23 08:58:07] Отправка запроса к Keys.so
+Array
+(
+    [full_url] => https://api.keys.so/report/simple/organic/concurents?domain=elbiz.biz&base=msk&per_page=50
+    [params] => Array
+        (
+            [domain] => elbiz.biz
+            [base] => msk
+            [per_page] => 50
+        )
+
+)
+
+---
+[2025-10-23 08:58:08] Ответ от Keys.so
+Array
+(
+    [http_code] => 200
+    [curl_error] => 
+    [curl_errno] => 0
+    [response_length] => 254
+    [response_preview] => {"current_page":1,"per_page":50,"last_page":1,"data":[{"id":401209308,"name":"elbiz.clients.site","perc":100,"theme":50,"cnt":1,"it1":0,"it3":0,"it5":0,"it10":1,"it50":1,"pagesinindex":1,"vis":0,"adscnt":0,"adkeyscnt":0,"adtraf":0,"adcost":0}],"total":1}
+)
+
+---
+[2025-10-23 09:01:16] Новый запрос
+Array
+(
+    [endpoint] => /report/simple/domain_dashboard
+    [GET] => Array
+        (
+            [endpoint] => /report/simple/domain_dashboard
+            [domain] => yandex.ru
+            [base] => msk
+        )
+
+    [POST] => Array
+        (
+        )
+
+    [method] => GET
+)
+
+---
+[2025-10-23 09:01:16] Отправка запроса к Keys.so
+Array
+(
+    [full_url] => https://api.keys.so/report/simple/domain_dashboard?domain=yandex.ru&base=msk
+    [params] => Array
+        (
+            [domain] => yandex.ru
+            [base] => msk
+        )
+
+)
+
+---
+[2025-10-23 09:01:16] Ответ от Keys.so
+Array
+(
+    [http_code] => 200
+    [curl_error] => 
+    [curl_errno] => 0
+    [response_length] => 13191
+    [response_preview] => {"id":29918164,"parentid":0,"parentName":"","concs":[{"did":92800307,"name":"m.vk.com","cnt":30286452,"it50":48490288,"vis":16134411,"perc":62.458799997228311},{"did":262623812,"name":"dzen.ru","cnt":28070175,"it50":51500756,"vis":19583571,"perc":54.504394071419071},{"did":30695597,"name":"m.youtube.com","cnt":25930317,"it50":43774118,"vis":6094247,"perc":59.236640701704147},{"did":29917304,"name":"rutube.ru","cnt":18470062,"it50":27197086,"vis":7038513,"perc":67.911915269157888},{"did":30076281
+)
+
+---
+[2025-10-23 09:04:17] Новый запрос
+Array
+(
+    [endpoint] => /report/simple/domain_dashboard
+    [GET] => Array
+        (
+            [domain] => elbiz.biz
+            [base] => msk
+            [endpoint] => /report/simple/domain_dashboard
+        )
+
+    [POST] => Array
+        (
+        )
+
+    [method] => GET
+)
+
+---
+[2025-10-23 09:04:17] Отправка запроса к Keys.so
+Array
+(
+    [full_url] => https://api.keys.so/report/simple/domain_dashboard?domain=elbiz.biz&base=msk
+    [params] => Array
+        (
+            [domain] => elbiz.biz
+            [base] => msk
+        )
+
+)
+
+---
+[2025-10-23 09:04:18] Ответ от Keys.so
+Array
+(
+    [http_code] => 200
+    [curl_error] => 
+    [curl_errno] => 0
+    [response_length] => 3667
+    [response_preview] => {"id":31093395,"parentid":0,"parentName":"","concs":[{"did":30163777,"name":"ledintero.ru","cnt":7,"it50":245,"vis":0,"perc":2.8571428571428568},{"did":51628589,"name":"ecolumen.ru","cnt":7,"it50":317,"vis":2,"perc":2.2082018927444795},{"did":121931240,"name":"kim2b.ru","cnt":6,"it50":566,"vis":2,"perc":1.0600706713780919},{"did":29920918,"name":"beldel-group.com","cnt":5,"it50":109,"vis":0,"perc":4.5871559633027523},{"did":50505295,"name":"rp-store.ru","cnt":5,"it50":101,"vis":1,"perc":4.950495
+)
+
+---
+[2025-10-23 09:04:39] Новый запрос
+Array
+(
+    [endpoint] => /report/simple/domain_dashboard
+    [GET] => Array
+        (
+            [domain] => rkgroup.pro
+            [base] => msk
+            [endpoint] => /report/simple/domain_dashboard
+        )
+
+    [POST] => Array
+        (
+        )
+
+    [method] => GET
+)
+
+---
+[2025-10-23 09:04:39] Отправка запроса к Keys.so
+Array
+(
+    [full_url] => https://api.keys.so/report/simple/domain_dashboard?domain=rkgroup.pro&base=msk
+    [params] => Array
+        (
+            [domain] => rkgroup.pro
+            [base] => msk
+        )
+
+)
+
+---
+[2025-10-23 09:04:40] Ответ от Keys.so
+Array
+(
+    [http_code] => 202
+    [curl_error] => 
+    [curl_errno] => 0
+    [response_length] => 227
+    [response_preview] => {"code":202,"message":"В данный момент сервер подготавливает отчет. Это может занять до 5 минут, но обычно происходит заметно быстрее."}
+)
+
+---
+[2025-10-23 09:04:45] Новый запрос
+Array
+(
+    [endpoint] => /report/simple/domain_dashboard
+    [GET] => Array
+        (
+            [domain] => rkgroup.pro
+            [base] => ekb
+            [endpoint] => /report/simple/domain_dashboard
+        )
+
+    [POST] => Array
+        (
+        )
+
+    [method] => GET
+)
+
+---
+[2025-10-23 09:04:45] Отправка запроса к Keys.so
+Array
+(
+    [full_url] => https://api.keys.so/report/simple/domain_dashboard?domain=rkgroup.pro&base=ekb
+    [params] => Array
+        (
+            [domain] => rkgroup.pro
+            [base] => ekb
+        )
+
+)
+
+---
+[2025-10-23 09:04:46] Ответ от Keys.so
+Array
+(
+    [http_code] => 200
+    [curl_error] => 
+    [curl_errno] => 0
+    [response_length] => 2561
+    [response_preview] => {"id":31519073,"parentid":0,"parentName":"","concs":[{"did":249337254,"name":"rc.company","cnt":2,"it50":31,"vis":123,"perc":6.4516129032258069},{"did":30014555,"name":"resscom.ru","cnt":2,"it50":35,"vis":31,"perc":5.7142857142857144},{"did":254417842,"name":"rkgroup.ru","cnt":2,"it50":3,"vis":2,"perc":66.666666666666671},{"did":76619728,"name":"rcgroup.pro","cnt":1,"it50":11,"vis":0,"perc":9.0909090909090917},{"did":76619728,"name":"rcgroup.pro","cnt":1,"it50":11,"vis":0,"perc":9.09090909090909
+)
+
+---
+[2025-10-23 09:05:00] Новый запрос
+Array
+(
+    [endpoint] => /report/simple/domain_dashboard
+    [GET] => Array
+        (
+            [domain] => rival-laser.ru
+            [base] => ekb
+            [endpoint] => /report/simple/domain_dashboard
+        )
+
+    [POST] => Array
+        (
+        )
+
+    [method] => GET
+)
+
+---
+[2025-10-23 09:05:00] Отправка запроса к Keys.so
+Array
+(
+    [full_url] => https://api.keys.so/report/simple/domain_dashboard?domain=rival-laser.ru&base=ekb
+    [params] => Array
+        (
+            [domain] => rival-laser.ru
+            [base] => ekb
+        )
+
+)
+
+---
+[2025-10-23 09:05:00] Ответ от Keys.so
+Array
+(
+    [http_code] => 200
+    [curl_error] => 
+    [curl_errno] => 0
+    [response_length] => 4026
+    [response_preview] => {"id":30375687,"parentid":0,"parentName":"","concs":[{"did":32795095,"name":"metallistspb.ru","cnt":17,"it50":114,"vis":19,"perc":14.912280701754387},{"did":30036415,"name":"rocta.ru","cnt":17,"it50":958,"vis":194,"perc":1.7745302713987474},{"did":30244926,"name":"promexcut.ru","cnt":17,"it50":105,"vis":35,"perc":16.19047619047619},{"did":150503598,"name":"uzmzavod.ru","cnt":17,"it50":118,"vis":203,"perc":14.40677966101695},{"did":30694236,"name":"vt-metall.ru","cnt":15,"it50":2538,"vis":503,"pe
+)
+
+---

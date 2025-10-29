@@ -1,0 +1,204 @@
+---
+description: PowerShell commands only for Windows environment
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# POWERSHELL COMMANDS ONLY
+
+## COMMAND LINE REQUIREMENTS
+
+- **ALWAYS** use PowerShell commands, NEVER bash/Linux commands
+- When suggesting terminal commands, ALWAYS use PowerShell syntax
+- If user asks for a command, provide PowerShell version by default
+- Add comment "# PowerShell" before command blocks for clarity
+
+## POWERSHELL SYNTAX QUICK REFERENCE
+
+### File Operations
+
+```powershell
+# Copy file
+Copy-Item source.txt destination.txt
+
+# Move file
+Move-Item file.txt new_location/
+
+# Delete file
+Remove-Item file.txt
+
+# Create file
+New-Item -ItemType File -Path file.txt
+
+# Read file
+Get-Content file.txt
+
+# Write file
+Set-Content -Path file.txt -Value "content"
+```
+
+### Directory Operations
+
+```powershell
+# Create directory
+New-Item -ItemType Directory -Path folder_name
+
+# List directory
+Get-ChildItem
+
+# Remove directory
+Remove-Item -Recurse -Force folder_name
+
+# Change directory
+Set-Location folder_name
+
+# Current directory
+Get-Location
+```
+
+### Process Operations
+
+```powershell
+# List processes
+Get-Process
+
+# Kill process
+Stop-Process -Name "process" -Force
+
+# Start process
+Start-Process program.exe
+```
+
+### Network Operations
+
+```powershell
+# Download file
+Invoke-WebRequest -Uri "url" -OutFile "file.txt"
+
+# HTTP request
+Invoke-RestMethod -Uri "api_url" -Method GET
+
+# Test connection
+Test-NetConnection google.com
+```
+
+### Environment Variables
+
+```powershell
+# Get variable
+$env:VARIABLE_NAME
+
+# Set variable
+$env:VARIABLE_NAME = "value"
+
+# List all
+Get-ChildItem Env:
+```
+
+## FORBIDDEN COMMANDS
+
+**NEVER** use these Linux/bash commands:
+
+- ❌ `cp` → use `Copy-Item`
+- ❌ `mv` → use `Move-Item`
+- ❌ `rm` → use `Remove-Item`
+- ❌ `mkdir` → use `New-Item -ItemType Directory`
+- ❌ `touch` → use `New-Item -ItemType File`
+- ❌ `cat` → use `Get-Content`
+- ❌ `grep` → use `Select-String`
+- ❌ `find` → use `Get-ChildItem -Recurse`
+- ❌ `curl` → use `Invoke-WebRequest`
+- ❌ `wget` → use `Invoke-WebRequest`
+- ❌ `export VAR=value` → use `$env:VAR = "value"`
+
+## AUTOMATIC CONVERSION
+
+If user mentions Linux command, automatically suggest PowerShell equivalent:
+
+**Example:**
+- User: "как сделать grep в файле?"
+- Answer: "В PowerShell используй `Select-String`:"
+
+```powershell
+Select-String -Path file.txt -Pattern "search_term"
+```
+
+## COMMON TASKS
+
+### Search in files
+
+```powershell
+Select-String -Path "*.js" -Pattern "search_term"
+```
+
+### Find files
+
+```powershell
+Get-ChildItem -Recurse -Filter "*.txt"
+```
+
+### Replace in file
+
+```powershell
+(Get-Content file.txt) -replace "old", "new" | Set-Content file.txt
+```
+
+### Archive/Extract
+
+```powershell
+# Create archive
+Compress-Archive -Path folder -DestinationPath archive.zip
+
+# Extract archive
+Expand-Archive -Path archive.zip -DestinationPath folder
+```
+
+## COMMANDS THAT WORK AS-IS
+
+These commands work the same in PowerShell:
+
+### NPM/Node
+
+```powershell
+npm install
+npm start
+npm run build
+node script.js
+```
+
+### Python
+
+```powershell
+python script.py
+pip install package
+python -m venv venv
+.\venv\Scripts\activate  # Note: PowerShell activation
+```
+
+### Git
+
+```powershell
+git status
+git add .
+git commit -m "message"
+git push
+```
+
+## ERROR HANDLING
+
+Always add error handling for commands that might fail:
+
+```powershell
+if (Test-Path "file.txt") {
+    Remove-Item "file.txt"
+} else {
+    Write-Host "File not found"
+}
+```
+
+## REMINDERS
+
+- **ALWAYS** check if command is PowerShell compatible
+- **NEVER** suggest bash/Linux commands without PowerShell alternative
+- When in doubt, provide PowerShell version
+- Add "# PowerShell" comment for clarity

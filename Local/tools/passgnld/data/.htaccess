@@ -1,0 +1,8 @@
+# Защита директории data/ от прямого доступа
+Order deny,allow
+Deny from all
+
+# Исключение для PHP (API может читать/писать)
+<FilesMatch "\.(php)$">
+    Allow from all
+</FilesMatch>

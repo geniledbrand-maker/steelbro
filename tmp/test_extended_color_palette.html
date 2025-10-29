@@ -1,0 +1,607 @@
+# File: tmp/test_extended_color_palette.html
+# Created: 2025-01-22
+# Modified: 2025-01-22
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест расширенной палитры цветов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .feature {
+            background: #f1f8e9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+            margin: 15px 0;
+        }
+        .demo-section {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #FF9800;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            border-left: 4px solid #9C27B0;
+        }
+        .color-palette-demo {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .color-palette-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 0 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        .color-palette-header h4 {
+            margin: 0;
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .preset-colors {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .color-option {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            position: relative;
+            margin: 0 auto;
+        }
+        .color-option:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .color-option.selected {
+            border-color: #333;
+            transform: scale(1.05);
+        }
+        .color-option::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .color-option.selected::after {
+            opacity: 1;
+        }
+        .saved-colors-section {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+            margin-bottom: 20px;
+        }
+        .saved-colors-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .saved-colors-header label {
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        .clear-saved-colors {
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .clear-saved-colors:hover {
+            background: #d32f2f;
+            transform: scale(1.05);
+        }
+        .saved-colors {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .saved-color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            margin: 0 auto;
+        }
+        .saved-color-option:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .saved-color-option.selected {
+            border-color: #333;
+            transform: scale(1.05);
+        }
+        .saved-color-option::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .saved-color-option.selected::after {
+            opacity: 1;
+        }
+        .saved-color-option .remove-saved-color {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .saved-color-option:hover .remove-saved-color {
+            opacity: 1;
+        }
+        .saved-color-option .remove-saved-color:hover {
+            background: #d32f2f;
+            transform: scale(1.1);
+        }
+        .empty-saved-colors {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+        }
+        .custom-color-section {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+        }
+        .custom-color-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+        .custom-color-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .custom-color-input input[type="color"] {
+            width: 50px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 0;
+        }
+        .custom-color-input .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .custom-color-input .btn.secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+        .tag-demo {
+            display: inline-flex;
+            align-items: center;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 5px;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            gap: 8px;
+        }
+        .tag-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .tag-demo .remove-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 50%;
+            font-size: 12px;
+            line-height: 1;
+            opacity: 0.7;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+        }
+        .tag-demo .remove-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 1;
+            color: #f44336;
+        }
+        .workflow {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+            margin: 15px 0;
+        }
+        .workflow-step {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .workflow-step .step-number {
+            background: #2196F3;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .highlight {
+            background: #fff3e0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .color-item {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .color-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            margin: 0 auto 10px;
+            border: 2px solid #ddd;
+        }
+        .color-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎨 Тест расширенной палитры цветов</h1>
+        
+        <div class="feature">
+            <h3>✅ Новая функциональность:</h3>
+            <p>Расширена палитра цветов! Теперь доступно <strong>12 предустановленных цветов</strong> (вместо 6) и возможность <strong>сохранения пользовательских цветов</strong> в персональную палитру.</p>
+        </div>
+
+        <div class="demo-section">
+            <h3>🎯 Демонстрация расширенной палитры:</h3>
+            
+            <div class="color-palette-demo">
+                <div class="color-palette-header">
+                    <h4>Выберите цвет для тега</h4>
+                    <button style="background: none; border: none; font-size: 24px; color: #999; cursor: pointer;">×</button>
+                </div>
+                <div class="color-palette-content">
+                    <div class="preset-colors">
+                        <div class="color-option" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" title="Синий градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" title="Розовый градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" title="Голубой градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" title="Зеленый градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" title="Оранжевый градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);" title="Мятный градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);" title="Красный градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #4834d4 0%, #686de0 100%);" title="Фиолетовый градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #00d2d3 0%, #54a0ff 100%);" title="Бирюзовый градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #ff9ff3 0%, #f368e0 100%);" title="Розово-фиолетовый градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);" title="Желто-розовый градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);" title="Небесно-голубой градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #1dd1a1 0%, #55efc4 100%);" title="Изумрудный градиент"></div>
+                    </div>
+                    
+                    <div class="saved-colors-section">
+                        <div class="saved-colors-header">
+                            <label>Сохраненные цвета:</label>
+                            <button class="clear-saved-colors">🗑️</button>
+                        </div>
+                        <div class="saved-colors">
+                            <div class="saved-color-option" style="background: #8e44ad;" title="Пользовательский фиолетовый">
+                                <button class="remove-saved-color">×</button>
+                            </div>
+                            <div class="saved-color-option" style="background: #e74c3c;" title="Пользовательский красный">
+                                <button class="remove-saved-color">×</button>
+                            </div>
+                            <div class="saved-color-option" style="background: #f39c12;" title="Пользовательский оранжевый">
+                                <button class="remove-saved-color">×</button>
+                            </div>
+                            <div class="saved-color-option" style="background: #27ae60;" title="Пользовательский зеленый">
+                                <button class="remove-saved-color">×</button>
+                            </div>
+                            <div class="saved-color-option" style="background: #3498db;" title="Пользовательский синий">
+                                <button class="remove-saved-color">×</button>
+                            </div>
+                            <div class="saved-color-option" style="background: #9b59b6;" title="Пользовательский фиолетовый">
+                                <button class="remove-saved-color">×</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="custom-color-section">
+                        <label>Свой цвет:</label>
+                        <div class="custom-color-input">
+                            <input type="color" value="#667eea">
+                            <button class="btn">Применить</button>
+                            <button class="btn secondary">💾</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>🎨 Все 12 предустановленных цветов:</h3>
+            <div class="color-grid">
+                <div class="color-item">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                    <div class="color-name">Синий градиент</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                    <div class="color-name">Розовый градиент</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+                    <div class="color-name">Голубой градиент</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
+                    <div class="color-name">Зеленый градиент</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+                    <div class="color-name">Оранжевый градиент</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);"></div>
+                    <div class="color-name">Мятный градиент</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);"></div>
+                    <div class="color-name">Красный градиент</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #4834d4 0%, #686de0 100%);"></div>
+                    <div class="color-name">Фиолетовый градиент</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #00d2d3 0%, #54a0ff 100%);"></div>
+                    <div class="color-name">Бирюзовый градиент</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #ff9ff3 0%, #f368e0 100%);"></div>
+                    <div class="color-name">Розово-фиолетовый</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);"></div>
+                    <div class="color-name">Желто-розовый</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);"></div>
+                    <div class="color-name">Небесно-голубой</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="workflow">
+            <h3>🔄 Как использовать расширенную палитру:</h3>
+            
+            <div class="workflow-step">
+                <div class="step-number">1</div>
+                <div>
+                    <strong>Откройте управление тегами</strong><br>
+                    Нажмите кнопку "🏷️ Теги" в левой панели
+                </div>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="step-number">2</div>
+                <div>
+                    <strong>Кликните на тег</strong><br>
+                    В разделе "Все теги" кликните на любой тег для изменения его цвета
+                </div>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="step-number">3</div>
+                <div>
+                    <strong>Выберите из 12 предустановленных цветов</strong><br>
+                    Или выберите из <span class="highlight">своих сохраненных цветов</span>
+                </div>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="step-number">4</div>
+                <div>
+                    <strong>Создайте свой цвет</strong><br>
+                    Выберите цвет в color picker и нажмите <span class="highlight">"💾"</span> для сохранения
+                </div>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="step-number">5</div>
+                <div>
+                    <strong>Управляйте сохраненными цветами</strong><br>
+                    Удаляйте отдельные цвета или очищайте всю палитру
+                </div>
+            </div>
+        </div>
+
+        <div class="feature">
+            <h3>🔧 Технические особенности:</h3>
+            
+            <h4>1. Расширенная палитра (12 цветов):</h4>
+            <div class="code-block">
+                • Синий градиент: #667eea → #764ba2<br>
+                • Розовый градиент: #f093fb → #f5576c<br>
+                • Голубой градиент: #4facfe → #00f2fe<br>
+                • Зеленый градиент: #43e97b → #38f9d7<br>
+                • Оранжевый градиент: #fa709a → #fee140<br>
+                • Мятный градиент: #a8edea → #fed6e3<br>
+                • Красный градиент: #ff6b6b → #ee5a24<br>
+                • Фиолетовый градиент: #4834d4 → #686de0<br>
+                • Бирюзовый градиент: #00d2d3 → #54a0ff<br>
+                • Розово-фиолетовый: #ff9ff3 → #f368e0<br>
+                • Желто-розовый: #feca57 → #ff9ff3<br>
+                • Небесно-голубой: #48dbfb → #0abde3
+            </div>
+
+            <h4>2. Сохранение пользовательских цветов:</h4>
+            <div class="code-block">
+                • Кнопка "💾" для сохранения цвета<br>
+                • Автоматическое добавление в палитру<br>
+                • Удаление отдельных цветов (×)<br>
+                • Очистка всех сохраненных цветов (🗑️)
+            </div>
+
+            <h4>3. Улучшенный интерфейс:</h4>
+            <div class="code-block">
+                • Сетка 4x3 для предустановленных цветов<br>
+                • Сетка 6x1 для сохраненных цветов<br>
+                • Hover эффекты и анимации<br>
+                • Интуитивные иконки и подсказки
+            </div>
+        </div>
+
+        <div class="feature">
+            <h3>🎯 Преимущества расширенной палитры:</h3>
+            <ul>
+                <li><strong>Больше вариантов</strong> - 12 предустановленных цветов вместо 6</li>
+                <li><strong>Персональная палитра</strong> - сохранение любимых цветов</li>
+                <li><strong>Быстрый доступ</strong> - часто используемые цвета всегда под рукой</li>
+                <li><strong>Гибкость</strong> - любой цвет можно сохранить и использовать</li>
+                <li><strong>Организация</strong> - управление сохраненными цветами</li>
+                <li><strong>Удобство</strong> - интуитивный интерфейс с подсказками</li>
+            </ul>
+        </div>
+
+        <div class="feature">
+            <h3>🎉 Результат:</h3>
+            <p>Теперь пользователи имеют доступ к <strong>расширенной палитре цветов</strong> с 12 предустановленными вариантами и возможностью создания <strong>персональной палитры</strong>! Это делает управление тегами еще более гибким и удобным.</p>
+        </div>
+    </div>
+
+    <script>
+        // Демонстрация интерактивности расширенной палитры
+        document.addEventListener('DOMContentLoaded', function() {
+            const colorOptions = document.querySelectorAll('.color-option, .saved-color-option');
+            
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Убираем выделение с других цветов
+                    colorOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Выделяем выбранный цвет
+                    this.classList.add('selected');
+                    
+                    // Показываем уведомление
+                    console.log('Выбран цвет:', this.title);
+                });
+            });
+
+            // Демонстрация сохранения цвета
+            const saveBtn = document.querySelector('.btn.secondary');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function() {
+                    console.log('Цвет сохранен в палитру!');
+                    alert('Цвет сохранен в палитру!');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
+# End of file: tmp/test_extended_color_palette.html
+# Last modified: 2025-01-22

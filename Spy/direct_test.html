@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Прямой тест API Keys.so</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #5a6fd8;
+        }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { border-color: #28a745; background: #d4edda; }
+        .error { border-color: #dc3545; background: #f8d7da; }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Прямой тест API Keys.so</h1>
+    
+    <div class="warning">
+        <strong>⚠️ Внимание:</strong> Этот тест делает прямые запросы к API Keys.so с вашим токеном. 
+        Убедитесь, что у вас есть активный токен и вы не превышаете лимиты.
+    </div>
+    
+    <div class="test-section">
+        <h2>1. Проверка токена и API</h2>
+        <button class="test-button" onclick="testDirectAPI()">Тест прямого API</button>
+        <div id="directResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Тест домена elbiz.biz</h2>
+        <button class="test-button" onclick="testElbiz()">Тест elbiz.biz</button>
+        <div id="elbizResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Тест с задержками (Rate Limiting)</h2>
+        <button class="test-button" onclick="testWithDelays()">Тест с задержками</button>
+        <div id="delayResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Логи запросов</h2>
+        <div id="requestLogs" class="result" style="max-height: 300px; overflow-y: auto;"></div>
+        <button class="test-button" onclick="clearLogs()">Очистить логи</button>
+    </div>
+
+    <script>
+        const API_TOKEN = '68f901d59104e7.54090033d9642a220c8fc82cc162e7d83cc8b57a';
+        const API_BASE = 'https://api.keys.so';
+        const logs = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            logs.push(`[${timestamp}] ${message}`);
+            updateLogs();
+            console.log(message);
+        }
+
+        function updateLogs() {
+            const logDiv = document.getElementById('requestLogs');
+            logDiv.textContent = logs.slice(-20).join('\n');
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearLogs() {
+            logs.length = 0;
+            updateLogs();
+        }
+
+        async function makeDirectRequest(endpoint, params = {}) {
+            const url = `${API_BASE}${endpoint}?${new URLSearchParams(params).toString()}`;
+            log(`Запрос: ${url}`);
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'X-Keyso-TOKEN': API_TOKEN,
+                        'Accept': 'application/json',
+                        'User-Agent': 'steelbro-test/1.0'
+                    }
+                });
+                
+                log(`Ответ: ${response.status} ${response.statusText}`);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`Ошибка: ${errorText}`);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                log(`Данные получены: ${JSON.stringify(data).substring(0, 100)}...`);
+                return data;
+            } catch (error) {
+                log(`Ошибка запроса: ${error.message}`);
+                throw error;
+            }
+        }
+
+        async function testDirectAPI() {
+            const resultDiv = document.getElementById('directResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = '<div class="loading"></div> Тестирование прямого API...';
+            
+            try {
+                log('Начинаем тест прямого API...');
+                const data = await makeDirectRequest('/report/simple/domain_dashboard', {
+                    domain: 'yandex.ru',
+                    base: 'msk'
+                });
+                
+                resultDiv.className = 'result success';
+                resultDiv.textContent = `✅ Прямой API работает!\n\nОтвет:\n${JSON.stringify(data, null, 2)}`;
+                log('✅ Прямой API тест успешен');
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка прямого API: ${error.message}`;
+                log(`❌ Ошибка прямого API: ${error.message}`);
+            }
+        }
+
+        async function testElbiz() {
+            const resultDiv = document.getElementById('elbizResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = '<div class="loading"></div> Тестирование elbiz.biz...';
+            
+            try {
+                log('Тестируем elbiz.biz...');
+                const data = await makeDirectRequest('/report/simple/domain_dashboard', {
+                    domain: 'elbiz.biz',
+                    base: 'msk'
+                });
+                
+                resultDiv.className = 'result success';
+                resultDiv.textContent = `✅ Данные для elbiz.biz получены!\n\nОтвет:\n${JSON.stringify(data, null, 2)}`;
+                log('✅ elbiz.biz тест успешен');
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка для elbiz.biz: ${error.message}`;
+                log(`❌ Ошибка для elbiz.biz: ${error.message}`);
+            }
+        }
+
+        async function testWithDelays() {
+            const resultDiv = document.getElementById('delayResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Тестирование с задержками...';
+            
+            log('Начинаем тест с задержками (имитация rate limiting)...');
+            
+            const results = [];
+            const startTime = Date.now();
+            
+            for (let i = 1; i <= 3; i++) {
+                try {
+                    log(`Запрос ${i}/3 с задержкой...`);
+                    const data = await makeDirectRequest('/report/simple/domain_dashboard', {
+                        domain: 'elbiz.biz',
+                        base: 'msk'
+                    });
+                    
+                    const time = Date.now() - startTime;
+                    results.push(`✅ Запрос ${i}: OK (${time}ms)`);
+                    log(`✅ Запрос ${i}: OK (${time}ms)`);
+                    
+                    // Задержка между запросами
+                    if (i < 3) {
+                        log(`Ожидание 2 секунды...`);
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                    }
+                } catch (error) {
+                    const time = Date.now() - startTime;
+                    results.push(`❌ Запрос ${i}: ${error.message} (${time}ms)`);
+                    log(`❌ Запрос ${i}: ${error.message} (${time}ms)`);
+                }
+            }
+            
+            const totalTime = Date.now() - startTime;
+            resultDiv.textContent = `Тест с задержками завершен за ${totalTime}ms\n\n${results.join('\n')}`;
+            log(`Тест с задержками завершен за ${totalTime}ms`);
+        }
+
+        // Автоматический тест при загрузке
+        window.addEventListener('load', () => {
+            log('Страница загружена, начинаем автоматическое тестирование...');
+            setTimeout(() => {
+                testDirectAPI();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

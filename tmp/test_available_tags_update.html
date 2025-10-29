@@ -1,0 +1,232 @@
+# File: tmp/test_available_tags_update.html
+# Created: 2025-01-22
+# Modified: 2025-01-22
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест обновления доступных тегов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .fix {
+            background: #f1f8e9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+            margin: 15px 0;
+        }
+        .problem {
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f44336;
+            margin: 15px 0;
+        }
+        .solution {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            border-left: 4px solid #9C27B0;
+        }
+        .demo-section {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #FF9800;
+            margin: 15px 0;
+        }
+        .tag-demo {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 5px;
+            position: relative;
+        }
+        .tag-demo.removed {
+            opacity: 0.3;
+            text-decoration: line-through;
+        }
+        .tag-demo .remove-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            margin-left: 5px;
+            padding: 0 4px;
+            border-radius: 50%;
+            font-size: 12px;
+            line-height: 1;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+        .tag-demo .remove-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 1;
+            color: #f44336;
+        }
+        .highlight {
+            background: #fff3e0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔄 Тест обновления доступных тегов</h1>
+        
+        <div class="problem">
+            <h3>❌ Проблема:</h3>
+            <p>При удалении тега из "Доступных тегов" в модальном окне редактирования домена, тег не исчезал из списка без перезагрузки страницы.</p>
+        </div>
+
+        <div class="fix">
+            <h3>✅ Исправлено:</h3>
+            <p>Теперь после удаления тега список "Доступных тегов" автоматически обновляется без перезагрузки страницы!</p>
+        </div>
+
+        <div class="solution">
+            <h3>🔧 Что было исправлено:</h3>
+            <ul>
+                <li><strong>Добавлен метод <span class="highlight">refreshModalTags()</span></strong> для обновления модального окна</li>
+                <li><strong>Обновление после удаления</strong> - вызывается в обоих методах удаления тегов</li>
+                <li><strong>Принудительное обновление</strong> списка уникальных тегов</li>
+                <li><strong>Проверка состояния</strong> модального окна перед обновлением</li>
+                <li><strong>Задержка обновления</strong> для корректной синхронизации данных</li>
+            </ul>
+        </div>
+
+        <div class="demo-section">
+            <h3>🎯 Демонстрация исправления:</h3>
+            
+            <h4>До исправления:</h4>
+            <div class="step">
+                <p><strong>1.</strong> Пользователь удаляет тег "e-commerce"</p>
+                <p><strong>2.</strong> Тег исчезает из доменов</p>
+                <p><strong>3.</strong> ❌ Тег остается в списке "Доступные теги"</p>
+                <p><strong>4.</strong> ❌ Нужна перезагрузка страницы</p>
+            </div>
+
+            <h4>После исправления:</h4>
+            <div class="step">
+                <p><strong>1.</strong> Пользователь удаляет тег "e-commerce"</p>
+                <p><strong>2.</strong> Тег исчезает из доменов</p>
+                <p><strong>3.</strong> ✅ Тег автоматически исчезает из "Доступных тегов"</p>
+                <p><strong>4.</strong> ✅ Обновление происходит мгновенно</p>
+            </div>
+
+            <h4>Доступные теги (демо):</h4>
+            <div style="margin: 15px 0;">
+                <span class="tag-demo">
+                    e-commerce
+                    <button class="remove-btn" onclick="this.parentElement.classList.add('removed')">×</button>
+                </span>
+                <span class="tag-demo">
+                    конкуренты
+                    <button class="remove-btn" onclick="this.parentElement.classList.add('removed')">×</button>
+                </span>
+                <span class="tag-demo">
+                    маркетплейс
+                    <button class="remove-btn" onclick="this.parentElement.classList.add('removed')">×</button>
+                </span>
+                <span class="tag-demo">
+                    одежда
+                    <button class="remove-btn" onclick="this.parentElement.classList.add('removed')">×</button>
+                </span>
+            </div>
+            <p><em>Нажмите × на любом теге, чтобы увидеть эффект удаления</em></p>
+        </div>
+
+        <div class="solution">
+            <h3>🛠️ Техническая реализация:</h3>
+            
+            <h4>1. Метод обновления модального окна:</h4>
+            <div class="code-block">
+                refreshModalTags() {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const domainModal = document.getElementById('domainModal');<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if (domainModal && domainModal.classList.contains('active')) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.emit('getAllTags');<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(() => {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.renderModalTags();<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, 100);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                }
+            </div>
+
+            <h4>2. Вызов обновления после удаления:</h4>
+            <div class="code-block">
+                // В handleRemoveAvailableTag()<br>
+                this.ui.refreshModalTags();<br><br>
+                // В handleRemoveTagFromDomain()<br>
+                this.ui.refreshModalTags();
+            </div>
+
+            <h4>3. Обновление после подтверждения:</h4>
+            <div class="code-block">
+                confirmDeleteTag() {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// ... удаление тега<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;setTimeout(() => {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.refreshModalTags();<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}, 200);<br>
+                }
+            </div>
+        </div>
+
+        <div class="solution">
+            <h3>🎯 Логика работы:</h3>
+            <ol>
+                <li><strong>Пользователь нажимает ×</strong> на теге в "Доступных тегах"</li>
+                <li><strong>Показывается модальное окно</strong> подтверждения удаления</li>
+                <li><strong>Пользователь подтверждает</strong> удаление</li>
+                <li><strong>Тег удаляется</strong> из всех доменов</li>
+                <li><strong>Автоматически обновляется</strong> список "Доступных тегов"</li>
+                <li><strong>Тег исчезает</strong> из модального окна без перезагрузки</li>
+            </ol>
+        </div>
+
+        <div class="fix">
+            <h3>🎉 Результат:</h3>
+            <p>Теперь при удалении тега из "Доступных тегов" он <strong>мгновенно исчезает</strong> из списка без необходимости перезагрузки страницы! Пользователь получает <strong>плавный и отзывчивый интерфейс</strong> для управления тегами.</p>
+        </div>
+    </div>
+</body>
+</html>
+
+# End of file: tmp/test_available_tags_update.html
+# Last modified: 2025-01-22

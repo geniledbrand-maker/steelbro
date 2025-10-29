@@ -1,0 +1,683 @@
+<!-- File: src/pages/competitors.html -->
+<!-- Created: 2025-01-22 -->
+<!-- Modified: 2025-01-22 -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализ конкурентов - SteelBro</title>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff 0%, #fcd34d 50%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            color: #94a3b8;
+            font-size: 18px;
+        }
+        
+        .controls {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #f97316;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px 16px;
+            border: 2px solid #334155;
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.8);
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(51, 65, 85, 0.5);
+            color: white;
+            border: 2px solid #334155;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(51, 65, 85, 0.7);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #334155;
+            border-top: 4px solid #f97316;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 15px;
+        }
+        
+        .results-info {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .info-item {
+            text-align: center;
+        }
+        
+        .info-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f97316;
+        }
+        
+        .info-item .label {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        
+        .competitors-table {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .table-header {
+            background: rgba(51, 65, 85, 0.8);
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 20px;
+            font-weight: 600;
+            color: #f97316;
+        }
+        
+        .table-row {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 20px;
+            border-bottom: 1px solid #334155;
+            transition: background 0.3s;
+        }
+        
+        .table-row:hover {
+            background: rgba(51, 65, 85, 0.3);
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .domain {
+            font-weight: 600;
+            color: #f97316;
+        }
+        
+        .metric {
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .metric.high {
+            color: #22c55e;
+        }
+        
+        .metric.medium {
+            color: #f59e0b;
+        }
+        
+        .metric.low {
+            color: #ef4444;
+        }
+        
+        .analysis {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .analysis-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+        }
+        
+        .analysis-card h3 {
+            margin-bottom: 15px;
+            color: #f97316;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .threat-item,
+        .opportunity-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .threat-item {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+        }
+        
+        .opportunity-item {
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 4px solid #22c55e;
+        }
+        
+        .severity-high {
+            color: #ef4444;
+            font-weight: 600;
+        }
+        
+        .severity-medium {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+        
+        .potential-high {
+            color: #22c55e;
+            font-weight: 600;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            border-radius: 10px;
+            padding: 20px;
+            color: #ef4444;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .table-header,
+            .table-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .table-header {
+                display: none;
+            }
+            
+            .table-row {
+                display: block;
+                padding: 15px;
+            }
+            
+            .table-row > div {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 8px;
+            }
+            
+            .table-row > div:before {
+                content: attr(data-label) ": ";
+                font-weight: 600;
+                color: #f97316;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i data-lucide="users" width="48" height="48"></i> Анализ конкурентов</h1>
+            <p>Определение конкурентов по ключевым словам с помощью keys.so API</p>
+        </div>
+        
+        <div class="controls">
+            <div class="controls-grid">
+                <div class="form-group">
+                    <label for="domain">Домен для анализа</label>
+                    <input type="text" id="domain" placeholder="steelbro.ru" value="steelbro.ru">
+                </div>
+                
+                <div class="form-group">
+                    <label for="region">Регион</label>
+                    <select id="region">
+                        <option value="ekb">Яндекс: Екатеринбург</option>
+                        <option value="msk">Яндекс: Москва</option>
+                        <option value="spb">Яндекс: Санкт-Петербург</option>
+                        <option value="gru">Google: Москва</option>
+                        <option value="zen">Дзен</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="keywords">Ключевые слова (по одному на строку)</label>
+                <textarea id="keywords" placeholder="металлоконструкции&#10;металлопрокат&#10;балки стальные&#10;трубы профильные&#10;изготовление металлоконструкций">металлоконструкции
+металлопрокат
+балки стальные
+трубы профильные
+изготовление металлоконструкций
+монтаж металлоконструкций
+навесы из металла
+ограждения металлические</textarea>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="analyzeCompetitors()">
+                    <i data-lucide="search" width="20" height="20"></i>
+                    Анализировать конкурентов
+                </button>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Анализируем конкурентов...</p>
+        </div>
+        
+        <div class="error" id="error" style="display: none;"></div>
+        
+        <div class="results" id="results">
+            <div class="results-header">
+                <div class="results-info">
+                    <div class="info-item">
+                        <div class="value" id="totalCompetitors">0</div>
+                        <div class="label">Конкурентов</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="value" id="totalPages">0</div>
+                        <div class="label">Страниц</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="value" id="regionName">-</div>
+                        <div class="label">Регион</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" onclick="exportToCSV()">
+                    <i data-lucide="download" width="20" height="20"></i>
+                    Экспорт CSV
+                </button>
+            </div>
+            
+            <div class="competitors-table">
+                <div class="table-header">
+                    <div>Домен</div>
+                    <div>Трафик</div>
+                    <div>Ключевые слова</div>
+                    <div>ТОП-1</div>
+                    <div>ТОП-3</div>
+                    <div>ТОП-10</div>
+                    <div>Общие ключевые слова</div>
+                </div>
+                <div id="competitorsTableBody"></div>
+            </div>
+            
+            <div class="analysis" id="analysis"></div>
+            
+            <div class="export-buttons">
+                <button class="btn btn-secondary" onclick="exportToCSV()">
+                    <i data-lucide="file-text" width="20" height="20"></i>
+                    Экспорт в CSV
+                </button>
+                <button class="btn btn-secondary" onclick="printResults()">
+                    <i data-lucide="printer" width="20" height="20"></i>
+                    Печать
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Подключаем API для конкурентов -->
+    <script src="../api/competitors.js"></script>
+    
+    <script>
+        let competitorsAPI;
+        let currentData = null;
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            competitorsAPI = new CompetitorsAPI();
+            lucide.createIcons();
+        });
+        
+        // Анализ конкурентов
+        async function analyzeCompetitors() {
+            const domain = document.getElementById('domain').value.trim();
+            const region = document.getElementById('region').value;
+            const keywordsText = document.getElementById('keywords').value.trim();
+            
+            if (!domain) {
+                showError('Введите домен для анализа');
+                return;
+            }
+            
+            if (!keywordsText) {
+                showError('Введите ключевые слова для анализа');
+                return;
+            }
+            
+            const keywords = keywordsText.split('\n').map(k => k.trim()).filter(k => k);
+            
+            if (keywords.length === 0) {
+                showError('Введите хотя бы одно ключевое слово');
+                return;
+            }
+            
+            // Показываем загрузку
+            showLoading(true);
+            hideError();
+            hideResults();
+            
+            try {
+                console.log('🔍 Начинаем анализ конкурентов...');
+                console.log('Домен:', domain);
+                console.log('Регион:', region);
+                console.log('Ключевые слова:', keywords);
+                
+                const result = await competitorsAPI.analyzeDomainCompetitors(domain, keywords, region);
+                
+                if (result.success) {
+                    currentData = result;
+                    displayResults(result);
+                } else {
+                    showError(`Ошибка анализа: ${result.error}`);
+                }
+                
+            } catch (error) {
+                console.error('❌ Ошибка:', error);
+                showError(`Ошибка: ${error.message}`);
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // Отображение результатов
+        function displayResults(data) {
+            console.log('📊 Отображаем результаты:', data);
+            
+            // Обновляем заголовок
+            document.getElementById('totalCompetitors').textContent = data.competitors.total || 0;
+            document.getElementById('totalPages').textContent = data.pages.total || 0;
+            document.getElementById('regionName').textContent = data.region;
+            
+            // Заполняем таблицу конкурентов
+            const tableBody = document.getElementById('competitorsTableBody');
+            tableBody.innerHTML = '';
+            
+            if (data.competitors.data && Array.isArray(data.competitors.data)) {
+                data.competitors.data.forEach(competitor => {
+                    const row = document.createElement('div');
+                    row.className = 'table-row';
+                    
+                    const traffic = competitor.traffic || 0;
+                    const keywords = competitor.keywords || 0;
+                    const top1 = competitor.top1 || 0;
+                    const top3 = competitor.top3 || 0;
+                    const top10 = competitor.top10 || 0;
+                    const commonKeywords = competitor.common_keywords || 0;
+                    
+                    row.innerHTML = `
+                        <div class="domain" data-label="Домен">${competitor.domain || '-'}</div>
+                        <div class="metric ${getMetricClass(traffic)}" data-label="Трафик">${formatNumber(traffic)}</div>
+                        <div class="metric ${getMetricClass(keywords)}" data-label="Ключевые слова">${formatNumber(keywords)}</div>
+                        <div class="metric ${getMetricClass(top1)}" data-label="ТОП-1">${formatNumber(top1)}</div>
+                        <div class="metric ${getMetricClass(top3)}" data-label="ТОП-3">${formatNumber(top3)}</div>
+                        <div class="metric ${getMetricClass(top10)}" data-label="ТОП-10">${formatNumber(top10)}</div>
+                        <div class="metric ${getMetricClass(commonKeywords)}" data-label="Общие ключевые слова">${formatNumber(commonKeywords)}</div>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+            }
+            
+            // Отображаем анализ
+            displayAnalysis(data.analysis);
+            
+            // Показываем результаты
+            showResults();
+        }
+        
+        // Отображение анализа
+        function displayAnalysis(analysis) {
+            const analysisContainer = document.getElementById('analysis');
+            analysisContainer.innerHTML = '';
+            
+            if (analysis.threats && analysis.threats.length > 0) {
+                const threatsCard = document.createElement('div');
+                threatsCard.className = 'analysis-card';
+                threatsCard.innerHTML = `
+                    <h3><i data-lucide="alert-triangle" width="20" height="20"></i> Угрозы</h3>
+                    ${analysis.threats.map(threat => `
+                        <div class="threat-item">
+                            <strong>${threat.domain}</strong> - ${threat.reason}
+                            <span class="severity-${threat.severity}">(${threat.severity === 'high' ? 'Высокая' : 'Средняя'})</span>
+                        </div>
+                    `).join('')}
+                `;
+                analysisContainer.appendChild(threatsCard);
+            }
+            
+            if (analysis.opportunities && analysis.opportunities.length > 0) {
+                const opportunitiesCard = document.createElement('div');
+                opportunitiesCard.className = 'analysis-card';
+                opportunitiesCard.innerHTML = `
+                    <h3><i data-lucide="trending-up" width="20" height="20"></i> Возможности</h3>
+                    ${analysis.opportunities.map(opportunity => `
+                        <div class="opportunity-item">
+                            <strong>${opportunity.domain}</strong> - ${opportunity.reason}
+                            <span class="potential-${opportunity.potential}">(${opportunity.potential === 'high' ? 'Высокий' : 'Средний'} потенциал)</span>
+                        </div>
+                    `).join('')}
+                `;
+                analysisContainer.appendChild(opportunitiesCard);
+            }
+            
+            // Обновляем иконки
+            lucide.createIcons();
+        }
+        
+        // Вспомогательные функции
+        function getMetricClass(value) {
+            if (value > 50) return 'high';
+            if (value > 10) return 'medium';
+            return 'low';
+        }
+        
+        function formatNumber(num) {
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'k';
+            }
+            return num.toString();
+        }
+        
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            loading.classList.toggle('show', show);
+        }
+        
+        function showResults() {
+            document.getElementById('results').classList.add('show');
+        }
+        
+        function hideResults() {
+            document.getElementById('results').classList.remove('show');
+        }
+        
+        function showError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.style.display = 'block';
+        }
+        
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
+        }
+        
+        // Экспорт в CSV
+        function exportToCSV() {
+            if (!currentData) {
+                showError('Нет данных для экспорта');
+                return;
+            }
+            
+            const csvContent = competitorsAPI.exportToCSV(currentData.analysis);
+            if (!csvContent) {
+                showError('Не удалось создать CSV файл');
+                return;
+            }
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `competitors_${currentData.domain}_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Печать результатов
+        function printResults() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
+
+<!-- End of file: src/pages/competitors.html -->
+<!-- Last modified: 2025-01-22 -->

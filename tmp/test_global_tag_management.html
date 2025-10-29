@@ -1,0 +1,277 @@
+# File: tmp/test_global_tag_management.html
+# Created: 2025-01-22
+# Modified: 2025-01-22
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест глобального управления тегами</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .feature {
+            background: #f1f8e9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+            margin: 15px 0;
+        }
+        .problem {
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f44336;
+            margin: 15px 0;
+        }
+        .solution {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+            margin: 15px 0;
+        }
+        .demo-section {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #FF9800;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            border-left: 4px solid #9C27B0;
+        }
+        .tag-demo {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 5px;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .tag-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .tag-demo .remove-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            margin-left: 8px;
+            padding: 2px 6px;
+            border-radius: 50%;
+            font-size: 12px;
+            line-height: 1;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+        .tag-demo .remove-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 1;
+            color: #f44336;
+        }
+        .highlight {
+            background: #fff3e0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        .button-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        .button-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🏷️ Тест глобального управления тегами</h1>
+        
+        <div class="problem">
+            <h3>❌ Проблема:</h3>
+            <p>Пользователь не мог создавать теги без редактирования домена. Теги можно было добавлять только при редактировании конкретного домена.</p>
+        </div>
+
+        <div class="feature">
+            <h3>✅ Решение:</h3>
+            <p>Добавлена кнопка <span class="highlight">"🏷️ Теги"</span> для глобального управления тегами. Теперь можно создавать, просматривать и удалять теги независимо от доменов!</p>
+        </div>
+
+        <div class="demo-section">
+            <h3>🎯 Новая функциональность:</h3>
+            
+            <h4>1. Кнопка управления тегами:</h4>
+            <div class="step">
+                <p><strong>Расположение:</strong> В левой панели рядом с кнопками "🔄 Все" и "🧪 Тест"</p>
+                <p><strong>Внешний вид:</strong> <button class="button-demo">🏷️ Теги</button></p>
+                <p><strong>Функция:</strong> Открывает модальное окно управления тегами</p>
+            </div>
+
+            <h4>2. Модальное окно управления тегами:</h4>
+            <div class="step">
+                <p><strong>Создание тегов:</strong> Поле ввода + кнопка "Создать тег"</p>
+                <p><strong>Просмотр тегов:</strong> Список всех существующих тегов</p>
+                <p><strong>Удаление тегов:</strong> Кнопка × на каждом теге</p>
+                <p><strong>Редактирование:</strong> Клик по тегу (пока показывает уведомление)</p>
+            </div>
+
+            <h4>3. Демонстрация тегов:</h4>
+            <div style="margin: 15px 0;">
+                <span class="tag-demo">
+                    электроника
+                    <button class="remove-btn">×</button>
+                </span>
+                <span class="tag-demo">
+                    e-commerce
+                    <button class="remove-btn">×</button>
+                </span>
+                <span class="tag-demo">
+                    конкуренты
+                    <button class="remove-btn">×</button>
+                </span>
+                <span class="tag-demo">
+                    маркетплейс
+                    <button class="remove-btn">×</button>
+                </span>
+                <span class="tag-demo">
+                    IT
+                    <button class="remove-btn">×</button>
+                </span>
+            </div>
+        </div>
+
+        <div class="solution">
+            <h3>🛠️ Техническая реализация:</h3>
+            
+            <h4>1. HTML структура:</h4>
+            <div class="code-block">
+                &lt;button class="sidebar-btn secondary" id="manageTagsBtn"&gt;🏷️ Теги&lt;/button&gt;<br><br>
+                &lt;div class="modal" id="tagsManagementModal"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="modal-content"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="form-group"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" id="newTagInput" placeholder="Введите название тега"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button id="createTagBtn"&gt;Создать тег&lt;/button&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div id="allTagsContainer"&gt;&lt;/div&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                &lt;/div&gt;
+            </div>
+
+            <h4>2. JavaScript методы:</h4>
+            <div class="code-block">
+                showTagsManagement() {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Показ модального окна<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Загрузка всех тегов<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Настройка обработчиков<br>
+                }<br><br>
+                createNewTag() {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Создание нового тега<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Валидация названия<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Отправка события<br>
+                }<br><br>
+                renderAllTags() {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Отрисовка всех тегов<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Кнопки удаления<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Обработчики событий<br>
+                }
+            </div>
+
+            <h4>3. CSS стили:</h4>
+            <div class="code-block">
+                .tag-creation-container {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;display: flex;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;gap: 10px;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;align-items: center;<br>
+                }<br><br>
+                .all-tags-container .tag-item {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;padding: 8px 16px;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;border-radius: 20px;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;color: #fff;<br>
+                }
+            </div>
+        </div>
+
+        <div class="solution">
+            <h3>🎯 Логика работы:</h3>
+            <ol>
+                <li><strong>Пользователь нажимает</strong> кнопку "🏷️ Теги"</li>
+                <li><strong>Открывается модальное окно</strong> управления тегами</li>
+                <li><strong>Загружаются все существующие</strong> теги из всех доменов</li>
+                <li><strong>Пользователь может:</strong>
+                    <ul>
+                        <li>Создать новый тег (ввод + Enter или кнопка)</li>
+                        <li>Просмотреть все теги</li>
+                        <li>Удалить тег (кнопка ×)</li>
+                        <li>Кликнуть по тегу для редактирования</li>
+                    </ul>
+                </li>
+                <li><strong>Изменения сохраняются</strong> автоматически</li>
+                <li><strong>Интерфейс обновляется</strong> в реальном времени</li>
+            </ol>
+        </div>
+
+        <div class="solution">
+            <h3>🔧 Особенности реализации:</h3>
+            <ul>
+                <li><strong>Проверка дублирования</strong> - нельзя создать тег, который уже существует</li>
+                <li><strong>Валидация ввода</strong> - проверка на пустое название</li>
+                <li><strong>Автоматическое обновление</strong> - интерфейс обновляется после изменений</li>
+                <li><strong>Клавиатурная навигация</strong> - Enter для создания тега</li>
+                <li><strong>Подтверждение удаления</strong> - модальное окно подтверждения</li>
+                <li><strong>Уведомления</strong> - успех/ошибка операций</li>
+            </ul>
+        </div>
+
+        <div class="feature">
+            <h3>🎉 Результат:</h3>
+            <p>Теперь пользователи могут <strong>создавать теги независимо от доменов</strong>! Добавлена кнопка "🏷️ Теги" для глобального управления тегами с возможностью создания, просмотра и удаления тегов в удобном модальном окне.</p>
+        </div>
+    </div>
+</body>
+</html>
+
+# End of file: tmp/test_global_tag_management.html
+# Last modified: 2025-01-22

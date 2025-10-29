@@ -1,0 +1,215 @@
+---
+description: Proper project structure organization
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# PROJECT STRUCTURE - MANDATORY
+
+## CORE PRINCIPLE
+
+**NEVER put code files in project root!**
+
+Only these files belong in root:
+
+- Configuration: `package.json`, `tsconfig.json`, `.gitignore`, etc.
+- Documentation: `README.md`, `LICENSE`, `CHANGELOG.md`
+- Environment: `.env.example`, `config.example.js`
+
+All code goes into `src/` or subdirectories!
+
+## STANDARD PROJECT STRUCTURES
+
+### Node.js/TypeScript Project
+
+```
+project_root/
+├── src/                   # All source code
+│   ├── index.ts          # Entry point
+│   ├── api/              # API clients
+│   │   └── keysClient.ts
+│   ├── utils/            # Utilities
+│   │   └── helpers.ts
+│   ├── models/           # Data models
+│   │   └── types.ts
+│   └── services/         # Business logic
+│       └── dataService.ts
+├── data/                 # Data files
+│   ├── input/
+│   └── output/
+├── logs/                 # Log files
+│   └── app.log
+├── tmp/                  # Temporary files
+│   └── .gitkeep
+├── tests/                # Tests
+│   └── helpers.test.ts
+├── package.json
+├── tsconfig.json
+├── .gitignore
+└── README.md
+```
+
+### React/TypeScript Project
+
+```
+project_root/
+├── src/
+│   ├── components/       # React components
+│   │   ├── Button/
+│   │   │   ├── Button.tsx
+│   │   │   ├── Button.module.css
+│   │   │   └── index.ts
+│   │   └── Card/
+│   ├── hooks/           # Custom hooks
+│   │   └── useFetch.ts
+│   ├── utils/           # Utilities
+│   │   └── helpers.ts
+│   ├── api/             # API clients
+│   │   └── client.ts
+│   ├── types/           # TypeScript types
+│   │   └── index.ts
+│   ├── styles/          # Global styles
+│   │   └── global.css
+│   ├── App.tsx
+│   └── index.tsx
+├── public/              # Static files
+├── data/
+│   ├── input/
+│   └── output/
+├── logs/
+├── tmp/
+├── tests/
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+### Python Project
+
+```
+project_root/
+├── src/                    # All source code
+│   ├── __init__.py
+│   ├── main.py            # Entry point
+│   ├── api/               # API clients
+│   │   ├── __init__.py
+│   │   └── keys_client.py
+│   ├── utils/             # Utilities
+│   │   ├── __init__.py
+│   │   └── helpers.py
+│   ├── models/            # Data models
+│   │   └── __init__.py
+│   └── services/          # Business logic
+│       └── __init__.py
+├── data/                  # Data files
+│   ├── input/
+│   └── output/
+├── logs/                  # Logs
+│   └── app.log
+├── tmp/                   # Temp files
+├── tests/                 # Tests
+│   └── __init__.py
+├── config.py              # Config (in .gitignore)
+├── config.example.py      # Example config
+├── requirements.txt       # Dependencies
+├── .gitignore
+└── README.md
+```
+
+## FILE ORGANIZATION RULES
+
+### Temporary and Test Files
+
+- **NO** test files in project root
+- **NO** temporary files in project root
+- Test/temp files **ONLY** in `tmp/` directory
+
+**WRONG** ❌:
+
+```
+project/
+├── test.html          # NO!
+├── temp.py            # NO!
+└── debug.log          # NO!
+```
+
+**RIGHT** ✅:
+
+```
+project/
+└── tmp/
+    ├── test.html      # YES
+    ├── temp.py        # YES
+    └── debug.log      # YES
+```
+
+### HTML Files Location
+
+- Production pages → `src/pages/`
+- Testing pages → `tmp/`
+- Templates → `src/templates/`
+- Components → `src/components/` (prefer .jsx/.tsx)
+
+### Documentation
+
+- Main README → project root
+- Additional docs → `docs/` directory
+- API docs → `docs/api/`
+- Changelog → project root
+
+## BEFORE CREATING ANY FILE
+
+1. Determine file purpose (production/test/temp)
+2. Check correct directory exists
+3. Create directory if needed
+4. Place file in correct location
+5. **NEVER** assume root is OK for any code file
+
+## FILE RESPONSIBILITY
+
+- **One file = one responsibility**
+- Max **300-400 lines** per file, then split
+- Group related files in subdirectories
+- Use `index.ts/js` for clean exports
+
+## COMPONENT STRUCTURE (React)
+
+Each component in its own directory:
+
+```
+src/components/Button/
+├── Button.tsx           # Component code
+├── Button.module.css    # Styles
+├── Button.test.tsx      # Tests
+└── index.ts             # Export
+```
+
+## IDE FILES
+
+Add to `.gitignore`:
+
+```
+# IDE
+.idea/              # PyCharm/IntelliJ
+.vscode/            # VS Code
+*.swp               # Vim
+.DS_Store           # macOS
+Thumbs.db           # Windows
+```
+
+## CREATING DIRECTORIES
+
+Always check and create structure **BEFORE** writing code:
+
+```powershell
+# PowerShell - create project structure
+New-Item -ItemType Directory -Path "src/api", "src/utils", "data/input", "data/output", "logs", "tmp", "tests"
+```
+
+## REMEMBER
+
+- Code belongs in `src/`, not root
+- Organize by feature/function, not file type
+- Keep structure flat (avoid deep nesting)
+- Use clear, descriptive directory names
+- Temp files go to `tmp/`, not root

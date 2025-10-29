@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keys.so API - Исправленный тест</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        .log { max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Keys.so API - Исправленный тест</h1>
+    
+    <div class="test-section info">
+        <h3>📋 Информация о тесте</h3>
+        <p><strong>Цель:</strong> Проверить работу исправленного API</p>
+        <p><strong>API:</strong> Обновлен для использования GET запросов</p>
+        <p><strong>Прокси:</strong> Поддерживает GET запросы с endpoint</p>
+        <p><strong>Тестовый домен:</strong> elbiz.biz</p>
+    </div>
+
+    <div class="test-section">
+        <h3>🧪 Тесты API</h3>
+        <button onclick="testDomainDashboard()">1. Тест дашборда домена</button>
+        <button onclick="testOrganicKeywords()">2. Тест ключевых слов</button>
+        <button onclick="testAllMethods()">3. Тест всех методов</button>
+        <button onclick="clearLogs()">🗑️ Очистить логи</button>
+    </div>
+
+    <div class="test-section">
+        <h3>📊 Результаты тестов</h3>
+        <div id="results"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>📝 Логи запросов</h3>
+        <div id="logs" class="log"></div>
+    </div>
+
+    <script>
+        // Перехватываем console.log для отображения в интерфейсе
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        function addLog(message, type = 'info') {
+            const logsDiv = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            logEntry.style.color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'black';
+            logsDiv.appendChild(logEntry);
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            addLog(message, 'info');
+        };
+
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            addLog(message, 'error');
+        };
+
+        // API класс (копия из api.js)
+        class KeysAPI {
+            constructor(proxyUrl = 'keys_proxy.php') {
+                this.proxyUrl = proxyUrl;
+                this.isChecking = false;
+                this.isAvailable = false;
+            }
+
+            async makeGet(endpoint, params = {}) {
+                try {
+                    const usp = new URLSearchParams({ endpoint, ...params });
+                    const url = `${this.proxyUrl}?${usp.toString()}`;
+                    
+                    console.log('Отправляем GET запрос через прокси:', {
+                        url: this.proxyUrl,
+                        endpoint: endpoint,
+                        params: params,
+                        fullUrl: url
+                    });
+                    
+                    const response = await fetch(url, {
+                        method: 'GET'
+                    });
+                    
+                    console.log('Ответ сервера:', {
+                        status: response.status,
+                        statusText: response.statusText,
+                        ok: response.ok
+                    });
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Текст ошибки:', errorText);
+                        throw new Error(`HTTP Error: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Ошибка API запроса:', error);
+                    throw error;
+                }
+            }
+
+            async getDomainDashboard(domain, region = 'msk') {
+                const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                return await this.makeGet('/report/simple/domain_dashboard', {
+                    domain: cleanDomain,
+                    base: region
+                });
+            }
+
+            async getOrganicKeywords(domain, region = 'msk', perPage = 100) {
+                const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                return await this.makeGet('/report/simple/organic/keywords', {
+                    domain: cleanDomain,
+                    base: region,
+                    per_page: perPage
+                });
+            }
+
+            async getSitePages(domain, region = 'msk', perPage = 100) {
+                const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                return await this.makeGet('/report/simple/organic/sitepages', {
+                    domain: cleanDomain,
+                    base: region,
+                    per_page: perPage
+                });
+            }
+
+            async getContextAds(domain, region = 'msk', perPage = 50) {
+                const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                return await this.makeGet('/report/simple/context/ads', {
+                    domain: cleanDomain,
+                    base: region,
+                    per_page: perPage
+                });
+            }
+
+            async getCompetitors(domain, region = 'msk', perPage = 50) {
+                const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                return await this.makeGet('/report/simple/organic/concurents', {
+                    domain: cleanDomain,
+                    base: region,
+                    per_page: perPage
+                });
+            }
+        }
+
+        const api = new KeysAPI();
+
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-section ${type}`;
+            resultDiv.innerHTML = `<h4>${message}</h4>`;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        async function testDomainDashboard() {
+            addResult('🔄 Тестирование дашборда домена...', 'info');
+            try {
+                const data = await api.getDomainDashboard('elbiz.biz', 'msk');
+                addResult('✅ Дашборд домена работает!', 'success');
+                console.log('Данные дашборда:', data);
+            } catch (error) {
+                addResult(`❌ Ошибка дашборда: ${error.message}`, 'error');
+            }
+        }
+
+        async function testOrganicKeywords() {
+            addResult('🔄 Тестирование ключевых слов...', 'info');
+            try {
+                const data = await api.getOrganicKeywords('elbiz.biz', 'msk', 10);
+                addResult('✅ Ключевые слова работают!', 'success');
+                console.log('Ключевые слова:', data);
+            } catch (error) {
+                addResult(`❌ Ошибка ключевых слов: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAllMethods() {
+            addResult('🔄 Тестирование всех методов...', 'info');
+            try {
+                const [dashboard, keywords, pages, ads, competitors] = await Promise.all([
+                    api.getDomainDashboard('elbiz.biz', 'msk'),
+                    api.getOrganicKeywords('elbiz.biz', 'msk', 5),
+                    api.getSitePages('elbiz.biz', 'msk', 5),
+                    api.getContextAds('elbiz.biz', 'msk', 5),
+                    api.getCompetitors('elbiz.biz', 'msk', 5)
+                ]);
+
+                addResult('✅ Все методы работают!', 'success');
+                console.log('Все данные:', { dashboard, keywords, pages, ads, competitors });
+            } catch (error) {
+                addResult(`❌ Ошибка тестирования: ${error.message}`, 'error');
+            }
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+            document.getElementById('results').innerHTML = '';
+        }
+
+        // Автоматический тест при загрузке
+        window.addEventListener('load', () => {
+            addLog('🚀 Исправленный тест API запущен', 'info');
+            addResult('🚀 Тест готов к запуску', 'info');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест elbiz.biz - Keys.so API</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 5px;
+        }
+        .btn:hover {
+            transform: scale(1.02);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .success-result {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error-result {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info-result {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-card h3 {
+            font-size: 24px;
+            margin: 0 0 5px 0;
+        }
+        .stat-card p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Тест elbiz.biz - Keys.so API</h1>
+        
+        <div class="success">
+            <strong>✅ API работает!</strong> Теперь протестируем ваш домен elbiz.biz
+        </div>
+        
+        <form id="testForm">
+            <div class="form-group">
+                <label for="domain">Домен:</label>
+                <input type="text" id="domain" value="elbiz.biz" placeholder="Введите домен">
+            </div>
+            
+            <div class="form-group">
+                <label for="region">Регион:</label>
+                <select id="region">
+                    <option value="msk">Москва</option>
+                    <option value="spb">Санкт-Петербург</option>
+                    <option value="ekb">Екатеринбург</option>
+                    <option value="nsk">Новосибирск</option>
+                    <option value="kzn">Казань</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn" id="testBtn">Тестировать elbiz.biz</button>
+            <button type="button" class="btn" onclick="testAllRegions()">Тест всех регионов</button>
+        </form>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_TOKEN = '68f901d59104e7.54090033d9642a220c8fc82cc162e7d83cc8b57a';
+        const API_BASE = 'https://api.keys.so';
+
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await testAPI();
+        });
+
+        async function testAPI() {
+            const domain = document.getElementById('domain').value.trim();
+            const region = document.getElementById('region').value;
+            const resultDiv = document.getElementById('result');
+            const testBtn = document.getElementById('testBtn');
+            
+            if (!domain) {
+                alert('Введите домен');
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info-result';
+            resultDiv.innerHTML = '<div class="loading"></div> Тестирование elbiz.biz...';
+            testBtn.disabled = true;
+            testBtn.textContent = 'Загрузка...';
+            
+            try {
+                console.log(`Тестируем домен: ${domain}, регион: ${region}`);
+                
+                const url = `${API_BASE}/report/simple/domain_dashboard?domain=${domain}&base=${region}`;
+                console.log('URL:', url);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'X-Keyso-TOKEN': API_TOKEN,
+                        'Accept': 'application/json',
+                        'User-Agent': 'steelbro-test/1.0'
+                    }
+                });
+                
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Data received:', data);
+                
+                // Отображаем статистику
+                const statsHtml = `
+                    <div class="stats">
+                        <div class="stat-card">
+                            <h3>${data.it10 || 0}</h3>
+                            <p>Топ-10 позиций</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>${data.it50 || 0}</h3>
+                            <p>Топ-50 позиций</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>${data.vis || 0}</h3>
+                            <p>Видимость</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>${data.adscnt || 0}</h3>
+                            <p>Рекламных объявлений</p>
+                        </div>
+                    </div>
+                `;
+                
+                resultDiv.className = 'result success-result';
+                resultDiv.innerHTML = statsHtml + `
+                    <h3>🎉 Данные для elbiz.biz успешно загружены!</h3>
+                    <p><strong>Домен:</strong> ${domain}</p>
+                    <p><strong>Регион:</strong> ${region}</p>
+                    <p><strong>Время загрузки:</strong> ${new Date().toLocaleTimeString()}</p>
+                    
+                    <h4>📊 Основные показатели:</h4>
+                    <ul>
+                        <li><strong>Позиций в топ-10:</strong> ${data.it10 || 0}</li>
+                        <li><strong>Позиций в топ-50:</strong> ${data.it50 || 0}</li>
+                        <li><strong>Видимость:</strong> ${data.vis || 0}</li>
+                        <li><strong>Рекламных объявлений:</strong> ${data.adscnt || 0}</li>
+                        <li><strong>Рекламных ключевых слов:</strong> ${data.adkeyscnt || 0}</li>
+                        <li><strong>Бюджет на рекламу:</strong> ${data.adcost?.average || 0} ₽</li>
+                    </ul>
+                    
+                    <h4>🔑 Топ ключевые слова:</h4>
+                    ${data.keys ? data.keys.slice(0, 5).map(k => 
+                        `<div style="margin: 5px 0; padding: 8px; background: #f8f9fa; border-radius: 5px;">
+                            <strong>${k.word}</strong> - Частота: ${k.ws?.toLocaleString() || 0}, Позиция: ${k.pos || '-'}
+                        </div>`
+                    ).join('') : '<p>Нет данных о ключевых словах</p>'}
+                    
+                    <h4>📄 Топ страницы:</h4>
+                    ${data.pages ? data.pages.slice(0, 5).map(p => 
+                        `<div style="margin: 5px 0; padding: 8px; background: #f8f9fa; border-radius: 5px;">
+                            <strong>${p.url}</strong> - Позиций в топ-50: ${p.it50 || 0}
+                        </div>`
+                    ).join('') : '<p>Нет данных о страницах</p>'}
+                    
+                    <h4>💰 Рекламные объявления:</h4>
+                    ${data.ads ? data.ads.slice(0, 3).map(ad => 
+                        `<div style="margin: 5px 0; padding: 8px; background: #f8f9fa; border-radius: 5px;">
+                            <strong>${ad.header}</strong><br>
+                            <small>${ad.txt}</small><br>
+                            <small>Запросов: ${ad.keyscnt || 0}</small>
+                        </div>`
+                    ).join('') : '<p>Нет рекламных объявлений</p>'}
+                    
+                    <h4>📈 Полные данные:</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                resultDiv.className = 'result error-result';
+                resultDiv.innerHTML = `
+                    <h3>❌ Ошибка загрузки данных для elbiz.biz</h3>
+                    <p><strong>Ошибка:</strong> ${error.message}</p>
+                    <p><strong>Домен:</strong> ${domain}</p>
+                    <p><strong>Регион:</strong> ${region}</p>
+                    
+                    <h4>🔍 Возможные причины:</h4>
+                    <ul>
+                        <li><strong>Домен не проиндексирован</strong> - elbiz.biz может быть слишком новым</li>
+                        <li><strong>Нет данных для региона</strong> - попробуйте другой регион</li>
+                        <li><strong>Домен заблокирован</strong> - проверьте доступность сайта</li>
+                        <li><strong>Ошибка API</strong> - временные проблемы с сервисом</li>
+                    </ul>
+                    
+                    <h4>💡 Рекомендации:</h4>
+                    <ol>
+                        <li>Попробуйте другой регион (СПб, Екатеринбург)</li>
+                        <li>Проверьте, что сайт elbiz.biz доступен</li>
+                        <li>Попробуйте через несколько минут</li>
+                        <li>Используйте тестовый домен (yandex.ru) для проверки API</li>
+                    </ol>
+                    
+                    <button class="btn" onclick="testAPI()" style="margin-top: 15px;">
+                        Попробовать снова
+                    </button>
+                `;
+            } finally {
+                testBtn.disabled = false;
+                testBtn.textContent = 'Тестировать elbiz.biz';
+            }
+        }
+
+        async function testAllRegions() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info-result';
+            resultDiv.innerHTML = '<div class="loading"></div> Тестирование всех регионов для elbiz.biz...';
+            
+            const regions = [
+                { code: 'msk', name: 'Москва' },
+                { code: 'spb', name: 'СПб' },
+                { code: 'ekb', name: 'Екатеринбург' },
+                { code: 'nsk', name: 'Новосибирск' },
+                { code: 'kzn', name: 'Казань' }
+            ];
+            
+            const results = [];
+            
+            for (const region of regions) {
+                try {
+                    console.log(`Тестируем регион: ${region.name} (${region.code})`);
+                    
+                    const url = `${API_BASE}/report/simple/domain_dashboard?domain=elbiz.biz&base=${region.code}`;
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-Keyso-TOKEN': API_TOKEN,
+                            'Accept': 'application/json',
+                            'User-Agent': 'steelbro-test/1.0'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        results.push(`✅ ${region.name}: Данные получены (Топ-10: ${data.it10 || 0}, Видимость: ${data.vis || 0})`);
+                        console.log(`✅ ${region.name}: OK`);
+                    } else {
+                        results.push(`❌ ${region.name}: HTTP ${response.status}`);
+                        console.log(`❌ ${region.name}: HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    results.push(`❌ ${region.name}: ${error.message}`);
+                    console.log(`❌ ${region.name}: ${error.message}`);
+                }
+                
+                // Задержка между запросами
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            resultDiv.className = 'result success-result';
+            resultDiv.innerHTML = `
+                <h3>🌍 Результаты тестирования всех регионов</h3>
+                <p><strong>Домен:</strong> elbiz.biz</p>
+                <p><strong>Время тестирования:</strong> ${new Date().toLocaleTimeString()}</p>
+                
+                <h4>📊 Результаты по регионам:</h4>
+                ${results.map(result => `<div style="margin: 5px 0; padding: 8px; background: #f8f9fa; border-radius: 5px;">${result}</div>`).join('')}
+                
+                <h4>💡 Анализ:</h4>
+                <ul>
+                    <li>Если все регионы показывают "Данные получены" - домен хорошо проиндексирован</li>
+                    <li>Если только некоторые регионы работают - домен имеет региональные ограничения</li>
+                    <li>Если все регионы показывают ошибки - домен не проиндексирован или заблокирован</li>
+                </ul>
+            `;
+        }
+
+        // Автоматический тест при загрузке
+        window.addEventListener('load', () => {
+            console.log('Страница загружена, начинаем тест elbiz.biz...');
+            setTimeout(() => {
+                testAPI();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

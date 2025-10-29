@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keys.so Spy - Диагностика</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagnostic {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success { color: #4caf50; }
+        .error { color: #f44336; }
+        .warning { color: #ff9800; }
+        .info { color: #2196f3; }
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+        }
+        .btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Keys.so Spy - Диагностика</h1>
+    
+    <div class="diagnostic">
+        <h2>📊 Статус загрузки файлов</h2>
+        <div id="fileStatus"></div>
+        <button class="btn" onclick="checkFiles()">Проверить файлы</button>
+    </div>
+    
+    <div class="diagnostic">
+        <h2>🧪 Тест модулей</h2>
+        <div id="moduleStatus"></div>
+        <button class="btn" onclick="testModules()">Тестировать модули</button>
+    </div>
+    
+    <div class="diagnostic">
+        <h2>🌐 Информация о сервере</h2>
+        <div id="serverInfo"></div>
+    </div>
+    
+    <div class="diagnostic">
+        <h2>🔧 Быстрые ссылки</h2>
+        <a href="test_access.html" class="btn">Тест доступности</a>
+        <a href="test.html" class="btn">Базовый тест</a>
+        <a href="test_functionality.html" class="btn">Полный тест</a>
+        <a href="spy.html" class="btn">Старая версия</a>
+    </div>
+
+    <script>
+        // Проверка загрузки файлов
+        function checkFiles() {
+            const statusDiv = document.getElementById('fileStatus');
+            statusDiv.innerHTML = '<div class="info">🔄 Проверяем файлы...</div>';
+            
+            const files = [
+                'assets/css/main.css',
+                'assets/css/sidebar.css', 
+                'assets/css/modal.css',
+                'assets/css/tables.css',
+                'assets/js/utils.js',
+                'assets/js/api.js',
+                'assets/js/app.js',
+                'classes/DomainManager/DomainStorage.js',
+                'classes/DomainManager/DomainUI.js',
+                'classes/DomainManager/DomainManager.js',
+                'classes/Shared/TabManager.js',
+                'classes/Shared/ExportManager.js',
+                'classes/Shared/NotificationManager.js',
+                'classes/Overview/OverviewTab.js',
+                'classes/Keywords/KeywordsTab.js'
+            ];
+            
+            let results = '';
+            let loadedCount = 0;
+            
+            files.forEach((file, index) => {
+                fetch(file)
+                    .then(response => {
+                        if (response.ok) {
+                            results += `<div class="success">✅ ${file}</div>`;
+                            loadedCount++;
+                        } else {
+                            results += `<div class="error">❌ ${file} - ${response.status}</div>`;
+                        }
+                        
+                        if (index === files.length - 1) {
+                            statusDiv.innerHTML = results + 
+                                `<div class="info">📊 Загружено: ${loadedCount}/${files.length}</div>`;
+                        }
+                    })
+                    .catch(error => {
+                        results += `<div class="error">❌ ${file} - ${error.message}</div>`;
+                        
+                        if (index === files.length - 1) {
+                            statusDiv.innerHTML = results + 
+                                `<div class="info">📊 Загружено: ${loadedCount}/${files.length}</div>`;
+                        }
+                    });
+            });
+        }
+        
+        // Тестирование модулей
+        function testModules() {
+            const statusDiv = document.getElementById('moduleStatus');
+            statusDiv.innerHTML = '<div class="info">🔄 Тестируем модули...</div>';
+            
+            // Загружаем модули по очереди
+            const modules = [
+                'assets/js/utils.js',
+                'classes/DomainManager/DomainStorage.js',
+                'classes/DomainManager/DomainUI.js',
+                'classes/Shared/NotificationManager.js',
+                'classes/Overview/OverviewTab.js',
+                'classes/Keywords/KeywordsTab.js'
+            ];
+            
+            let loadedModules = 0;
+            let results = '';
+            
+            function loadNextModule(index) {
+                if (index >= modules.length) {
+                    statusDiv.innerHTML = results + 
+                        `<div class="info">📊 Загружено модулей: ${loadedModules}/${modules.length}</div>`;
+                    return;
+                }
+                
+                const script = document.createElement('script');
+                script.src = modules[index];
+                script.onload = function() {
+                    results += `<div class="success">✅ ${modules[index]}</div>`;
+                    loadedModules++;
+                    loadNextModule(index + 1);
+                };
+                script.onerror = function() {
+                    results += `<div class="error">❌ ${modules[index]}</div>`;
+                    loadNextModule(index + 1);
+                };
+                document.head.appendChild(script);
+            }
+            
+            loadNextModule(0);
+        }
+        
+        // Информация о сервере
+        function showServerInfo() {
+            const infoDiv = document.getElementById('serverInfo');
+            infoDiv.innerHTML = `
+                <div class="info">🌐 URL: ${window.location.href}</div>
+                <div class="info">📁 Путь: ${window.location.pathname}</div>
+                <div class="info">🏠 Хост: ${window.location.host}</div>
+                <div class="info">🔒 Протокол: ${window.location.protocol}</div>
+                <div class="info">🕒 Время: ${new Date().toLocaleString()}</div>
+                <div class="info">🌍 Браузер: ${navigator.userAgent}</div>
+            `;
+        }
+        
+        // Автоматический запуск
+        document.addEventListener('DOMContentLoaded', function() {
+            showServerInfo();
+            
+            // Автоматическая проверка файлов
+            setTimeout(checkFiles, 1000);
+        });
+    </script>
+</body>
+</html>

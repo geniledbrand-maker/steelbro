@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keys.so Spy - Исправленный тест</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .test-container { max-width: 800px; margin: 0 auto; }
+        .test-section { background: white; padding: 20px; margin: 10px 0; border-radius: 10px; }
+        .test-result { margin: 5px 0; padding: 8px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .btn { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .btn:hover { background: #0056b3; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #218838; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 Keys.so Spy - Исправленный тест</h1>
+        
+        <div class="test-section">
+            <h2>🧪 Тест кнопки "Добавить"</h2>
+            <div id="buttonTest"></div>
+            <button class="btn" onclick="testAddButton()">Тестировать кнопку</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 Детальная проверка модулей</h2>
+            <div id="moduleTest"></div>
+            <button class="btn" onclick="testModules()">Тестировать модули</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 Тест функциональности</h2>
+            <div id="functionalityTest"></div>
+            <button class="btn" onclick="testFunctionality()">Тестировать функции</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🎯 Тест кнопки "Добавить" на главной странице</h2>
+            <div id="mainPageTest"></div>
+            <button class="btn btn-success" onclick="testMainPageButton()">Проверить главную страницу</button>
+        </div>
+    </div>
+
+    <!-- Загружаем модули -->
+    <script src="assets/js/utils.js"></script>
+    <script src="classes/DomainManager/DomainStorage.js"></script>
+    <script src="classes/DomainManager/DomainUI.js"></script>
+    <script src="classes/DomainManager/DomainManager.js"></script>
+    <script src="classes/Shared/NotificationManager.js"></script>
+
+    <script>
+        function addResult(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.textContent = message;
+            container.appendChild(div);
+        }
+
+        function clearResults(containerId) {
+            document.getElementById(containerId).innerHTML = '';
+        }
+
+        function testAddButton() {
+            clearResults('buttonTest');
+            addResult('buttonTest', '🧪 Тестируем кнопку "Добавить"...', 'info');
+            
+            try {
+                // Проверяем создание DomainUI
+                if (typeof DomainUI !== 'undefined') {
+                    const domainUI = new DomainUI();
+                    addResult('buttonTest', '✅ DomainUI создан успешно', 'success');
+                    
+                    // Проверяем методы
+                    const methods = ['addDomain', 'showDomainModal', 'hideDomainModal', 'saveDomain'];
+                    methods.forEach(method => {
+                        if (typeof domainUI[method] === 'function') {
+                            addResult('buttonTest', `✅ Метод ${method} существует`, 'success');
+                        } else {
+                            addResult('buttonTest', `❌ Метод ${method} НЕ существует`, 'error');
+                        }
+                    });
+                    
+                    // Тестируем показ модального окна
+                    try {
+                        domainUI.showDomainModal();
+                        addResult('buttonTest', '✅ showDomainModal работает', 'success');
+                        domainUI.hideDomainModal();
+                        addResult('buttonTest', '✅ hideDomainModal работает', 'success');
+                    } catch (error) {
+                        addResult('buttonTest', `❌ Ошибка модального окна: ${error.message}`, 'error');
+                    }
+                    
+                } else {
+                    addResult('buttonTest', '❌ DomainUI НЕ загружен', 'error');
+                }
+                
+            } catch (error) {
+                addResult('buttonTest', `❌ Ошибка тестирования: ${error.message}`, 'error');
+            }
+        }
+
+        function testModules() {
+            clearResults('moduleTest');
+            addResult('moduleTest', '📊 Тестируем модули...', 'info');
+            
+            const modules = [
+                { name: 'Utils', test: () => typeof Utils !== 'undefined' },
+                { name: 'DomainStorage', test: () => typeof DomainStorage !== 'undefined' },
+                { name: 'DomainUI', test: () => typeof DomainUI !== 'undefined' },
+                { name: 'DomainManager', test: () => typeof DomainManager !== 'undefined' },
+                { name: 'NotificationManager', test: () => typeof NotificationManager !== 'undefined' }
+            ];
+            
+            let successCount = 0;
+            modules.forEach(module => {
+                try {
+                    if (module.test()) {
+                        addResult('moduleTest', `✅ ${module.name} - загружен`, 'success');
+                        successCount++;
+                    } else {
+                        addResult('moduleTest', `❌ ${module.name} - НЕ загружен`, 'error');
+                    }
+                } catch (error) {
+                    addResult('moduleTest', `❌ ${module.name} - ошибка: ${error.message}`, 'error');
+                }
+            });
+            
+            addResult('moduleTest', `📊 Результат: ${successCount}/${modules.length} модулей загружено`, 'info');
+        }
+
+        function testFunctionality() {
+            clearResults('functionalityTest');
+            addResult('functionalityTest', '🔧 Тестируем функциональность...', 'info');
+            
+            try {
+                // Тест форматирования чисел (исправленный)
+                if (typeof Utils !== 'undefined') {
+                    const testNumber = 1234567;
+                    const formatted = Utils.formatNumber(testNumber);
+                    const expected = '1 234 567';
+                    
+                    if (formatted === expected) {
+                        addResult('functionalityTest', `✅ Форматирование чисел работает: ${formatted}`, 'success');
+                    } else {
+                        addResult('functionalityTest', `⚠️ Форматирование чисел: получено "${formatted}", ожидалось "${expected}"`, 'error');
+                    }
+                    
+                    // Тест валидации доменов
+                    const validDomain = Utils.validateDomain('example.com');
+                    const invalidDomain = Utils.validateDomain('invalid..domain');
+                    
+                    if (validDomain) {
+                        addResult('functionalityTest', '✅ Валидация доменов работает (валидный домен)', 'success');
+                    } else {
+                        addResult('functionalityTest', '❌ Валидация доменов НЕ работает (валидный домен)', 'error');
+                    }
+                    
+                    if (!invalidDomain) {
+                        addResult('functionalityTest', '✅ Валидация доменов работает (невалидный домен)', 'success');
+                    } else {
+                        addResult('functionalityTest', '❌ Валидация доменов НЕ работает (невалидный домен)', 'error');
+                    }
+                } else {
+                    addResult('functionalityTest', '❌ Utils не загружен', 'error');
+                }
+                
+                // Тест уведомлений
+                if (typeof notificationManager !== 'undefined') {
+                    notificationManager.success('Тестовое уведомление');
+                    addResult('functionalityTest', '✅ Система уведомлений работает', 'success');
+                } else {
+                    addResult('functionalityTest', '❌ notificationManager не доступен', 'error');
+                }
+                
+            } catch (error) {
+                addResult('functionalityTest', `❌ Ошибка тестирования: ${error.message}`, 'error');
+            }
+        }
+
+        function testMainPageButton() {
+            clearResults('mainPageTest');
+            addResult('mainPageTest', '🎯 Проверяем кнопку на главной странице...', 'info');
+            
+            // Открываем главную страницу в новом окне для тестирования
+            const newWindow = window.open('index.html', '_blank');
+            
+            if (newWindow) {
+                newWindow.addEventListener('load', function() {
+                    try {
+                        const addBtn = newWindow.document.getElementById('addDomainBtn');
+                        if (addBtn) {
+                            addResult('mainPageTest', '✅ Кнопка "Добавить" найдена на главной странице', 'success');
+                            
+                            // Проверяем стили
+                            const styles = newWindow.getComputedStyle(addBtn);
+                            addResult('mainPageTest', `✅ Кнопка видима: ${styles.display !== 'none'}`, 'success');
+                            
+                            // Тестируем клик
+                            addBtn.click();
+                            addResult('mainPageTest', '✅ Клик по кнопке выполнен', 'success');
+                            
+                            // Проверяем, появилось ли модальное окно
+                            setTimeout(() => {
+                                const modal = newWindow.document.getElementById('domainModal');
+                                if (modal && modal.classList.contains('active')) {
+                                    addResult('mainPageTest', '✅ Модальное окно открылось', 'success');
+                                } else {
+                                    addResult('mainPageTest', '❌ Модальное окно НЕ открылось', 'error');
+                                }
+                            }, 100);
+                            
+                        } else {
+                            addResult('mainPageTest', '❌ Кнопка "Добавить" НЕ найдена на главной странице', 'error');
+                        }
+                    } catch (error) {
+                        addResult('mainPageTest', `❌ Ошибка проверки главной страницы: ${error.message}`, 'error');
+                    }
+                });
+            } else {
+                addResult('mainPageTest', '❌ Не удалось открыть главную страницу', 'error');
+            }
+        }
+
+        // Автоматический запуск
+        document.addEventListener('DOMContentLoaded', function() {
+            addResult('buttonTest', '🚀 Готов к тестированию кнопки "Добавить"', 'info');
+            addResult('moduleTest', '📊 Готов к проверке модулей', 'info');
+            addResult('functionalityTest', '🔧 Готов к тестированию функций', 'info');
+            addResult('mainPageTest', '🎯 Готов к проверке главной страницы', 'info');
+            
+            // Автоматический запуск тестов
+            setTimeout(() => {
+                testModules();
+                testFunctionality();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

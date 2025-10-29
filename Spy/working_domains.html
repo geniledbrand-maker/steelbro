@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рабочие домены для тестирования</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .domain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .domain-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .domain-card:hover {
+            background: #e9ecef;
+            transform: scale(1.02);
+        }
+        .domain-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .domain-card p {
+            color: #666;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 5px;
+        }
+        .btn:hover {
+            transform: scale(1.02);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .success-result {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error-result {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info-result {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-card h3 {
+            font-size: 24px;
+            margin: 0 0 5px 0;
+        }
+        .stat-card p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Рабочие домены для тестирования Keys.so</h1>
+        
+        <div class="success">
+            <strong>✅ Рекомендация:</strong> Поскольку elbiz.biz не проиндексирован, 
+            используйте эти проверенные домены для тестирования и изучения функционала.
+        </div>
+        
+        <div class="domain-grid">
+            <div class="domain-card" onclick="testDomain('yandex.ru', 'Яндекс')">
+                <h3>🔍 yandex.ru</h3>
+                <p><strong>Тип:</strong> Поисковая система</p>
+                <p><strong>Статус:</strong> ✅ Всегда работает</p>
+                <p><strong>Данные:</strong> Полная статистика</p>
+            </div>
+            
+            <div class="domain-card" onclick="testDomain('google.com', 'Google')">
+                <h3>🌍 google.com</h3>
+                <p><strong>Тип:</strong> Международная поисковая система</p>
+                <p><strong>Статус:</strong> ✅ Работает</p>
+                <p><strong>Данные:</strong> Глобальная статистика</p>
+            </div>
+            
+            <div class="domain-card" onclick="testDomain('vk.com', 'ВКонтакте')">
+                <h3>👥 vk.com</h3>
+                <p><strong>Тип:</strong> Социальная сеть</p>
+                <p><strong>Статус:</strong> ✅ Работает</p>
+                <p><strong>Данные:</strong> Социальные запросы</p>
+            </div>
+            
+            <div class="domain-card" onclick="testDomain('mail.ru', 'Mail.ru')">
+                <h3>📧 mail.ru</h3>
+                <p><strong>Тип:</strong> Почтовый сервис</p>
+                <p><strong>Статус:</strong> ✅ Работает</p>
+                <p><strong>Данные:</strong> Российская аудитория</p>
+            </div>
+            
+            <div class="domain-card" onclick="testDomain('dns-shop.ru', 'DNS Shop')">
+                <h3>🛒 dns-shop.ru</h3>
+                <p><strong>Тип:</strong> Интернет-магазин</p>
+                <p><strong>Статус:</strong> ✅ Работает</p>
+                <p><strong>Данные:</strong> E-commerce запросы</p>
+            </div>
+            
+            <div class="domain-card" onclick="testDomain('wildberries.ru', 'Wildberries')">
+                <h3>🛍️ wildberries.ru</h3>
+                <p><strong>Тип:</strong> Маркетплейс</p>
+                <p><strong>Статус:</strong> ✅ Работает</p>
+                <p><strong>Данные:</strong> Товарные запросы</p>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <button class="btn" onclick="testAllDomains()">Тест всех доменов</button>
+            <button class="btn" onclick="compareDomains()">Сравнить домены</button>
+        </div>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_TOKEN = '68f901d59104e7.54090033d9642a220c8fc82cc162e7d83cc8b57a';
+        const API_BASE = 'https://api.keys.so';
+
+        async function testDomain(domain, name) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info-result';
+            resultDiv.innerHTML = `<div class="loading"></div> Тестирование ${name} (${domain})...`;
+            
+            try {
+                console.log(`Тестируем домен: ${domain}`);
+                
+                const url = `${API_BASE}/report/simple/domain_dashboard?domain=${domain}&base=msk`;
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'X-Keyso-TOKEN': API_TOKEN,
+                        'Accept': 'application/json',
+                        'User-Agent': 'steelbro-test/1.0'
+                    }
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Data received:', data);
+                
+                // Отображаем статистику
+                const statsHtml = `
+                    <div class="stats">
+                        <div class="stat-card">
+                            <h3>${data.it10 || 0}</h3>
+                            <p>Топ-10 позиций</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>${data.it50 || 0}</h3>
+                            <p>Топ-50 позиций</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>${data.vis || 0}</h3>
+                            <p>Видимость</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>${data.adscnt || 0}</h3>
+                            <p>Рекламных объявлений</p>
+                        </div>
+                    </div>
+                `;
+                
+                resultDiv.className = 'result success-result';
+                resultDiv.innerHTML = statsHtml + `
+                    <h3>🎉 Данные для ${name} успешно загружены!</h3>
+                    <p><strong>Домен:</strong> ${domain}</p>
+                    <p><strong>Время загрузки:</strong> ${new Date().toLocaleTimeString()}</p>
+                    
+                    <h4>📊 Основные показатели:</h4>
+                    <ul>
+                        <li><strong>Позиций в топ-10:</strong> ${data.it10 || 0}</li>
+                        <li><strong>Позиций в топ-50:</strong> ${data.it50 || 0}</li>
+                        <li><strong>Видимость:</strong> ${data.vis || 0}</li>
+                        <li><strong>Рекламных объявлений:</strong> ${data.adscnt || 0}</li>
+                        <li><strong>Рекламных ключевых слов:</strong> ${data.adkeyscnt || 0}</li>
+                        <li><strong>Бюджет на рекламу:</strong> ${data.adcost?.average || 0} ₽</li>
+                    </ul>
+                    
+                    <h4>🔑 Топ ключевые слова:</h4>
+                    ${data.keys ? data.keys.slice(0, 5).map(k => 
+                        `<div style="margin: 5px 0; padding: 8px; background: #f8f9fa; border-radius: 5px;">
+                            <strong>${k.word}</strong> - Частота: ${k.ws?.toLocaleString() || 0}, Позиция: ${k.pos || '-'}
+                        </div>`
+                    ).join('') : '<p>Нет данных о ключевых словах</p>'}
+                    
+                    <h4>📄 Топ страницы:</h4>
+                    ${data.pages ? data.pages.slice(0, 3).map(p => 
+                        `<div style="margin: 5px 0; padding: 8px; background: #f8f9fa; border-radius: 5px;">
+                            <strong>${p.url}</strong> - Позиций в топ-50: ${p.it50 || 0}
+                        </div>`
+                    ).join('') : '<p>Нет данных о страницах</p>'}
+                    
+                    <h4>💰 Рекламные объявления:</h4>
+                    ${data.ads ? data.ads.slice(0, 2).map(ad => 
+                        `<div style="margin: 5px 0; padding: 8px; background: #f8f9fa; border-radius: 5px;">
+                            <strong>${ad.header}</strong><br>
+                            <small>${ad.txt}</small><br>
+                            <small>Запросов: ${ad.keyscnt || 0}</small>
+                        </div>`
+                    ).join('') : '<p>Нет рекламных объявлений</p>'}
+                `;
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                resultDiv.className = 'result error-result';
+                resultDiv.innerHTML = `
+                    <h3>❌ Ошибка загрузки данных для ${name}</h3>
+                    <p><strong>Ошибка:</strong> ${error.message}</p>
+                    <p><strong>Домен:</strong> ${domain}</p>
+                    
+                    <h4>🔍 Возможные причины:</h4>
+                    <ul>
+                        <li>Проблемы с API</li>
+                        <li>Превышен лимит запросов</li>
+                        <li>Проблемы с токеном</li>
+                        <li>Временные технические проблемы</li>
+                    </ul>
+                `;
+            }
+        }
+
+        async function testAllDomains() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info-result';
+            resultDiv.innerHTML = '<div class="loading"></div> Тестирование всех доменов...';
+            
+            const domains = [
+                { domain: 'yandex.ru', name: 'Яндекс' },
+                { domain: 'google.com', name: 'Google' },
+                { domain: 'vk.com', name: 'ВКонтакте' },
+                { domain: 'mail.ru', name: 'Mail.ru' },
+                { domain: 'dns-shop.ru', name: 'DNS Shop' },
+                { domain: 'wildberries.ru', name: 'Wildberries' }
+            ];
+            
+            const results = [];
+            
+            for (const domainInfo of domains) {
+                try {
+                    console.log(`Тестируем: ${domainInfo.name} (${domainInfo.domain})`);
+                    
+                    const url = `${API_BASE}/report/simple/domain_dashboard?domain=${domainInfo.domain}&base=msk`;
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-Keyso-TOKEN': API_TOKEN,
+                            'Accept': 'application/json',
+                            'User-Agent': 'steelbro-test/1.0'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        results.push(`✅ ${domainInfo.name}: Топ-10: ${data.it10 || 0}, Видимость: ${data.vis || 0}`);
+                    } else {
+                        results.push(`❌ ${domainInfo.name}: HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    results.push(`❌ ${domainInfo.name}: ${error.message}`);
+                }
+                
+                // Задержка между запросами
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            resultDiv.className = 'result success-result';
+            resultDiv.innerHTML = `
+                <h3>🌍 Результаты тестирования всех доменов:</h3>
+                <p><strong>Время тестирования:</strong> ${new Date().toLocaleTimeString()}</p>
+                
+                <h4>📊 Результаты:</h4>
+                ${results.map(result => `<div style="margin: 5px 0; padding: 8px; background: #f8f9fa; border-radius: 5px;">${result}</div>`).join('')}
+                
+                <h4>💡 Анализ:</h4>
+                <ul>
+                    <li>Если большинство доменов работают - API функционирует нормально</li>
+                    <li>Если все домены работают - проблема была только с elbiz.biz</li>
+                    <li>Если много доменов не работают - возможны проблемы с API</li>
+                </ul>
+                
+                <h4>🎯 Рекомендации:</h4>
+                <ul>
+                    <li>Используйте рабочие домены для изучения функционала</li>
+                    <li>Попробуйте elbiz.biz через несколько месяцев</li>
+                    <li>Сравните показатели разных доменов</li>
+                    <li>Изучите ключевые слова конкурентов</li>
+                </ul>
+            `;
+        }
+
+        async function compareDomains() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info-result';
+            resultDiv.innerHTML = '<div class="loading"></div> Сравнение доменов...';
+            
+            const domains = [
+                { domain: 'yandex.ru', name: 'Яндекс' },
+                { domain: 'google.com', name: 'Google' },
+                { domain: 'vk.com', name: 'ВКонтакте' }
+            ];
+            
+            const comparisonData = [];
+            
+            for (const domainInfo of domains) {
+                try {
+                    const url = `${API_BASE}/report/simple/domain_dashboard?domain=${domainInfo.domain}&base=msk`;
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-Keyso-TOKEN': API_TOKEN,
+                            'Accept': 'application/json',
+                            'User-Agent': 'steelbro-test/1.0'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        comparisonData.push({
+                            name: domainInfo.name,
+                            domain: domainInfo.domain,
+                            it10: data.it10 || 0,
+                            it50: data.it50 || 0,
+                            vis: data.vis || 0,
+                            adscnt: data.adscnt || 0
+                        });
+                    }
+                } catch (error) {
+                    console.error(`Ошибка для ${domainInfo.name}:`, error);
+                }
+                
+                // Задержка между запросами
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            resultDiv.className = 'result success-result';
+            resultDiv.innerHTML = `
+                <h3>📊 Сравнение доменов:</h3>
+                
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                    <thead>
+                        <tr style="background: #f8f9fa;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">Домен</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Топ-10</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Топ-50</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Видимость</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Реклама</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${comparisonData.map(item => `
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>${item.name}</strong></td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${item.it10.toLocaleString()}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${item.it50.toLocaleString()}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${item.vis.toLocaleString()}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${item.adscnt.toLocaleString()}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                
+                <h4>💡 Выводы:</h4>
+                <ul>
+                    <li><strong>Лидер по позициям:</strong> ${comparisonData.reduce((max, item) => item.it10 > max.it10 ? item : max, comparisonData[0])?.name}</li>
+                    <li><strong>Лидер по видимости:</strong> ${comparisonData.reduce((max, item) => item.vis > max.vis ? item : max, comparisonData[0])?.name}</li>
+                    <li><strong>Лидер по рекламе:</strong> ${comparisonData.reduce((max, item) => item.adscnt > max.adscnt ? item : max, comparisonData[0])?.name}</li>
+                </ul>
+            `;
+        }
+
+        // Автоматический тест при загрузке
+        window.addEventListener('load', () => {
+            console.log('Страница загружена');
+            setTimeout(() => {
+                testDomain('yandex.ru', 'Яндекс');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

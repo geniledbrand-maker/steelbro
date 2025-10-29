@@ -1,0 +1,36 @@
+{
+    "selected_products": [
+        28,
+        27,
+        35,
+        55,
+        65,
+        "2",
+        "3"
+    ],
+    "custom_products": [
+        {
+            "name": "Корпуса для светильников",
+            "complexity": "Простая",
+            "margin": "Низкая",
+            "demand": "Низкий",
+            "time": "—"
+        },
+        {
+            "name": "2",
+            "complexity": "Простая",
+            "margin": "Низкая",
+            "demand": "Низкий",
+            "time": "—"
+        },
+        {
+            "name": "3",
+            "complexity": "Простая",
+            "margin": "Низкая",
+            "demand": "Низкий",
+            "time": "—"
+        }
+    ],
+    "last_updated": "2025-10-27 16:46",
+    "deleted_products": []
+}

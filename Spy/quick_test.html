@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keys.so Spy - Быстрый тест</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .test-container { max-width: 600px; margin: 0 auto; }
+        .test-section { background: white; padding: 20px; margin: 10px 0; border-radius: 10px; }
+        .test-result { margin: 5px 0; padding: 8px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .btn { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 Keys.so Spy - Быстрый тест</h1>
+        
+        <div class="test-section">
+            <h2>🧪 Тест кнопки "Добавить"</h2>
+            <div id="buttonTest"></div>
+            <button class="btn" onclick="testAddButton()">Тестировать кнопку</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 Статус модулей</h2>
+            <div id="moduleStatus"></div>
+            <button class="btn" onclick="checkModules()">Проверить модули</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔗 Ссылки</h2>
+            <a href="index.html" class="btn">Главная страница</a>
+            <a href="simple.html" class="btn">Простая версия</a>
+            <a href="test_functionality.html" class="btn">Полный тест</a>
+        </div>
+    </div>
+
+    <!-- Загружаем модули -->
+    <script src="assets/js/utils.js"></script>
+    <script src="classes/DomainManager/DomainStorage.js"></script>
+    <script src="classes/DomainManager/DomainUI.js"></script>
+    <script src="classes/Shared/NotificationManager.js"></script>
+
+    <script>
+        function addResult(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.textContent = message;
+            container.appendChild(div);
+        }
+
+        function clearResults(containerId) {
+            document.getElementById(containerId).innerHTML = '';
+        }
+
+        function testAddButton() {
+            clearResults('buttonTest');
+            addResult('buttonTest', '🧪 Тестируем кнопку "Добавить"...', 'info');
+            
+            try {
+                // Проверяем, есть ли кнопка на главной странице
+                fetch('index.html')
+                    .then(response => response.text())
+                    .then(html => {
+                        if (html.includes('addDomainBtn')) {
+                            addResult('buttonTest', '✅ Кнопка addDomainBtn найдена в HTML', 'success');
+                        } else {
+                            addResult('buttonTest', '❌ Кнопка addDomainBtn НЕ найдена в HTML', 'error');
+                        }
+                        
+                        if (html.includes('addEventListener')) {
+                            addResult('buttonTest', '✅ Обработчики событий найдены в HTML', 'success');
+                        } else {
+                            addResult('buttonTest', '❌ Обработчики событий НЕ найдены в HTML', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        addResult('buttonTest', `❌ Ошибка загрузки HTML: ${error.message}`, 'error');
+                    });
+                
+                // Тестируем создание экземпляра DomainUI
+                if (typeof DomainUI !== 'undefined') {
+                    const domainUI = new DomainUI();
+                    addResult('buttonTest', '✅ DomainUI создан успешно', 'success');
+                    
+                    // Тестируем метод addDomain
+                    if (typeof domainUI.addDomain === 'function') {
+                        addResult('buttonTest', '✅ Метод addDomain существует', 'success');
+                    } else {
+                        addResult('buttonTest', '❌ Метод addDomain НЕ существует', 'error');
+                    }
+                } else {
+                    addResult('buttonTest', '❌ DomainUI НЕ загружен', 'error');
+                }
+                
+            } catch (error) {
+                addResult('buttonTest', `❌ Ошибка тестирования: ${error.message}`, 'error');
+            }
+        }
+
+        function checkModules() {
+            clearResults('moduleStatus');
+            addResult('moduleStatus', '📊 Проверяем модули...', 'info');
+            
+            const modules = [
+                'Utils', 'DomainStorage', 'DomainUI', 'DomainManager',
+                'TabManager', 'ExportManager', 'NotificationManager',
+                'OverviewTab', 'KeywordsTab'
+            ];
+            
+            let loadedCount = 0;
+            modules.forEach(module => {
+                if (typeof window[module] !== 'undefined') {
+                    addResult('moduleStatus', `✅ ${module} - загружен`, 'success');
+                    loadedCount++;
+                } else {
+                    addResult('moduleStatus', `❌ ${module} - НЕ загружен`, 'error');
+                }
+            });
+            
+            addResult('moduleStatus', `📊 Загружено: ${loadedCount}/${modules.length}`, 'info');
+            
+            // Проверяем глобальные объекты
+            if (typeof notificationManager !== 'undefined') {
+                addResult('moduleStatus', '✅ notificationManager доступен глобально', 'success');
+            } else {
+                addResult('moduleStatus', '❌ notificationManager НЕ доступен глобально', 'error');
+            }
+        }
+
+        // Автоматический запуск
+        document.addEventListener('DOMContentLoaded', function() {
+            addResult('buttonTest', '🚀 Готов к тестированию кнопки "Добавить"', 'info');
+            addResult('moduleStatus', '📊 Готов к проверке модулей', 'info');
+            
+            // Автоматическая проверка модулей
+            setTimeout(checkModules, 1000);
+        });
+    </script>
+</body>
+</html>

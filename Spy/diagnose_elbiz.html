@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Диагностика elbiz.biz</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 5px;
+        }
+        .btn:hover {
+            transform: scale(1.02);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info-result {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .test-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Диагностика elbiz.biz</h1>
+        
+        <div class="warning">
+            <strong>⚠️ Проблема:</strong> Домен elbiz.biz не возвращает данные во всех регионах. 
+            Давайте выясним причину и найдем решение.
+        </div>
+        
+        <div class="test-section">
+            <h3>1. Проверка доступности сайта</h3>
+            <p>Сначала убедимся, что сайт elbiz.biz доступен в интернете.</p>
+            <button class="btn" onclick="checkSiteAvailability()">Проверить доступность</button>
+            <div id="availabilityResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. Тест с известными доменами</h3>
+            <p>Проверим, работает ли API с другими доменами для сравнения.</p>
+            <button class="btn" onclick="testKnownDomains()">Тест известных доменов</button>
+            <div id="knownDomainsResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. Детальная диагностика elbiz.biz</h3>
+            <p>Попробуем разные варианты домена и проверим ошибки.</p>
+            <button class="btn" onclick="detailedElbizTest()">Детальная диагностика</button>
+            <div id="detailedResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>4. Альтернативные решения</h3>
+            <p>Если elbiz.biz не работает, предложим альтернативы.</p>
+            <button class="btn" onclick="showAlternatives()">Показать альтернативы</button>
+            <div id="alternativesResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_TOKEN = '68f901d59104e7.54090033d9642a220c8fc82cc162e7d83cc8b57a';
+        const API_BASE = 'https://api.keys.so';
+
+        async function checkSiteAvailability() {
+            const resultDiv = document.getElementById('availabilityResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info-result';
+            resultDiv.innerHTML = '<div class="loading"></div> Проверка доступности elbiz.biz...';
+            
+            try {
+                // Пробуем загрузить сайт через fetch
+                const response = await fetch('https://elbiz.biz', {
+                    method: 'HEAD',
+                    mode: 'no-cors'
+                });
+                
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    ✅ Сайт elbiz.biz доступен!
+                    
+                    Возможные причины отсутствия данных в Keys.so:
+                    • Сайт слишком новый (менее 3-6 месяцев)
+                    • Низкая посещаемость
+                    • Отсутствие SEO-оптимизации
+                    • Блокировка поисковыми системами
+                    • Домен не проиндексирован
+                `;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    ❌ Сайт elbiz.biz недоступен: ${error.message}
+                    
+                    Возможные причины:
+                    • Сайт не существует
+                    • Проблемы с DNS
+                    • Сайт заблокирован
+                    • Временные технические проблемы
+                    
+                    Рекомендации:
+                    • Проверьте URL в браузере
+                    • Попробуйте другой домен для тестирования
+                `;
+            }
+        }
+
+        async function testKnownDomains() {
+            const resultDiv = document.getElementById('knownDomainsResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info-result';
+            resultDiv.innerHTML = '<div class="loading"></div> Тестирование известных доменов...';
+            
+            const testDomains = [
+                { domain: 'yandex.ru', name: 'Яндекс' },
+                { domain: 'google.com', name: 'Google' },
+                { domain: 'vk.com', name: 'ВКонтакте' },
+                { domain: 'mail.ru', name: 'Mail.ru' }
+            ];
+            
+            const results = [];
+            
+            for (const testDomain of testDomains) {
+                try {
+                    console.log(`Тестируем: ${testDomain.name} (${testDomain.domain})`);
+                    
+                    const url = `${API_BASE}/report/simple/domain_dashboard?domain=${testDomain.domain}&base=msk`;
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-Keyso-TOKEN': API_TOKEN,
+                            'Accept': 'application/json',
+                            'User-Agent': 'steelbro-test/1.0'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        results.push(`✅ ${testDomain.name}: Данные получены (Топ-10: ${data.it10 || 0})`);
+                    } else {
+                        results.push(`❌ ${testDomain.name}: HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    results.push(`❌ ${testDomain.name}: ${error.message}`);
+                }
+                
+                // Задержка между запросами
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            resultDiv.className = 'result success';
+            resultDiv.innerHTML = `
+                <h4>📊 Результаты тестирования известных доменов:</h4>
+                ${results.map(result => `<div style="margin: 5px 0; padding: 8px; background: #f8f9fa; border-radius: 5px;">${result}</div>`).join('')}
+                
+                <h4>💡 Анализ:</h4>
+                <ul>
+                    <li>Если известные домены работают - API функционирует</li>
+                    <li>Если все домены не работают - проблема с API или токеном</li>
+                    <li>Если только elbiz.biz не работает - проблема с конкретным доменом</li>
+                </ul>
+            `;
+        }
+
+        async function detailedElbizTest() {
+            const resultDiv = document.getElementById('detailedResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info-result';
+            resultDiv.innerHTML = '<div class="loading"></div> Детальная диагностика elbiz.biz...';
+            
+            const variations = [
+                { domain: 'elbiz.biz', name: 'elbiz.biz' },
+                { domain: 'www.elbiz.biz', name: 'www.elbiz.biz' },
+                { domain: 'elbiz.com', name: 'elbiz.com' },
+                { domain: 'elbiz.ru', name: 'elbiz.ru' }
+            ];
+            
+            const results = [];
+            
+            for (const variation of variations) {
+                try {
+                    console.log(`Тестируем вариацию: ${variation.name}`);
+                    
+                    const url = `${API_BASE}/report/simple/domain_dashboard?domain=${variation.domain}&base=msk`;
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-Keyso-TOKEN': API_TOKEN,
+                            'Accept': 'application/json',
+                            'User-Agent': 'steelbro-test/1.0'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        results.push(`✅ ${variation.name}: Данные получены! (Топ-10: ${data.it10 || 0})`);
+                    } else {
+                        const errorText = await response.text();
+                        results.push(`❌ ${variation.name}: HTTP ${response.status} - ${errorText.substring(0, 100)}`);
+                    }
+                } catch (error) {
+                    results.push(`❌ ${variation.name}: ${error.message}`);
+                }
+                
+                // Задержка между запросами
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            resultDiv.className = 'result success';
+            resultDiv.innerHTML = `
+                <h4>🔍 Детальная диагностика elbiz.biz:</h4>
+                ${results.map(result => `<div style="margin: 5px 0; padding: 8px; background: #f8f9fa; border-radius: 5px;">${result}</div>`).join('')}
+                
+                <h4>📋 Возможные причины отсутствия данных:</h4>
+                <ol>
+                    <li><strong>Новый домен</strong> - сайт создан недавно (менее 3-6 месяцев)</li>
+                    <li><strong>Низкая посещаемость</strong> - недостаточно трафика для индексации</li>
+                    <li><strong>Отсутствие SEO</strong> - сайт не оптимизирован для поиска</li>
+                    <li><strong>Технические проблемы</strong> - сайт недоступен для поисковых роботов</li>
+                    <li><strong>Географические ограничения</strong> - сайт заблокирован в России</li>
+                    <li><strong>Неправильный домен</strong> - возможно, нужен другой вариант</li>
+                </ol>
+                
+                <h4>💡 Рекомендации:</h4>
+                <ul>
+                    <li>Проверьте, что сайт доступен в браузере</li>
+                    <li>Убедитесь, что сайт имеет контент и SEO-оптимизацию</li>
+                    <li>Попробуйте подождать несколько месяцев для индексации</li>
+                    <li>Используйте другие домены для тестирования API</li>
+                </ul>
+            `;
+        }
+
+        function showAlternatives() {
+            const resultDiv = document.getElementById('alternativesResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result success';
+            resultDiv.innerHTML = `
+                <h4>🔄 Альтернативные решения:</h4>
+                
+                <h5>1. Используйте другие домены для тестирования:</h5>
+                <ul>
+                    <li><strong>yandex.ru</strong> - всегда работает</li>
+                    <li><strong>google.com</strong> - международный</li>
+                    <li><strong>vk.com</strong> - популярный в России</li>
+                    <li><strong>mail.ru</strong> - российский портал</li>
+                    <li><strong>dns-shop.ru</strong> - интернет-магазин</li>
+                    <li><strong>wildberries.ru</strong> - маркетплейс</li>
+                </ul>
+                
+                <h5>2. Проверьте elbiz.biz позже:</h5>
+                <ul>
+                    <li>Подождите 1-3 месяца для индексации</li>
+                    <li>Убедитесь, что сайт активно развивается</li>
+                    <li>Добавьте больше контента и SEO-оптимизации</li>
+                </ul>
+                
+                <h5>3. Используйте другие инструменты:</h5>
+                <ul>
+                    <li><strong>Google Search Console</strong> - для анализа индексации</li>
+                    <li><strong>Яндекс.Вебмастер</strong> - для российского поиска</li>
+                    <li><strong>Ahrefs</strong> - альтернатива Keys.so</li>
+                    <li><strong>SEMrush</strong> - комплексный анализ</li>
+                </ul>
+                
+                <h5>4. Настройте мониторинг:</h5>
+                <ul>
+                    <li>Создайте скрипт для периодической проверки</li>
+                    <li>Настройте уведомления о появлении данных</li>
+                    <li>Ведите журнал изменений</li>
+                </ul>
+                
+                <h5>5. Технические рекомендации для elbiz.biz:</h5>
+                <ul>
+                    <li>Убедитесь, что сайт доступен по HTTPS</li>
+                    <li>Добавьте sitemap.xml</li>
+                    <li>Настройте robots.txt</li>
+                    <li>Добавьте мета-теги и структурированные данные</li>
+                    <li>Увеличьте количество качественного контента</li>
+                </ul>
+            `;
+        }
+
+        // Автоматическая диагностика при загрузке
+        window.addEventListener('load', () => {
+            console.log('Страница загружена, начинаем диагностику...');
+            setTimeout(() => {
+                checkSiteAvailability();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

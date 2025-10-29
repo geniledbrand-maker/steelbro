@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест API Keys.so</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #5a6fd8;
+        }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success { border-color: #28a745; background: #d4edda; }
+        .error { border-color: #dc3545; background: #f8d7da; }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Тест API Keys.so</h1>
+    
+    <div class="test-section">
+        <h2>1. Проверка API статуса</h2>
+        <button class="test-button" onclick="testAPIStatus()">Проверить API</button>
+        <div id="apiStatusResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Тест домена</h2>
+        <input type="text" id="testDomain" placeholder="Введите домен (например: yandex.ru)" value="yandex.ru" style="width: 300px; padding: 8px; margin-right: 10px;">
+        <select id="testRegion" style="padding: 8px; margin-right: 10px;">
+            <option value="msk">Москва</option>
+            <option value="spb">СПб</option>
+            <option value="ekb">Екатеринбург</option>
+        </select>
+        <button class="test-button" onclick="testDomain()">Тестировать домен</button>
+        <div id="domainResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Тест Rate Limiting</h2>
+        <button class="test-button" onclick="testRateLimit()">Тест ограничений (10 запросов)</button>
+        <div id="rateLimitResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Логи запросов</h2>
+        <div id="requestLogs" class="result" style="max-height: 300px; overflow-y: auto;"></div>
+        <button class="test-button" onclick="clearLogs()">Очистить логи</button>
+    </div>
+
+    <script>
+        let requestCount = 0;
+        const logs = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            logs.push(`[${timestamp}] ${message}`);
+            updateLogs();
+            console.log(message);
+        }
+
+        function updateLogs() {
+            const logDiv = document.getElementById('requestLogs');
+            logDiv.textContent = logs.slice(-20).join('\n');
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearLogs() {
+            logs.length = 0;
+            updateLogs();
+        }
+
+        async function testAPIStatus() {
+            const resultDiv = document.getElementById('apiStatusResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = '<div class="loading"></div> Проверка API...';
+            
+            try {
+                log('Проверка API статуса...');
+                const response = await fetch('/keys_proxy.php?endpoint=/report/simple/domain_dashboard&domain=yandex.ru&base=msk');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ API работает!\n\nОтвет:\n${JSON.stringify(data, null, 2)}`;
+                    log('✅ API проверка успешна');
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка API: ${error.message}`;
+                log(`❌ Ошибка API: ${error.message}`);
+            }
+        }
+
+        async function testDomain() {
+            const domain = document.getElementById('testDomain').value.trim();
+            const region = document.getElementById('testRegion').value;
+            const resultDiv = document.getElementById('domainResult');
+            
+            if (!domain) {
+                alert('Введите домен');
+                return;
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = '<div class="loading"></div> Тестирование домена...';
+            
+            try {
+                log(`Тестирование домена: ${domain} (регион: ${region})`);
+                const response = await fetch(`/keys_proxy.php?endpoint=/report/simple/domain_dashboard&domain=${domain}&base=${region}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Данные получены для ${domain}!\n\nОтвет:\n${JSON.stringify(data, null, 2)}`;
+                    log(`✅ Данные получены для ${domain}`);
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(`HTTP ${response.status}: ${errorData.error || errorData.message || 'Неизвестная ошибка'}`);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка для домена ${domain}: ${error.message}`;
+                log(`❌ Ошибка для ${domain}: ${error.message}`);
+            }
+        }
+
+        async function testRateLimit() {
+            const resultDiv = document.getElementById('rateLimitResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Тестирование ограничений API...';
+            
+            log('Начинаем тест ограничений API (10 запросов подряд)');
+            
+            const results = [];
+            const startTime = Date.now();
+            
+            for (let i = 1; i <= 10; i++) {
+                try {
+                    log(`Запрос ${i}/10...`);
+                    const response = await fetch(`/keys_proxy.php?endpoint=/report/simple/domain_dashboard&domain=yandex.ru&base=msk&test=${i}`);
+                    const time = Date.now() - startTime;
+                    
+                    if (response.ok) {
+                        results.push(`✅ Запрос ${i}: OK (${time}ms)`);
+                        log(`✅ Запрос ${i}: OK (${time}ms)`);
+                    } else {
+                        results.push(`❌ Запрос ${i}: HTTP ${response.status} (${time}ms)`);
+                        log(`❌ Запрос ${i}: HTTP ${response.status} (${time}ms)`);
+                    }
+                } catch (error) {
+                    const time = Date.now() - startTime;
+                    results.push(`❌ Запрос ${i}: ${error.message} (${time}ms)`);
+                    log(`❌ Запрос ${i}: ${error.message} (${time}ms)`);
+                }
+                
+                // Небольшая задержка между запросами
+                if (i < 10) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+            }
+            
+            const totalTime = Date.now() - startTime;
+            resultDiv.textContent = `Тест завершен за ${totalTime}ms\n\n${results.join('\n')}`;
+            log(`Тест ограничений завершен за ${totalTime}ms`);
+        }
+
+        // Автоматическая проверка при загрузке
+        window.addEventListener('load', () => {
+            log('Страница загружена, начинаем автоматическую проверку...');
+            setTimeout(testAPIStatus, 1000);
+        });
+    </script>
+</body>
+</html>

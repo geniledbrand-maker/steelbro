@@ -1,0 +1,391 @@
+# File: tmp/test_tag_color_editing.html
+# Created: 2025-01-22
+# Modified: 2025-01-22
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест редактирования цветов тегов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .feature {
+            background: #f1f8e9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+            margin: 15px 0;
+        }
+        .demo-section {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #FF9800;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            border-left: 4px solid #9C27B0;
+        }
+        .color-palette-demo {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .color-palette-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 0 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        .color-palette-header h4 {
+            margin: 0;
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .preset-colors {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .color-option {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            position: relative;
+            margin: 0 auto;
+        }
+        .color-option:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .color-option.selected {
+            border-color: #333;
+            transform: scale(1.05);
+        }
+        .color-option::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .color-option.selected::after {
+            opacity: 1;
+        }
+        .custom-color-section {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+        }
+        .custom-color-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+        .custom-color-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .custom-color-input input[type="color"] {
+            width: 50px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 0;
+        }
+        .custom-color-input .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .tag-demo {
+            display: inline-flex;
+            align-items: center;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 5px;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            gap: 8px;
+        }
+        .tag-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .tag-demo .remove-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 50%;
+            font-size: 12px;
+            line-height: 1;
+            opacity: 0.7;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+        }
+        .tag-demo .remove-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 1;
+            color: #f44336;
+        }
+        .workflow {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+            margin: 15px 0;
+        }
+        .workflow-step {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .workflow-step .step-number {
+            background: #2196F3;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .highlight {
+            background: #fff3e0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎨 Тест редактирования цветов тегов</h1>
+        
+        <div class="feature">
+            <h3>✅ Новая функциональность:</h3>
+            <p>Теперь можно изменять цвета тегов! При клике на тег в модальном окне управления тегами открывается палитра цветов с предустановленными вариантами и возможностью выбора своего цвета.</p>
+        </div>
+
+        <div class="demo-section">
+            <h3>🎯 Демонстрация палитры цветов:</h3>
+            
+            <div class="color-palette-demo">
+                <div class="color-palette-header">
+                    <h4>Выберите цвет для тега</h4>
+                    <button style="background: none; border: none; font-size: 24px; color: #999; cursor: pointer;">×</button>
+                </div>
+                <div class="color-palette-content">
+                    <div class="preset-colors">
+                        <div class="color-option" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" title="Синий градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" title="Розовый градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" title="Голубой градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" title="Зеленый градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" title="Оранжевый градиент"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);" title="Мятный градиент"></div>
+                    </div>
+                    <div class="custom-color-section">
+                        <label>Свой цвет:</label>
+                        <div class="custom-color-input">
+                            <input type="color" value="#667eea">
+                            <button class="btn">Применить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>🎨 Примеры цветных тегов:</h3>
+            <div style="margin: 15px 0;">
+                <span class="tag-demo" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    Екатеринбург
+                    <button class="remove-btn">×</button>
+                </span>
+                <span class="tag-demo" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    Москва
+                    <button class="remove-btn">×</button>
+                </span>
+                <span class="tag-demo" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    Санкт-Петербург
+                    <button class="remove-btn">×</button>
+                </span>
+                <span class="tag-demo" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    Новосибирск
+                    <button class="remove-btn">×</button>
+                </span>
+                <span class="tag-demo" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                    Казань
+                    <button class="remove-btn">×</button>
+                </span>
+                <span class="tag-demo" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                    Нижний Новгород
+                    <button class="remove-btn">×</button>
+                </span>
+            </div>
+        </div>
+
+        <div class="workflow">
+            <h3>🔄 Как это работает:</h3>
+            
+            <div class="workflow-step">
+                <div class="step-number">1</div>
+                <div>
+                    <strong>Откройте управление тегами</strong><br>
+                    Нажмите кнопку "🏷️ Теги" в левой панели
+                </div>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="step-number">2</div>
+                <div>
+                    <strong>Кликните на тег</strong><br>
+                    В разделе "Все теги" кликните на любой тег для изменения его цвета
+                </div>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="step-number">3</div>
+                <div>
+                    <strong>Выберите цвет</strong><br>
+                    Выберите один из <span class="highlight">6 предустановленных градиентов</span> или выберите свой цвет
+                </div>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="step-number">4</div>
+                <div>
+                    <strong>Примените изменения</strong><br>
+                    Цвет тега обновится мгновенно во всех местах, где он используется
+                </div>
+            </div>
+        </div>
+
+        <div class="feature">
+            <h3>🔧 Технические особенности:</h3>
+            
+            <h4>1. Предустановленные цвета:</h4>
+            <div class="code-block">
+                • Синий градиент: #667eea → #764ba2<br>
+                • Розовый градиент: #f093fb → #f5576c<br>
+                • Голубой градиент: #4facfe → #00f2fe<br>
+                • Зеленый градиент: #43e97b → #38f9d7<br>
+                • Оранжевый градиент: #fa709a → #fee140<br>
+                • Мятный градиент: #a8edea → #fed6e3
+            </div>
+
+            <h4>2. Свой цвет:</h4>
+            <div class="code-block">
+                • HTML5 color picker<br>
+                • Поддержка всех цветов<br>
+                • Мгновенное применение
+            </div>
+
+            <h4>3. Сохранение данных:</h4>
+            <div class="code-block">
+                • Цвета сохраняются в localStorage<br>
+                • Синхронизация между всеми компонентами<br>
+                • Автоматическое обновление UI
+            </div>
+        </div>
+
+        <div class="feature">
+            <h3>🎯 Преимущества новой функциональности:</h3>
+            <ul>
+                <li><strong>Визуальная организация</strong> - разные цвета для разных категорий тегов</li>
+                <li><strong>Быстрое распознавание</strong> - цвет помогает быстро найти нужный тег</li>
+                <li><strong>Гибкость</strong> - 6 предустановленных вариантов + свой цвет</li>
+                <li><strong>Удобство</strong> - простой клик для изменения цвета</li>
+                <li><strong>Сохранность</strong> - цвета сохраняются между сессиями</li>
+                <li><strong>Синхронизация</strong> - изменения применяются везде сразу</li>
+            </ul>
+        </div>
+
+        <div class="feature">
+            <h3>🎉 Результат:</h3>
+            <p>Теперь пользователи могут <strong>персонализировать теги</strong> с помощью цветов! Это делает управление доменами более удобным и визуально привлекательным. Каждый тег может иметь свой уникальный цвет для лучшей организации и быстрого поиска.</p>
+        </div>
+    </div>
+
+    <script>
+        // Демонстрация интерактивности палитры цветов
+        document.addEventListener('DOMContentLoaded', function() {
+            const colorOptions = document.querySelectorAll('.color-option');
+            
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Убираем выделение с других цветов
+                    colorOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Выделяем выбранный цвет
+                    this.classList.add('selected');
+                    
+                    // Показываем уведомление
+                    console.log('Выбран цвет:', this.title);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+# End of file: tmp/test_tag_color_editing.html
+# Last modified: 2025-01-22

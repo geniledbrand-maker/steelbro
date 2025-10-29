@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keys.so - Анализ конкурентов (Простая версия)</title>
+    
+    <!-- CSS модули -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/sidebar.css">
+    <link rel="stylesheet" href="assets/css/modal.css">
+    <link rel="stylesheet" href="assets/css/tables.css">
+</head>
+<body>
+
+<!-- Боковая панель с доменами -->
+<div class="sidebar">
+    <h2>
+        📁 Сохранённые домены
+        <span id="domainCounter">0</span>
+    </h2>
+
+    <div class="sidebar-actions">
+        <button class="sidebar-btn" id="addDomainBtn">+ Добавить</button>
+        <button class="sidebar-btn secondary" id="exportDomainsBtn">📥</button>
+        <button class="sidebar-btn secondary" id="importDomainsBtn">📤</button>
+    </div>
+
+    <div class="domain-list" id="domainList">
+        <div class="empty-state">
+            <p>У вас пока нет сохранённых доменов</p>
+            <p style="font-size: 12px; margin-top: 10px;">Добавьте домены конкурентов для быстрого доступа</p>
+        </div>
+    </div>
+</div>
+
+<!-- Основной контент -->
+<div class="main-content">
+    <!-- Заголовок -->
+    <div class="header">
+        <h1>🔍 Keys.so - Анализ конкурентов</h1>
+
+        <div class="api-status">
+            <div class="api-indicator" id="apiIndicator"></div>
+            <span id="apiStatusText">API статус</span>
+            <button class="api-check-btn" id="checkApiBtn" style="padding:6px 12px;background:#fff;border:1px solid #ddd;border-radius:6px;cursor:pointer;font-size:13px;margin-left:auto;">Проверить</button>
+        </div>
+
+        <form class="search-form" id="searchForm">
+            <input type="text" id="domainInput" placeholder="Введите домен (например: dns-shop.ru)" required>
+            <select id="regionSelect">
+                <option value="msk">Москва</option>
+                <option value="spb">Санкт-Петербург</option>
+                <option value="ekb">Екатеринбург</option>
+                <option value="nsk">Новосибирск</option>
+                <option value="kzn">Казань</option>
+            </select>
+            <button type="submit" id="analyzeBtn">Анализировать</button>
+        </form>
+    </div>
+
+    <!-- Сообщения об ошибках -->
+    <div id="errorMessage"></div>
+
+    <!-- Вкладки -->
+    <div class="tabs">
+        <button class="tab active" data-tab="overview">📊 Обзор</button>
+        <button class="tab" data-tab="keywords">🔑 Ключевые слова</button>
+        <button class="tab" data-tab="pages">📄 Страницы</button>
+        <button class="tab" data-tab="ads">💰 Реклама</button>
+        <button class="tab" data-tab="competitors">🥊 Конкуренты</button>
+    </div>
+
+    <!-- Секции контента -->
+    <div id="overview" class="content-section active">
+        <div id="overviewContent"></div>
+    </div>
+
+    <div id="keywords" class="content-section">
+        <div id="keywordsContent"></div>
+    </div>
+
+    <div id="pages" class="content-section">
+        <div id="pagesContent"></div>
+    </div>
+
+    <div id="ads" class="content-section">
+        <div id="adsContent"></div>
+    </div>
+
+    <div id="competitors" class="content-section">
+        <div id="competitorsContent"></div>
+    </div>
+</div>
+
+<!-- Модальное окно для доменов -->
+<div class="modal" id="domainModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Добавить домен</h3>
+            <button class="close-modal" id="closeModalBtn">×</button>
+        </div>
+
+        <div class="form-group">
+            <label for="modalDomainInput">Домен *</label>
+            <input type="text" id="modalDomainInput" placeholder="example.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="modalDescriptionInput">Описание</label>
+            <textarea id="modalDescriptionInput" placeholder="Краткое описание домена или конкурента"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Теги</label>
+            <div class="tags-input-container" id="tagsContainer">
+                <input type="text" class="tags-input" id="tagsInput" placeholder="Введите тег и нажмите Enter">
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="modal-btn secondary" id="cancelModalBtn">Отмена</button>
+            <button class="modal-btn primary" id="saveDomainBtn">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<!-- Скрытый input для импорта файлов -->
+<input type="file" id="importFileInput" style="display: none;" accept=".json">
+
+<script>
+// Простая реализация без модулей для тестирования
+let savedDomains = [];
+let currentTags = [];
+let editingDomainId = null;
+
+// Загрузка сохранённых доменов
+function loadSavedDomains() {
+    const stored = localStorage.getItem('keyso_saved_domains');
+    if (stored) {
+        try {
+            savedDomains = JSON.parse(stored);
+        } catch (e) {
+            console.error('Ошибка загрузки доменов:', e);
+            savedDomains = [];
+        }
+    }
+}
+
+// Сохранение доменов
+function saveDomainsToDB() {
+    localStorage.setItem('keyso_saved_domains', JSON.stringify(savedDomains));
+}
+
+// Отрисовка списка доменов
+function renderDomainList() {
+    const container = document.getElementById('domainList');
+    const counter = document.getElementById('domainCounter');
+
+    counter.textContent = savedDomains.length;
+
+    if (savedDomains.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>У вас пока нет сохранённых доменов</p><p style="font-size: 12px; margin-top: 10px;">Добавьте домены конкурентов для быстрого доступа</p></div>';
+        return;
+    }
+
+    container.innerHTML = savedDomains.map(domain => `
+        <div class="domain-card" onclick="selectDomain('${domain.id}')">
+            <div class="domain-card-header">
+                <div class="domain-name">${domain.domain}</div>
+                <div class="domain-actions">
+                    <button class="icon-btn" onclick="event.stopPropagation(); editDomain('${domain.id}')" title="Редактировать">✏️</button>
+                    <button class="icon-btn" onclick="event.stopPropagation(); deleteDomain('${domain.id}')" title="Удалить">🗑️</button>
+                </div>
+            </div>
+            ${domain.description ? '<div class="domain-description">' + domain.description + '</div>' : ''}
+            ${domain.tags && domain.tags.length > 0 ? '<div class="domain-tags">' + domain.tags.map(tag => '<span class="tag">' + tag + '</span>').join('') + '</div>' : ''}
+        </div>
+    `).join('');
+}
+
+// Показ модального окна
+function showDomainModal(domain = null) {
+    const modal = document.getElementById('domainModal');
+    const title = document.getElementById('modalTitle');
+    const domainInput = document.getElementById('modalDomainInput');
+    const descriptionInput = document.getElementById('modalDescriptionInput');
+
+    editingDomainId = domain ? domain.id : null;
+    currentTags = domain ? [...(domain.tags || [])] : [];
+
+    title.textContent = domain ? 'Редактировать домен' : 'Добавить домен';
+    domainInput.value = domain ? domain.domain : '';
+    descriptionInput.value = domain ? (domain.description || '') : '';
+
+    renderModalTags();
+    modal.classList.add('active');
+}
+
+// Скрытие модального окна
+function hideDomainModal() {
+    const modal = document.getElementById('domainModal');
+    modal.classList.remove('active');
+    editingDomainId = null;
+    currentTags = [];
+}
+
+// Отрисовка тегов
+function renderModalTags() {
+    const container = document.getElementById('tagsContainer');
+    const currentInput = document.getElementById('tagsInput');
+    const inputValue = currentInput ? currentInput.value : '';
+
+    container.innerHTML = currentTags.map(tag => `
+        <span class="tag-item">
+            ${tag}
+            <button class="tag-remove" onclick="removeTag('${tag}')">×</button>
+        </span>
+    `).join('') + `
+        <input type="text" class="tags-input" id="tagsInput" 
+               placeholder="Введите тег и нажмите Enter" value="${inputValue}">
+    `;
+
+    // Настройка обработчика для ввода тегов
+    const newInput = document.getElementById('tagsInput');
+    if (newInput) {
+        newInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const tag = e.target.value.trim();
+                if (tag && !currentTags.includes(tag)) {
+                    currentTags.push(tag);
+                    renderModalTags();
+                }
+            }
+        });
+    }
+}
+
+// Удаление тега
+function removeTag(tag) {
+    currentTags = currentTags.filter(t => t !== tag);
+    renderModalTags();
+}
+
+// Сохранение домена
+function saveDomain() {
+    const domainInput = document.getElementById('modalDomainInput');
+    const descriptionInput = document.getElementById('modalDescriptionInput');
+
+    const domain = domainInput.value.trim().replace(/^https?:\/\//, '');
+    const description = descriptionInput.value.trim();
+
+    if (!domain) {
+        alert('Введите домен');
+        return;
+    }
+
+    if (editingDomainId) {
+        const index = savedDomains.findIndex(d => d.id === editingDomainId);
+        if (index !== -1) {
+            savedDomains[index] = {
+                ...savedDomains[index],
+                domain,
+                description,
+                tags: [...currentTags],
+                updatedAt: new Date().toISOString()
+            };
+        }
+    } else {
+        const newDomain = {
+            id: Date.now().toString(),
+            domain,
+            description,
+            tags: [...currentTags],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+        savedDomains.unshift(newDomain);
+    }
+
+    saveDomainsToDB();
+    renderDomainList();
+    hideDomainModal();
+    alert(editingDomainId ? 'Домен обновлён' : 'Домен добавлен');
+}
+
+// Редактирование домена
+function editDomain(id) {
+    const domain = savedDomains.find(d => d.id === id);
+    if (!domain) return;
+    showDomainModal(domain);
+}
+
+// Удаление домена
+function deleteDomain(id) {
+    if (confirm('Удалить этот домен из сохранённых?')) {
+        savedDomains = savedDomains.filter(d => d.id !== id);
+        saveDomainsToDB();
+        renderDomainList();
+        alert('Домен удалён');
+    }
+}
+
+// Выбор домена
+function selectDomain(id) {
+    const domain = savedDomains.find(d => d.id === id);
+    if (!domain) return;
+
+    document.getElementById('domainInput').value = domain.domain;
+    renderDomainList();
+}
+
+// Экспорт доменов
+function exportDomains() {
+    if (savedDomains.length === 0) {
+        alert('Нет доменов для экспорта');
+        return;
+    }
+
+    const dataStr = JSON.stringify(savedDomains, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'keyso_domains_' + new Date().toISOString().split('T')[0] + '.json';
+    link.click();
+    alert('Домены экспортированы');
+}
+
+// Импорт доменов
+function importDomains() {
+    document.getElementById('importFileInput').click();
+}
+
+// Обработка импорта файла
+function handleImportFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const imported = JSON.parse(e.target.result);
+            if (!Array.isArray(imported)) {
+                throw new Error('Неверный формат файла');
+            }
+
+            const confirmed = confirm(`Импортировать ${imported.length} доменов? Существующие домены не будут удалены.`);
+            if (confirmed) {
+                imported.forEach(domain => {
+                    if (!savedDomains.find(d => d.domain === domain.domain)) {
+                        savedDomains.push({
+                            ...domain,
+                            id: Date.now().toString() + Math.random(),
+                            updatedAt: new Date().toISOString()
+                        });
+                    }
+                });
+                saveDomainsToDB();
+                renderDomainList();
+                alert(`Импортировано доменов: ${imported.length}`);
+            }
+        } catch (error) {
+            alert('Ошибка импорта: ' + error.message);
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+// Инициализация
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Keys.so Spy - Простая версия загружена');
+    
+    // Загружаем сохранённые домены
+    loadSavedDomains();
+    renderDomainList();
+    
+    // Привязываем обработчики событий
+    document.getElementById('addDomainBtn').addEventListener('click', () => showDomainModal());
+    document.getElementById('exportDomainsBtn').addEventListener('click', exportDomains);
+    document.getElementById('importDomainsBtn').addEventListener('click', importDomains);
+    document.getElementById('closeModalBtn').addEventListener('click', hideDomainModal);
+    document.getElementById('cancelModalBtn').addEventListener('click', hideDomainModal);
+    document.getElementById('saveDomainBtn').addEventListener('click', saveDomain);
+    document.getElementById('importFileInput').addEventListener('change', handleImportFile);
+    
+    // Закрытие модального окна по клику вне его
+    document.getElementById('domainModal').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) {
+            hideDomainModal();
+        }
+    });
+    
+    // Закрытие по Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            hideDomainModal();
+        }
+    });
+    
+    console.log('✅ Простая версия инициализирована');
+});
+</script>
+
+</body>
+</html>

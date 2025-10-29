@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест данных конкурентов</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .log { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+        pre { white-space: pre-wrap; word-wrap: break-word; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Тест данных конкурентов</h1>
+    <button onclick="testCompetitors()">Тестировать конкурентов</button>
+    <div id="results"></div>
+
+    <script>
+        // Встроенный API класс для тестирования
+        class KeysAPI {
+            constructor(proxyUrl = '../keys_proxy.php') {
+                this.proxyUrl = proxyUrl;
+            }
+
+            async makeGet(endpoint, params = {}) {
+                try {
+                    const usp = new URLSearchParams({ endpoint, ...params });
+                    const url = `${this.proxyUrl}?${usp.toString()}`;
+
+                    console.log('Отправляем GET запрос через прокси:', {
+                        url: this.proxyUrl,
+                        endpoint: endpoint,
+                        params: params,
+                        fullUrl: url
+                    });
+
+                    const response = await fetch(url, {
+                        method: 'GET'
+                    });
+
+                    console.log('Ответ сервера:', {
+                        status: response.status,
+                        statusText: response.statusText,
+                        ok: response.ok
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Текст ошибки:', errorText);
+                        throw new Error(`HTTP Error: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Ошибка API запроса:', error);
+                    throw error;
+                }
+            }
+
+            async getCompetitors(domain, region = 'msk', perPage = 50) {
+                const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                const limitedPerPage = Math.min(perPage, 500);
+                
+                return await this.makeGet('/report/simple/organic/concurents', {
+                    domain: cleanDomain,
+                    base: region,
+                    per_page: limitedPerPage
+                });
+            }
+        }
+
+        async function testCompetitors() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="log">🔄 Тестирование конкурентов...</div>';
+            
+            try {
+                const api = new KeysAPI();
+                const data = await api.getCompetitors('arsenalmetall.by', 'msk', 10);
+                
+                results.innerHTML = `
+                    <div class="success">✅ Данные получены успешно!</div>
+                    <div class="log">
+                        <h3>📊 Структура данных:</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                    <div class="log">
+                        <h3>🔍 Анализ полей:</h3>
+                        <pre>${analyzeDataStructure(data)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="error">❌ Ошибка: ${error.message}</div>
+                    <div class="log">
+                        <h3>🔍 Детали ошибки:</h3>
+                        <pre>${error.stack}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        function analyzeDataStructure(data) {
+            let analysis = '';
+            
+            if (Array.isArray(data)) {
+                analysis += `📋 Массив из ${data.length} элементов\n\n`;
+                
+                if (data.length > 0) {
+                    const firstItem = data[0];
+                    analysis += `🔍 Первый элемент:\n`;
+                    analysis += `Тип: ${typeof firstItem}\n`;
+                    analysis += `Ключи: ${Object.keys(firstItem).join(', ')}\n\n`;
+                    
+                    analysis += `📝 Все поля первого элемента:\n`;
+                    Object.keys(firstItem).forEach(key => {
+                        analysis += `  ${key}: ${typeof firstItem[key]} = ${JSON.stringify(firstItem[key])}\n`;
+                    });
+                }
+            } else if (typeof data === 'object') {
+                analysis += `📦 Объект с ключами: ${Object.keys(data).join(', ')}\n\n`;
+                
+                Object.keys(data).forEach(key => {
+                    analysis += `  ${key}: ${typeof data[key]} = ${JSON.stringify(data[key])}\n`;
+                });
+            } else {
+                analysis += `❓ Неизвестный тип данных: ${typeof data}\n`;
+                analysis += `Значение: ${JSON.stringify(data)}`;
+            }
+            
+            return analysis;
+        }
+    </script>
+</body>
+</html>

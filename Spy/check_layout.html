@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверка макета</title>
+    <link rel="stylesheet" href="assets/css/sidebar.css?v=3.1">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .check-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        .sidebar {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px auto;
+        }
+        .sidebar h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .sidebar-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .sidebar-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .action-icons {
+            display: flex;
+            gap: 8px;
+        }
+        .action-icon-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .domain-search-container {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .domain-search-input {
+            width: 100%;
+            padding: 12px 40px 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fff;
+            color: #333;
+        }
+        .search-clear-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: #ccc;
+            color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .debug-tools {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .debug-btn {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 1px solid #cbd5e1;
+            color: #475569;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            margin: 4px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="check-container">
+        <h1>🔍 Проверка макета</h1>
+        <p>Проверяем, что все элементы отображаются правильно:</p>
+    </div>
+    
+    <div class="sidebar">
+        <h2>📁 Сохранённые домены <span>0</span></h2>
+        
+        <div class="sidebar-actions">
+            <button class="sidebar-btn">+ Добавить</button>
+            <div class="action-icons">
+                <button class="action-icon-btn" title="Экспорт доменов">⬇️</button>
+                <button class="action-icon-btn" title="Импорт доменов">⬆️</button>
+                <button class="action-icon-btn" title="Управление тегами">🏷️</button>
+                <button class="action-icon-btn" title="Восстановить данные">🔄</button>
+            </div>
+        </div>
+        
+        <div class="domain-search-container">
+            <div class="search-input-wrapper">
+                <input type="text" class="domain-search-input" placeholder="🔍 Поиск доменов (ыеуудикщ → steelbro)">
+                <button class="search-clear-btn">×</button>
+            </div>
+        </div>
+        
+        <div class="debug-tools">
+            <button class="debug-btn">🧪 Тест</button>
+            <button class="debug-btn">💾 JSON</button>
+        </div>
+        
+        <div style="padding: 20px; text-align: center; color: #666;">
+            <p>У вас пока нет сохранённых доменов</p>
+            <p style="font-size: 12px; margin-top: 10px;">Добавьте домены конкурентов для быстрого доступа</p>
+        </div>
+    </div>
+    
+    <div class="check-container">
+        <h2>✅ Элементы должны быть видны:</h2>
+        <ul style="text-align: left;">
+            <li>Кнопка "+ Добавить" (большая фиолетовая)</li>
+            <li>4 иконки справа (⬇️ ⬆️ 🏷️ 🔄)</li>
+            <li>Поисковая строка с плейсхолдером</li>
+            <li>2 кнопки отладки (🧪 Тест, 💾 JSON)</li>
+            <li>Текст "У вас пока нет сохранённых доменов"</li>
+        </ul>
+        
+        <button onclick="location.href='spy.html'" style="background: #4CAF50; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin: 20px 0;">
+            🚀 Перейти к основному приложению
+        </button>
+    </div>
+</body>
+</html>

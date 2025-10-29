@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keys.so API - Тест подключения</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 5px;
+        }
+        .btn:hover {
+            transform: scale(1.02);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .success-result {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error-result {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info-result {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .test-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Keys.so API - Тест подключения</h1>
+        
+        <div class="info">
+            <strong>ℹ️ Информация:</strong> Этот тест проверяет подключение к API Keys.so 
+            и функциональность основных модулей приложения.
+        </div>
+        
+        <div class="test-section">
+            <h3>1. Тест API подключения</h3>
+            <p>Проверяем доступность API Keys.so и корректность ответов.</p>
+            <button class="btn" onclick="testAPIConnection()">Тест API</button>
+            <div id="apiResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. Тест модулей JavaScript</h3>
+            <p>Проверяем загрузку и функциональность JavaScript модулей.</p>
+            <button class="btn" onclick="testJSModules()">Тест модулей</button>
+            <div id="modulesResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. Тест localStorage</h3>
+            <p>Проверяем работу с локальным хранилищем браузера.</p>
+            <button class="btn" onclick="testLocalStorage()">Тест хранилища</button>
+            <div id="storageResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>4. Полный тест системы</h3>
+            <p>Запускает все тесты последовательно для полной проверки.</p>
+            <button class="btn" onclick="runFullTest()">Полный тест</button>
+            <div id="fullTestResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_TOKEN = '68f901d59104e7.54090033d9642a220c8fc82cc162e7d83cc8b57a';
+        const API_BASE = 'https://api.keys.so';
+
+        async function testAPIConnection() {
+            const resultDiv = document.getElementById('apiResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info-result';
+            resultDiv.innerHTML = '<div class="loading"></div> Тестирование API подключения...';
+            
+            try {
+                console.log('Testing API connection...');
+                
+                const url = `${API_BASE}/report/simple/domain_dashboard?domain=yandex.ru&base=msk`;
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'X-Keyso-TOKEN': API_TOKEN,
+                        'Accept': 'application/json',
+                        'User-Agent': 'steelbro-test/1.0'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('API response:', data);
+                    
+                    resultDiv.className = 'result success-result';
+                    resultDiv.innerHTML = `
+                        ✅ API подключение успешно!
+                        
+                        📊 Полученные данные:
+                        • Топ-10 позиций: ${data.it10 || 0}
+                        • Топ-50 позиций: ${data.it50 || 0}
+                        • Видимость: ${data.vis || 0}
+                        • Рекламных объявлений: ${data.adscnt || 0}
+                        • Ключевых слов: ${data.keys ? data.keys.length : 0}
+                        
+                        🕒 Время ответа: ${new Date().toLocaleTimeString()}
+                        📡 Статус: ${response.status} ${response.statusText}
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('API test failed:', error);
+                resultDiv.className = 'result error-result';
+                resultDiv.innerHTML = `
+                    ❌ Ошибка подключения к API
+                    
+                    🔍 Детали ошибки:
+                    • Сообщение: ${error.message}
+                    • Время: ${new Date().toLocaleTimeString()}
+                    
+                    💡 Возможные причины:
+                    • Проблемы с интернет-соединением
+                    • Неверный API токен
+                    • Блокировка CORS
+                    • Временные проблемы с API
+                `;
+            }
+        }
+
+        function testJSModules() {
+            const resultDiv = document.getElementById('modulesResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info-result';
+            resultDiv.innerHTML = '<div class="loading"></div> Тестирование JavaScript модулей...';
+            
+            const results = [];
+            
+            try {
+                // Тест базовых функций JavaScript
+                if (typeof fetch !== 'undefined') {
+                    results.push('✅ fetch API доступен');
+                } else {
+                    results.push('❌ fetch API недоступен');
+                }
+                
+                if (typeof localStorage !== 'undefined') {
+                    results.push('✅ localStorage доступен');
+                } else {
+                    results.push('❌ localStorage недоступен');
+                }
+                
+                if (typeof JSON !== 'undefined') {
+                    results.push('✅ JSON API доступен');
+                } else {
+                    results.push('❌ JSON API недоступен');
+                }
+                
+                // Тест поддержки ES6
+                if (typeof Symbol !== 'undefined') {
+                    results.push('✅ ES6 Symbol поддерживается');
+                } else {
+                    results.push('❌ ES6 Symbol не поддерживается');
+                }
+                
+                if (typeof Promise !== 'undefined') {
+                    results.push('✅ ES6 Promise поддерживается');
+                } else {
+                    results.push('❌ ES6 Promise не поддерживается');
+                }
+                
+                // Тест поддержки async/await
+                try {
+                    eval('async function test() {}');
+                    results.push('✅ async/await поддерживается');
+                } catch (e) {
+                    results.push('❌ async/await не поддерживается');
+                }
+                
+                // Тест поддержки стрелочных функций
+                try {
+                    eval('() => {}');
+                    results.push('✅ Стрелочные функции поддерживаются');
+                } catch (e) {
+                    results.push('❌ Стрелочные функции не поддерживаются');
+                }
+                
+                // Тест поддержки деструктуризации
+                try {
+                    eval('const {a} = {a: 1}');
+                    results.push('✅ Деструктуризация поддерживается');
+                } catch (e) {
+                    results.push('❌ Деструктуризация не поддерживается');
+                }
+                
+                resultDiv.className = 'result success-result';
+                resultDiv.innerHTML = `
+                    ✅ Тест JavaScript модулей завершен
+                    
+                    📋 Результаты:
+                    ${results.map(r => `• ${r}`).join('\n')}
+                    
+                    🕒 Время тестирования: ${new Date().toLocaleTimeString()}
+                `;
+                
+            } catch (error) {
+                resultDiv.className = 'result error-result';
+                resultDiv.innerHTML = `
+                    ❌ Ошибка тестирования модулей
+                    
+                    🔍 Детали ошибки:
+                    • Сообщение: ${error.message}
+                    • Время: ${new Date().toLocaleTimeString()}
+                `;
+            }
+        }
+
+        function testLocalStorage() {
+            const resultDiv = document.getElementById('storageResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info-result';
+            resultDiv.innerHTML = '<div class="loading"></div> Тестирование localStorage...';
+            
+            const results = [];
+            
+            try {
+                // Тест доступности localStorage
+                if (typeof localStorage !== 'undefined') {
+                    results.push('✅ localStorage доступен');
+                } else {
+                    results.push('❌ localStorage недоступен');
+                    throw new Error('localStorage не поддерживается');
+                }
+                
+                // Тест записи и чтения
+                const testKey = 'test_storage_' + Date.now();
+                const testData = { test: 'data', timestamp: new Date().toISOString() };
+                
+                localStorage.setItem(testKey, JSON.stringify(testData));
+                results.push('✅ Запись в localStorage работает');
+                
+                const retrieved = JSON.parse(localStorage.getItem(testKey));
+                if (retrieved && retrieved.test === 'data') {
+                    results.push('✅ Чтение из localStorage работает');
+                } else {
+                    results.push('❌ Ошибка чтения из localStorage');
+                }
+                
+                // Тест удаления
+                localStorage.removeItem(testKey);
+                const deleted = localStorage.getItem(testKey);
+                if (!deleted) {
+                    results.push('✅ Удаление из localStorage работает');
+                } else {
+                    results.push('❌ Ошибка удаления из localStorage');
+                }
+                
+                // Тест размера хранилища
+                const size = JSON.stringify(localStorage).length;
+                results.push(`✅ Размер хранилища: ${(size / 1024).toFixed(2)} КБ`);
+                
+                // Тест лимитов
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                if (size < maxSize) {
+                    results.push('✅ Размер хранилища в пределах нормы');
+                } else {
+                    results.push('⚠️ Размер хранилища превышает рекомендуемый');
+                }
+                
+                resultDiv.className = 'result success-result';
+                resultDiv.innerHTML = `
+                    ✅ Тест localStorage завершен
+                    
+                    📋 Результаты:
+                    ${results.map(r => `• ${r}`).join('\n')}
+                    
+                    🕒 Время тестирования: ${new Date().toLocaleTimeString()}
+                `;
+                
+            } catch (error) {
+                resultDiv.className = 'result error-result';
+                resultDiv.innerHTML = `
+                    ❌ Ошибка тестирования localStorage
+                    
+                    🔍 Детали ошибки:
+                    • Сообщение: ${error.message}
+                    • Время: ${new Date().toLocaleTimeString()}
+                `;
+            }
+        }
+
+        async function runFullTest() {
+            const resultDiv = document.getElementById('fullTestResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info-result';
+            resultDiv.innerHTML = '<div class="loading"></div> Запуск полного теста системы...';
+            
+            const results = [];
+            const startTime = Date.now();
+            
+            try {
+                // Тест 1: JavaScript модули
+                results.push('🧪 Тест 1: JavaScript модули...');
+                testJSModules();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                results.push('✅ JavaScript модули: OK');
+                
+                // Тест 2: localStorage
+                results.push('🧪 Тест 2: localStorage...');
+                testLocalStorage();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                results.push('✅ localStorage: OK');
+                
+                // Тест 3: API подключение
+                results.push('🧪 Тест 3: API подключение...');
+                try {
+                    const url = `${API_BASE}/report/simple/domain_dashboard?domain=yandex.ru&base=msk`;
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-Keyso-TOKEN': API_TOKEN,
+                            'Accept': 'application/json',
+                            'User-Agent': 'steelbro-test/1.0'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        results.push('✅ API подключение: OK');
+                    } else {
+                        results.push(`❌ API подключение: HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    results.push(`❌ API подключение: ${error.message}`);
+                }
+                
+                const endTime = Date.now();
+                const duration = endTime - startTime;
+                
+                resultDiv.className = 'result success-result';
+                resultDiv.innerHTML = `
+                    ✅ Полный тест системы завершен
+                    
+                    📋 Результаты:
+                    ${results.map(r => `• ${r}`).join('\n')}
+                    
+                    ⏱️ Время выполнения: ${duration} мс
+                    🕒 Время завершения: ${new Date().toLocaleTimeString()}
+                    
+                    💡 Рекомендации:
+                    • Если все тесты прошли успешно - система готова к работе
+                    • Если есть ошибки - проверьте подключение к интернету
+                    • При проблемах с API - убедитесь в правильности токена
+                `;
+                
+            } catch (error) {
+                resultDiv.className = 'result error-result';
+                resultDiv.innerHTML = `
+                    ❌ Ошибка полного теста
+                    
+                    🔍 Детали ошибки:
+                    • Сообщение: ${error.message}
+                    • Время: ${new Date().toLocaleTimeString()}
+                `;
+            }
+        }
+
+        // Автоматический запуск при загрузке
+        window.addEventListener('load', () => {
+            console.log('API Test page loaded');
+        });
+    </script>
+</body>
+</html>

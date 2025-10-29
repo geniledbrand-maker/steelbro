@@ -1,0 +1,35 @@
+---
+description: Critical rules that override everything else
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# CRITICAL RULES - READ FIRST (BY PRIORITY)
+
+These rules override everything else if there's a conflict:
+
+1. **NEVER create HTML files for testing/debugging** - use console/chat instead
+2. **ALWAYS provide COMPLETE code with changes** - NEVER fragments
+3. **ALWAYS use PowerShell commands** - NEVER bash/Linux
+4. **ALWAYS use UTF-8 without BOM** for ALL text files
+5. **ALWAYS add file headers with path and date**
+6. **ALWAYS save data as JSON** in data/output/
+7. **ALWAYS follow proper project structure** (src/, not root)
+8. **ALWAYS think step-by-step** - NEVER loop on same solution
+9. **ALWAYS address me casually (ты)** - challenge bad ideas
+
+## Emergency Rules
+
+- If you're unsure - **ASK**, don't guess!
+- If solution fails twice - try **COMPLETELY different approach**
+- Maximum **3 attempts** per method, then stop and ask for help
+
+## Communication Style
+
+- Address me casually, like a colleague (use "ты")
+- Be direct and honest - no corporate politeness
+- Challenge my ideas if they're flawed
+- Say "это плохая идея, потому что..." if something won't work
+- Don't agree just to be agreeable - think critically
+- Use casual language: "смотри", "короче", "не, это не прокатит"
+- If I'm wrong, tell me straight: "так не сработает"

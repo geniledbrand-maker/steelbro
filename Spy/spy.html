@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Keys.so - Анализ конкурентов</title>
+    
+    <!-- CSS модули -->
+    <link rel="stylesheet" href="assets/css/main.css?v=3.0">
+    <link rel="stylesheet" href="assets/css/sidebar.css?v=3.1">
+    <link rel="stylesheet" href="assets/css/modal.css?v=3.0">
+    <link rel="stylesheet" href="assets/css/tables.css?v=3.0">
+</head>
+<body>
+
+<!-- Боковая панель с доменами -->
+<div class="sidebar">
+    <h2>
+        📁 Сохранённые домены
+        <span id="domainCounter">0</span>
+    </h2>
+
+    <div class="sidebar-actions">
+        <button class="sidebar-btn" id="addDomainBtn">+ Добавить</button>
+        <div class="action-icons">
+            <button class="action-icon-btn" id="exportDomainsBtn" title="Экспорт доменов">⬇️</button>
+            <button class="action-icon-btn" id="importDomainsBtn" title="Импорт доменов">⬆️</button>
+            <button class="action-icon-btn" id="manageTagsBtn" title="Управление тегами">🏷️</button>
+            <button class="action-icon-btn" id="restoreDataBtn" title="Восстановить данные">🔄</button>
+            <button class="action-icon-btn" id="loadDefaultDomainsBtn" title="Загрузить домены по умолчанию">🏠</button>
+            <button class="action-icon-btn" id="syncDataBtn" title="Синхронизировать данные">🔄</button>
+            <button class="action-icon-btn" id="showAllDomainsBtn" title="Показать все домены" style="display: none;">🔄</button>
+        </div>
+    </div>
+    
+    <div class="domain-search-container">
+        <div class="search-input-wrapper">
+            <input type="text" id="domainSearchInput" placeholder="🔍 Поиск доменов (ыеуудикщ → steelbro)" class="domain-search-input">
+            <button class="search-clear-btn" id="searchClearBtn" title="Очистить поиск">×</button>
+        </div>
+    </div>
+    
+
+    <div class="domain-list" id="domainList">
+        <div class="empty-state">
+            <p>У вас пока нет сохранённых доменов</p>
+            <p style="font-size: 12px; margin-top: 10px;">Добавьте домены конкурентов для быстрого доступа</p>
+        </div>
+    </div>
+</div>
+
+<!-- Основной контент -->
+<div class="main-content">
+    <!-- Заголовок -->
+    <div class="header">
+        <h1>🔍 Keys.so - Анализ конкурентов</h1>
+
+        <div class="api-status">
+            <div class="api-indicator" id="apiIndicator"></div>
+            <span id="apiStatusText">API статус</span>
+            <button class="api-check-btn" id="checkApiBtn" style="padding:6px 12px;background:#fff;border:1px solid #ddd;border-radius:6px;cursor:pointer;font-size:13px;margin-left:auto;">Проверить</button>
+        </div>
+
+        <form class="search-form" id="searchForm">
+            <input type="text" id="domainInput" placeholder="Введите домен (например: dns-shop.ru)" required>
+            <select id="regionSelect">
+                <option value="ekb" selected>Екатеринбург</option>
+                <option value="msk">Москва</option>
+                <option value="nsk">Новосибирск</option>
+                <option value="kzn">Казань</option>
+                <option value="tyumen">Тюмень</option>
+                <option value="perm">Пермь</option>
+                <option value="chelyabinsk">Челябинск</option>
+            </select>
+            <button type="submit" id="analyzeBtn">Анализировать</button>
+            <button type="button" id="analyzeAllCitiesBtn" class="analyze-all-btn">🌍 Все города</button>
+        </form>
+    </div>
+
+    <!-- Сообщения об ошибках -->
+    <div id="errorMessage"></div>
+
+    <!-- Вкладки -->
+    <div class="tabs">
+        <button class="tab active" data-tab="overview">📊 Обзор</button>
+        <button class="tab" data-tab="organic">🌱 Органика</button>
+        <button class="tab" data-tab="links">🔗 Ссылки</button>
+        <button class="tab" data-tab="advertising">💰 Реклама</button>
+        <button class="tab" data-tab="keywords">🔑 Ключевые слова</button>
+        <button class="tab" data-tab="pages">📄 Страницы</button>
+        <button class="tab" data-tab="competitors">🥊 Конкуренты</button>
+    </div>
+
+    <!-- Секции контента -->
+    <div id="overview" class="content-section active">
+        <div id="overviewContent"></div>
+    </div>
+
+    <div id="organic" class="content-section">
+        <div id="organicContent"></div>
+    </div>
+
+    <div id="links" class="content-section">
+        <div id="linksContent"></div>
+    </div>
+
+    <div id="advertising" class="content-section">
+        <div id="advertisingContent"></div>
+    </div>
+
+    <div id="keywords" class="content-section">
+        <div id="keywordsContent"></div>
+    </div>
+
+    <div id="pages" class="content-section">
+        <div id="pagesContent"></div>
+    </div>
+
+    <div id="competitors" class="content-section">
+        <div id="competitorsContent"></div>
+    </div>
+</div>
+
+<!-- Модальное окно для доменов -->
+<div class="modal" id="domainModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Добавить домен</h3>
+            <button class="close-modal" id="closeModalBtn">×</button>
+        </div>
+
+        <div class="form-group">
+            <label for="modalDomainInput">Домен *</label>
+            <input type="text" id="modalDomainInput" placeholder="example.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="modalDescriptionInput">Описание</label>
+            <textarea id="modalDescriptionInput" placeholder="Краткое описание домена или конкурента"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Теги</label>
+            <div class="tags-input-container" id="tagsContainer">
+                <input type="text" class="tags-input" id="tagsInput" placeholder="Введите тег и нажмите Enter">
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="modal-btn secondary" id="cancelModalBtn">Отмена</button>
+            <button class="modal-btn primary" id="saveDomainBtn">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно подтверждения удаления тега -->
+<div class="modal" id="confirmDeleteTagModal">
+    <div class="modal-content confirm-modal">
+        <div class="modal-header">
+            <h3 id="confirmDeleteTagTitle">Подтвердите действие</h3>
+            <button class="close-modal" onclick="hideConfirmDeleteTagModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="confirm-icon">⚠️</div>
+            <div class="confirm-message" id="confirmDeleteTagMessage">
+                Вы уверены, что хотите удалить этот тег?
+            </div>
+            <div class="confirm-details" id="confirmDeleteTagDetails">
+                <!-- Детали будут добавлены динамически -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn secondary" onclick="hideConfirmDeleteTagModal()">Отмена</button>
+            <button class="modal-btn huge-danger" id="confirmDeleteTagBtn">🗑️ УДАЛИТЬ ТЕГ</button>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно управления тегами -->
+<div class="modal" id="tagsManagementModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Управление тегами</h3>
+            <button class="close-modal" onclick="hideTagsManagementModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Создать новый тег</label>
+                <div class="tag-creation-container">
+                    <input type="text" id="newTagInput" placeholder="Введите название тега" class="tags-input">
+                    <button class="modal-btn primary" id="createTagBtn">Создать тег</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Все теги</label>
+                <div id="allTagsContainer" class="all-tags-container">
+                    <!-- Теги будут добавлены динамически -->
+                </div>
+            </div>
+            
+            <!-- Палитра цветов для тегов -->
+            <div id="tagColorPalette" class="tag-color-palette" style="display: none;">
+                <div class="color-palette-header">
+                    <h4>Выберите цвет для тега</h4>
+                    <button class="close-color-palette" onclick="hideTagColorPalette()">×</button>
+                </div>
+                <div class="color-palette-content">
+                    <div class="preset-colors">
+                        <div class="color-option" data-color="#667eea" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" title="Синий градиент"></div>
+                        <div class="color-option" data-color="#f093fb" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" title="Розовый градиент"></div>
+                        <div class="color-option" data-color="#4facfe" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" title="Голубой градиент"></div>
+                        <div class="color-option" data-color="#43e97b" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" title="Зеленый градиент"></div>
+                        <div class="color-option" data-color="#fa709a" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" title="Оранжевый градиент"></div>
+                        <div class="color-option" data-color="#a8edea" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);" title="Мятный градиент"></div>
+                        <div class="color-option" data-color="#ff6b6b" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);" title="Красный градиент"></div>
+                        <div class="color-option" data-color="#4834d4" style="background: linear-gradient(135deg, #4834d4 0%, #686de0 100%);" title="Фиолетовый градиент"></div>
+                        <div class="color-option" data-color="#00d2d3" style="background: linear-gradient(135deg, #00d2d3 0%, #54a0ff 100%);" title="Бирюзовый градиент"></div>
+                        <div class="color-option" data-color="#ff9ff3" style="background: linear-gradient(135deg, #ff9ff3 0%, #f368e0 100%);" title="Розово-фиолетовый градиент"></div>
+                        <div class="color-option" data-color="#feca57" style="background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);" title="Желто-розовый градиент"></div>
+                        <div class="color-option" data-color="#48dbfb" style="background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);" title="Небесно-голубой градиент"></div>
+                        <div class="color-option" data-color="#1dd1a1" style="background: linear-gradient(135deg, #1dd1a1 0%, #55efc4 100%);" title="Изумрудный градиент"></div>
+                    </div>
+                    
+                    <div class="saved-colors-section">
+                        <div class="saved-colors-header">
+                            <label>Сохраненные цвета:</label>
+                            <button class="clear-saved-colors" id="clearSavedColors" title="Очистить все сохраненные цвета">🗑️</button>
+                        </div>
+                        <div id="savedColorsContainer" class="saved-colors">
+                            <!-- Сохраненные пользовательские цвета будут добавлены динамически -->
+                        </div>
+                    </div>
+                    
+                    <div class="custom-color-section">
+                        <label>Свой цвет:</label>
+                        <div class="custom-color-input">
+                            <input type="color" id="customTagColor" value="#667eea">
+                            <button class="modal-btn primary" id="applyCustomColor">Применить</button>
+                            <button class="modal-btn secondary" id="saveCustomColor" title="Сохранить цвет в палитру">💾</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn secondary" onclick="hideTagsManagementModal()">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<!-- Скрытый input для импорта файлов -->
+<input type="file" id="importFileInput" style="display: none;" accept=".json">
+
+<!-- JavaScript модули -->
+<!-- Утилиты -->
+<script src="assets/js/utils.js"></script>
+
+<!-- API -->
+<script src="assets/js/api.js?v=2.9"></script>
+
+<!-- Domain Manager -->
+<script src="classes/DomainManager/DomainStorage.js?v=3.0"></script>
+<script src="classes/DomainManager/DomainUI.js?v=3.0"></script>
+<script src="classes/DomainManager/DomainManager.js?v=3.0"></script>
+
+<!-- Shared -->
+<script src="classes/Shared/TabManager.js"></script>
+<script src="classes/Shared/ExportManager.js"></script>
+<script src="classes/Shared/NotificationManager.js"></script>
+
+<!-- Tabs -->
+<script src="classes/Overview/OverviewTab.js"></script>
+<script src="classes/Keywords/KeywordsTab.js"></script>
+<script src="classes/Pages/PagesTab.js"></script>
+<script src="classes/Competitors/CompetitorsTab.js"></script>
+
+<!-- Main App (загружается последним) -->
+<script src="assets/js/app.js"></script>
+
+<script>
+// Инициализация приложения
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Keys.so Spy - Модульная архитектура загружена');
+    
+    // Проверяем, что все модули загружены
+    if (typeof Utils === 'undefined') {
+        console.error('Utils не загружен');
+    }
+    if (typeof DomainStorage === 'undefined') {
+        console.error('DomainStorage не загружен');
+    }
+    if (typeof DomainUI === 'undefined') {
+        console.error('DomainUI не загружен');
+    }
+    if (typeof DomainManager === 'undefined') {
+        console.error('DomainManager не загружен');
+    }
+    if (typeof TabManager === 'undefined') {
+        console.error('TabManager не загружен');
+    }
+    if (typeof ExportManager === 'undefined') {
+        console.error('ExportManager не загружен');
+    }
+    if (typeof NotificationManager === 'undefined') {
+        console.error('NotificationManager не загружен');
+    }
+    if (typeof OverviewTab === 'undefined') {
+        console.error('OverviewTab не загружен');
+    }
+    if (typeof KeywordsTab === 'undefined') {
+        console.error('KeywordsTab не загружен');
+    }
+    
+    console.log('Все модули успешно загружены');
+    
+    // Проверяем localStorage перед инициализацией
+    console.log('🔍 Проверяем localStorage...');
+    try {
+        const storedDomains = localStorage.getItem('keyso_saved_domains');
+        console.log('📦 Данные в localStorage:', storedDomains ? 'найдены' : 'не найдены');
+        if (storedDomains) {
+            const domains = JSON.parse(storedDomains);
+            console.log('📊 Количество доменов в localStorage:', domains.length);
+        }
+    } catch (e) {
+        console.error('❌ Ошибка проверки localStorage:', e);
+    }
+    
+    // Инициализация модулей
+    try {
+        console.log('🔧 Создаем экземпляры модулей...');
+        
+        // Создаем экземпляры модулей
+        const domainStorage = new DomainStorage();
+        console.log('✅ DomainStorage создан');
+        
+        const domainUI = new DomainUI();
+        console.log('✅ DomainUI создан');
+        
+        const domainManager = new DomainManager(domainStorage, domainUI);
+        console.log('✅ DomainManager создан');
+        
+        // Проверяем данные в storage
+        const domains = domainStorage.getAllDomains();
+        console.log('📊 Доменов в storage:', domains.length);
+        console.log('📊 Домены:', domains);
+        
+        // Инициализируем UI
+        console.log('🔧 Инициализируем UI...');
+        domainUI.init();
+        console.log('✅ UI инициализирован');
+        
+        // Инициализируем менеджер доменов
+        console.log('🔧 Инициализируем менеджер доменов...');
+        domainManager.init();
+        console.log('✅ Менеджер доменов инициализирован');
+        
+        // Привязываем кнопки к функциям
+        const addDomainBtn = document.getElementById('addDomainBtn');
+        const exportDomainsBtn = document.getElementById('exportDomainsBtn');
+        const importDomainsBtn = document.getElementById('importDomainsBtn');
+        
+        if (addDomainBtn) {
+            addDomainBtn.addEventListener('click', () => {
+                domainUI.addDomain();
+            });
+        }
+        
+        if (exportDomainsBtn) {
+            exportDomainsBtn.addEventListener('click', () => {
+                domainUI.exportDomains();
+            });
+        }
+        
+        if (importDomainsBtn) {
+            importDomainsBtn.addEventListener('click', () => {
+                domainUI.importDomains();
+            });
+        }
+        
+        // Кнопка восстановления данных
+        const restoreDataBtn = document.getElementById('restoreDataBtn');
+        if (restoreDataBtn) {
+            restoreDataBtn.addEventListener('click', () => {
+                console.log('🔄 Восстанавливаем данные...');
+                
+                // Проверяем localStorage
+                const storedDomains = localStorage.getItem('keyso_saved_domains');
+                if (storedDomains) {
+                    try {
+                        const domains = JSON.parse(storedDomains);
+                        console.log('📊 Найдено доменов в localStorage:', domains.length);
+                        
+                        // Перезагружаем данные в storage
+                        domainStorage.loadFromStorage();
+                        const reloadedDomains = domainStorage.getAllDomains();
+                        console.log('📊 Перезагружено доменов:', reloadedDomains.length);
+                        
+                        // Обновляем UI
+                        domainUI.renderDomainList(reloadedDomains);
+                        domainUI.updateCounter(reloadedDomains.length);
+                        
+                        alert(`✅ Данные восстановлены! Найдено ${reloadedDomains.length} доменов.`);
+                    } catch (e) {
+                        console.error('❌ Ошибка восстановления данных:', e);
+                        alert('❌ Ошибка восстановления данных: ' + e.message);
+                    }
+                } else {
+                    console.log('📦 Данные в localStorage не найдены');
+                    alert('❌ Данные в localStorage не найдены. Попробуйте импортировать домены из файла.');
+                }
+            });
+        }
+        
+        
+        
+        // Привязываем кнопки модального окна
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
+        const saveDomainBtn = document.getElementById('saveDomainBtn');
+        
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', () => {
+                domainUI.hideDomainModal();
+            });
+        }
+        
+        if (cancelModalBtn) {
+            cancelModalBtn.addEventListener('click', () => {
+                domainUI.hideDomainModal();
+            });
+        }
+        
+        if (saveDomainBtn) {
+            saveDomainBtn.addEventListener('click', () => {
+                domainUI.saveDomain();
+            });
+        }
+        
+        // Настраиваем обработчики событий для уведомлений
+        domainManager.on('notification', (data) => {
+            if (typeof notificationManager !== 'undefined') {
+                notificationManager[data.type](data.message);
+            } else {
+                console.log(`Уведомление: ${data.type} - ${data.message}`);
+            }
+        });
+        
+        // ВАЖНО: Добавляем обработчик события domainSelected
+        domainManager.on('domainSelected', (domain) => {
+            console.log('Обработчик domainSelected вызван с доменом:', domain);
+            
+            // Подставляем домен в поисковую строку
+            const domainInput = document.getElementById('domainInput');
+            if (domainInput) {
+                domainInput.value = domain.domain;
+                console.log('Домен подставлен в поле:', domain.domain);
+            }
+            
+            // Автоматически запускаем анализ
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            if (analyzeBtn) {
+                analyzeBtn.click();
+            }
+            
+            // Показываем уведомление
+            console.log(`Выбран домен: ${domain.domain}`);
+        });
+        
+        // Инициализация API статуса
+        initializeApiStatus();
+        
+        console.log('✅ Модули инициализированы успешно');
+        
+    } catch (error) {
+        console.error('❌ Ошибка инициализации модулей:', error);
+        
+        // Fallback - простые обработчики для кнопок
+        const addDomainBtn = document.getElementById('addDomainBtn');
+        if (addDomainBtn) {
+            addDomainBtn.addEventListener('click', () => {
+                alert('Модули не загружены. Проверьте консоль браузера на ошибки.');
+            });
+        }
+    }
+});
+
+// Функция инициализации API статуса
+function initializeApiStatus() {
+    const apiIndicator = document.getElementById('apiIndicator');
+    const apiStatusText = document.getElementById('apiStatusText');
+    const checkApiBtn = document.getElementById('checkApiBtn');
+    
+    if (!apiIndicator || !apiStatusText || !checkApiBtn) {
+        console.error('Элементы API статуса не найдены');
+        return;
+    }
+    
+    // Устанавливаем начальный статус
+    setApiStatus('unknown', 'API статус');
+    
+    // Обработчик кнопки проверки
+    checkApiBtn.addEventListener('click', checkApiStatus);
+    
+    // Автоматическая проверка при загрузке
+    setTimeout(checkApiStatus, 1000);
+}
+
+// Функция установки статуса API
+function setApiStatus(status, text) {
+    const apiIndicator = document.getElementById('apiIndicator');
+    const apiStatusText = document.getElementById('apiStatusText');
+    
+    if (!apiIndicator || !apiStatusText) return;
+    
+    // Удаляем все классы статуса (новые и легаси)
+    apiIndicator.classList.remove('api-status-unknown', 'api-status-checking', 'api-status-success', 'api-status-error', 'checking', 'success', 'error');
+    
+    // Добавляем соответствующий класс
+    apiIndicator.classList.add(`api-status-${status}`);
+    apiStatusText.textContent = text;
+    
+    console.log(`API статус: ${status} - ${text}`);
+}
+
+// Функция проверки API статуса
+async function checkApiStatus() {
+    setApiStatus('checking', 'Проверяем...');
+    try {
+        // Дергаем корневой прокси с GET-параметрами (совместимо со спецификацией OpenAPI)
+        const url = '/keys_proxy.php?endpoint=/report/simple/domain_dashboard&domain=yandex.ru&base=msk';
+        const response = await fetch(url, { method: 'GET' });
+
+        if (response.ok) {
+            setApiStatus('success', 'API работает');
+            console.log('✅ API проверка успешна');
+            return;
+        }
+
+        setApiStatus('error', 'Ошибка подключения');
+        console.log('❌ Ошибка HTTP:', response.status);
+    } catch (error) {
+        setApiStatus('error', 'API недоступен');
+        console.log('❌ Ошибка проверки API:', error.message);
+    }
+}
+
+// Глобальная функция для скрытия модального окна подтверждения
+function hideConfirmDeleteTagModal() {
+    if (window.domainUI) {
+        window.domainUI.hideConfirmDeleteTagModal();
+    }
+}
+
+// Глобальная функция для скрытия модального окна управления тегами
+function hideTagsManagementModal() {
+    if (window.domainUI) {
+        window.domainUI.hideTagsManagementModal();
+    }
+}
+
+// Глобальная функция для скрытия палитры цветов
+function hideTagColorPalette() {
+    if (window.domainUI) {
+        window.domainUI.hideTagColorPalette();
+    }
+}
+</script>
+
+</body>
+</html>

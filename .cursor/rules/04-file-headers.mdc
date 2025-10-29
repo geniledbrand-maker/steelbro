@@ -1,0 +1,141 @@
+---
+description: File headers with path and date for all code files
+globs: ["**/*.js", "**/*.ts", "**/*.jsx", "**/*.tsx", "**/*.py", "**/*.css", "**/*.html"]
+alwaysApply: true
+---
+
+# FILE HEADERS - MANDATORY
+
+## HEADER FORMAT
+
+**ALWAYS** start every code file with:
+
+```
+# File: relative/path/to/file.ext
+# Created: YYYY-MM-DD
+# Modified: YYYY-MM-DD
+```
+
+**ALWAYS** end every code file with:
+
+```
+# End of file: relative/path/to/file.ext
+# Last modified: YYYY-MM-DD
+```
+
+## COMMENT SYNTAX BY LANGUAGE
+
+Use appropriate comment syntax:
+
+- **Python**: `#`
+- **JavaScript/TypeScript**: `//`
+- **CSS**: `/* */`
+- **HTML**: `<!-- -->`
+
+## UPDATE MODIFIED DATE
+
+- Update "Modified" date **every time** you edit the file
+- Keep "Created" date unchanged
+- Use ISO format: YYYY-MM-DD
+
+## EXAMPLES
+
+### Python
+
+```python
+# File: src/utils/helpers.py
+# Created: 2025-01-20
+# Modified: 2025-01-22
+
+def process_data(data):
+    # Your code here
+    pass
+
+# End of file: src/utils/helpers.py
+# Last modified: 2025-01-22
+```
+
+### JavaScript/TypeScript
+
+```javascript
+// File: src/components/Button.tsx
+// Created: 2025-01-20
+// Modified: 2025-01-22
+
+export const Button = () => {
+  return <button>Click me</button>;
+};
+
+// End of file: src/components/Button.tsx
+// Last modified: 2025-01-22
+```
+
+### CSS
+
+```css
+/* File: src/styles/global.css */
+/* Created: 2025-01-20 */
+/* Modified: 2025-01-22 */
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* End of file: src/styles/global.css */
+/* Last modified: 2025-01-22 */
+```
+
+### HTML
+
+```html
+<!-- File: src/pages/index.html -->
+<!-- Created: 2025-01-20 -->
+<!-- Modified: 2025-01-22 -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Page Title</title>
+  </head>
+  <body>
+    <!-- Content -->
+  </body>
+</html>
+
+<!-- End of file: src/pages/index.html -->
+<!-- Last modified: 2025-01-22 -->
+```
+
+## WHEN TO ADD HEADERS
+
+Add headers to:
+
+- All source code files
+- Configuration files
+- Scripts
+- Stylesheets
+- Templates
+
+## WHEN NOT TO ADD HEADERS
+
+Skip headers for:
+
+- Auto-generated files
+- package.json, package-lock.json
+- .gitignore, .editorconfig
+- README.md (use title instead)
+
+## BENEFITS
+
+- Quick identification of file location
+- Track when file was last modified
+- Helps with debugging and maintenance
+- Easy to see file history at a glance
+
+## REMEMBER
+
+- Headers at the **start** of file
+- Footers at the **end** of file
+- Update "Modified" date on **every edit**
+- Use relative path from project root

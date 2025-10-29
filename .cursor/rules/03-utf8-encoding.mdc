@@ -1,0 +1,184 @@
+---
+description: UTF-8 encoding without BOM for all text files
+globs: ["**/*.js", "**/*.ts", "**/*.jsx", "**/*.tsx", "**/*.py", "**/*.json", "**/*.md", "**/*.css", "**/*.html"]
+alwaysApply: true
+---
+
+# UTF-8 WITHOUT BOM ENCODING
+
+## ENCODING REQUIREMENTS (STRICT)
+
+- **ALL** text files MUST use UTF-8 encoding **without BOM**
+- **NEVER** use UTF-8 with BOM
+- **NEVER** use Windows-1251, CP1251, or other encodings
+- Check file encoding before saving
+
+## WHY UTF-8 WITHOUT BOM
+
+- BOM causes issues in many tools and parsers
+- BOM breaks shebang in scripts (#!/usr/bin/env)
+- Most modern tools expect UTF-8 without BOM
+- Better cross-platform compatibility
+- Prevents hidden characters at file start
+
+## FILE CREATION - CORRECT APPROACH
+
+### Node.js
+
+```javascript
+// Always specify UTF-8 explicitly
+fs.writeFileSync('file.txt', content, { encoding: 'utf8' });
+
+// For streams
+const stream = fs.createWriteStream('file.txt', { encoding: 'utf8' });
+```
+
+### Python
+
+```python
+# Always specify UTF-8 encoding
+with open('file.txt', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+# Reading
+with open('file.txt', 'r', encoding='utf-8') as f:
+    content = f.read()
+```
+
+### PowerShell
+
+```powershell
+# Write UTF-8 without BOM
+[IO.File]::WriteAllText('file.txt', $content, [System.Text.UTF8Encoding]($false))
+
+# Or use Out-File with UTF8NoBOM (PowerShell 6+)
+$content | Out-File -FilePath 'file.txt' -Encoding utf8NoBOM
+```
+
+## RUSSIAN TEXT SUPPORT
+
+- UTF-8 without BOM perfectly supports Cyrillic
+- No need for Windows-1251 or other legacy encodings
+- Test with Russian characters: "Тест кириллицы 123"
+- Ensure console/terminal supports UTF-8
+
+## LINE ENDINGS
+
+- Use **LF** (`\n`) for line endings, not CRLF (`\r\n`)
+- Consistent across all platforms
+- Configure git: `git config --global core.autocrlf false`
+
+## .EDITORCONFIG
+
+Add to project root:
+
+```ini
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+```
+
+## VSCODE SETTINGS
+
+Ensure settings.json contains:
+
+```json
+{
+  "files.encoding": "utf8",
+  "files.autoGuessEncoding": false,
+  "files.eol": "\n"
+}
+```
+
+## JSON FILES SPECIAL NOTE
+
+- JSON MUST be UTF-8
+- Use `ensure_ascii=False` in Python `json.dump()`
+
+### Python JSON
+
+```python
+import json
+
+with open('data.json', 'w', encoding='utf-8') as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+```
+
+### Node.js JSON
+
+```javascript
+fs.writeFileSync('data.json',
+  JSON.stringify(data, null, 2),
+  { encoding: 'utf8' }
+);
+```
+
+## COMMON ENCODING ISSUES
+
+- ❌ Russian text shows as "РєСЂРёР»Р»РёС†Р°"
+  - ✅ Solution: Convert to UTF-8 without BOM
+
+- ❌ Script fails with "unexpected character"
+  - ✅ Solution: Remove BOM from file start
+
+- ❌ Git shows file as changed but no visible diff
+  - ✅ Solution: Line endings or BOM changed, normalize encoding
+
+## GIT CONFIGURATION
+
+```bash
+# Set Git to handle line endings properly
+git config --global core.autocrlf false
+git config --global core.eol lf
+```
+
+## .GITATTRIBUTES
+
+Add to project root:
+
+```
+# Auto-detect text files and normalize to LF
+* text=auto eol=lf
+
+# Explicitly mark files as text
+*.js text eol=lf
+*.ts text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+
+# Denote binary files
+*.png binary
+*.jpg binary
+```
+
+## VALIDATION CHECKLIST
+
+Before committing files, verify:
+
+- [ ] Encoding is UTF-8 without BOM
+- [ ] Line endings are LF (`\n`)
+- [ ] No trailing whitespace
+- [ ] File ends with newline
+- [ ] Russian text displays correctly
+
+## CURSOR AI BEHAVIOR
+
+- When creating **ANY** text file, use UTF-8 without BOM
+- When reading files, assume UTF-8
+- When editing existing files, preserve UTF-8 without BOM
+- Never suggest UTF-8 with BOM encoding
+- Alert if file appears to have wrong encoding
+
+## REMEMBER
+
+- UTF-8 without BOM is the default standard
+- Always explicitly specify encoding in code
+- Test Russian/Cyrillic text after changes
+- Use LF line endings consistently
+- Configure editor and Git properly

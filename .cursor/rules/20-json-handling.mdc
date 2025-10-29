@@ -1,0 +1,289 @@
+---
+description: JSON data handling for all data persistence
+globs: ["**/*.js", "**/*.ts", "**/*.py"]
+---
+
+# JSON DATA HANDLING - MANDATORY
+
+## CORE PRINCIPLE
+
+**ALWAYS use JSON for data persistence**
+
+- Save to: `data/output/filename.json`
+- Load from: `data/input/filename.json`
+- Pretty print with indentation
+- Use UTF-8 encoding
+- Never use pickle or other serialization
+
+## STANDARD JSON STRUCTURE
+
+```json
+{
+  "metadata": {
+    "created": "2025-01-20T10:30:00Z",
+    "version": "1.0",
+    "description": "Brief description"
+  },
+  "data": [
+    // Your actual data here
+  ]
+}
+```
+
+## NODE.JS / TYPESCRIPT
+
+### Save JSON
+
+```javascript
+const fs = require('fs').promises;
+
+const data = {
+  metadata: {
+    created: new Date().toISOString(),
+    version: "1.0"
+  },
+  data: items
+};
+
+await fs.writeFile(
+  'data/output/result.json',
+  JSON.stringify(data, null, 2),
+  'utf8'
+);
+```
+
+### Load JSON
+
+```javascript
+const fs = require('fs').promises;
+
+const content = await fs.readFile(
+  'data/input/source.json',
+  'utf8'
+);
+const data = JSON.parse(content);
+```
+
+### With Error Handling
+
+```javascript
+async function saveJSON(filename, data) {
+  try {
+    const json = JSON.stringify(data, null, 2);
+    await fs.writeFile(
+      `data/output/${filename}`,
+      json,
+      'utf8'
+    );
+    console.log(`Saved: ${filename}`);
+  } catch (error) {
+    console.error(`Error saving ${filename}:`, error);
+    throw error;
+  }
+}
+
+async function loadJSON(filename) {
+  try {
+    const content = await fs.readFile(
+      `data/input/${filename}`,
+      'utf8'
+    );
+    return JSON.parse(content);
+  } catch (error) {
+    console.error(`Error loading ${filename}:`, error);
+    throw error;
+  }
+}
+```
+
+## PYTHON
+
+### Save JSON
+
+```python
+import json
+from datetime import datetime
+
+data = {
+    "metadata": {
+        "created": datetime.now().isoformat(),
+        "version": "1.0"
+    },
+    "data": items
+}
+
+with open('data/output/result.json', 'w', encoding='utf-8') as f:
+    json.dump(data, f, indent=2, ensure_ascii=False)
+```
+
+### Load JSON
+
+```python
+import json
+
+with open('data/input/source.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+```
+
+### With Error Handling
+
+```python
+import json
+import logging
+
+def save_json(filename, data):
+    try:
+        with open(f'data/output/{filename}', 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        logging.info(f'Saved: {filename}')
+    except Exception as e:
+        logging.error(f'Error saving {filename}: {e}')
+        raise
+
+def load_json(filename):
+    try:
+        with open(f'data/input/{filename}', 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        logging.error(f'File not found: {filename}')
+        raise
+    except json.JSONDecodeError as e:
+        logging.error(f'Invalid JSON in {filename}: {e}')
+        raise
+```
+
+## JSON RULES
+
+### Required
+
+- ✅ Pretty print with `indent=2`
+- ✅ Use UTF-8 encoding
+- ✅ Use `ensure_ascii=False` in Python (for Cyrillic)
+- ✅ Always handle JSON parse errors
+- ✅ Validate JSON structure after loading
+- ✅ Use meaningful key names in English
+
+### Prohibited
+
+- ❌ Never use pickle/serialization - only JSON
+- ❌ Never hardcode file paths
+- ❌ Never skip error handling
+- ❌ Never mix data formats (stick to JSON)
+
+## FILE SIZE LIMITS
+
+- Keep JSON files **under 100MB**
+- If larger - split into multiple files
+- Consider streaming for very large datasets
+
+## KEY NAMING CONVENTIONS
+
+```json
+{
+  "userId": 123,              // camelCase for keys
+  "userName": "John",
+  "createdAt": "2025-01-20",
+  "isActive": true,
+  "items": [
+    {
+      "itemId": 1,
+      "itemName": "Product"
+    }
+  ]
+}
+```
+
+## SENSITIVE DATA
+
+If JSON contains sensitive data:
+
+- Add `*.json` to `.gitignore` (if needed)
+- Create example files: `config.example.json`
+- Document required fields
+- Never commit API keys or secrets
+
+## VALIDATION
+
+Always validate JSON after loading:
+
+```typescript
+// TypeScript with Zod
+import { z } from 'zod';
+
+const dataSchema = z.object({
+  metadata: z.object({
+    created: z.string(),
+    version: z.string()
+  }),
+  data: z.array(z.any())
+});
+
+const result = dataSchema.parse(jsonData);
+```
+
+```python
+# Python with basic validation
+def validate_json_structure(data):
+    if not isinstance(data, dict):
+        raise ValueError("JSON must be an object")
+    
+    if "metadata" not in data:
+        raise ValueError("Missing 'metadata' field")
+    
+    if "data" not in data:
+        raise ValueError("Missing 'data' field")
+    
+    return True
+```
+
+## COMMON PATTERNS
+
+### Append to JSON Array
+
+```javascript
+// Read existing data
+const existing = await loadJSON('data.json');
+
+// Append new item
+existing.data.push(newItem);
+
+// Save back
+await saveJSON('data.json', existing);
+```
+
+### Merge JSON Files
+
+```javascript
+const file1 = await loadJSON('data1.json');
+const file2 = await loadJSON('data2.json');
+
+const merged = {
+  metadata: {
+    created: new Date().toISOString(),
+    version: "1.0",
+    sources: ['data1.json', 'data2.json']
+  },
+  data: [...file1.data, ...file2.data]
+};
+
+await saveJSON('merged.json', merged);
+```
+
+## DEBUGGING JSON
+
+```powershell
+# PowerShell - validate JSON
+Get-Content data.json | ConvertFrom-Json | ConvertTo-Json -Depth 10
+
+# PowerShell - pretty print JSON
+Get-Content data.json | ConvertFrom-Json | ConvertTo-Json -Depth 10 | Out-File formatted.json
+```
+
+## REMEMBER
+
+- JSON is human-readable
+- Always use proper encoding (UTF-8)
+- Validate before and after operations
+- Handle errors gracefully
+- Keep structure consistent
+- Document your JSON schema

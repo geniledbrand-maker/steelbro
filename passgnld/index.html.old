@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор паролей</title>
+    <link rel="stylesheet" href="stylepass.css?v=5">
+    <link rel="stylesheet" href="notes-system.css?v=6">
+
+    <!-- Highlight.js для подсветки синтаксиса кода -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <!-- Markdown parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+<div class="main-container">
+    <div class="container">
+        <h1>Генератор паролей</h1>
+
+        <div class="tab-switcher" role="tablist">
+            <button class="tab-btn active" data-tab="employee" data-label="Сотрудники" aria-selected="true">Сотрудники</button>
+            <button class="tab-btn" data-tab="service" data-label="Проекты и сервисы" aria-selected="false">Проекты и сервисы</button>
+            <button class="tab-btn" data-tab="note" data-label="Заметки" data-hide-generator="true" aria-selected="false">Заметки</button>
+        </div>
+
+        <div class="password-generator" id="passwordGenerator">
+            <button class="toggle-settings-btn" id="toggleSettingsBtn">
+                <span id="toggleIcon">▼</span> Настройки генерации
+            </button>
+
+            <div class="controls" id="passwordControls">
+                <div class="control-group">
+                    <label for="length">Длина пароля:</label>
+                    <input type="range" id="length" min="6" max="32" value="12">
+                    <div class="length-value" id="lengthValue">12</div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="uppercase" checked>
+                    <label for="uppercase">Заглавные буквы (A-Z)</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="lowercase" checked>
+                    <label for="lowercase">Строчные буквы (a-z)</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="numbers" checked>
+                    <label for="numbers">Цифры (0-9)</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="symbols" checked>
+                    <label for="symbols">Символы (!@#$%^&*)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- ВКЛАДКА: Сотрудники -->
+        <div class="tab-content" id="employeeTab" role="tabpanel" aria-labelledby="employee">
+            <h2>Данные для сотрудников</h2>
+            <div class="form-grid">
+                <div class="control-group">
+                    <label for="employeeEmail">Email / логин *</label>
+                    <input type="email" id="employeeEmail" placeholder="user@company.com">
+                </div>
+                <div class="control-group">
+                    <label for="employeePassword">Пароль *</label>
+                    <div class="password-display" id="passwordEmployee"></div>
+
+                    <div class="manual-password-toggle">
+                        <input type="checkbox" id="manualPasswordCheckbox">
+                        <label for="manualPasswordCheckbox">Ввести пароль вручную</label>
+                    </div>
+
+                    <div class="manual-password-input" id="manualPasswordInput">
+                        <input type="text" id="manualPasswordField" placeholder="Введите свой пароль...">
+                    </div>
+
+                    <div class="password-buttons">
+                        <button type="button" class="generate-btn" id="generateBtn">Создать пароль</button>
+                        <button type="button" class="copy-btn" id="copyBtn">Копировать</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="employeePhone">Телефон *</label>
+                    <input type="tel" id="employeePhone" placeholder="+7 900 000-00-00">
+                </div>
+                <div class="control-group full-width">
+                    <label for="employeeProjectDescription">Описание проекта *</label>
+                    <textarea id="employeeProjectDescription" rows="3" placeholder="Краткое пояснение по клиенту или задаче"></textarea>
+                </div>
+                <div class="control-group full-width">
+                    <label for="employeePriceGroupInput">Группы по типам цен</label>
+                    <div class="price-group-input">
+                        <input type="text" id="employeePriceGroupInput" placeholder="Например: Розничная">
+                        <button type="button" class="manage-price-group-btn" id="addPriceGroupBtn">Добавить группу</button>
+                    </div>
+                    <div class="selected-price-groups" id="selectedPriceGroups">
+                        <span class="placeholder">Группы не выбраны</span>
+                    </div>
+                </div>
+            </div>
+            <button class="save-btn" id="saveEmployeeBtn">Сохранить пароль сотрудника</button>
+        </div>
+
+        <!-- ВКЛАДКА: Проекты и сервисы -->
+        <div class="tab-content hidden" id="serviceTab" role="tabpanel" aria-labelledby="service">
+            <h2>Данные для сервисов и доменов</h2>
+            <div class="form-grid">
+                <div class="control-group">
+                    <label for="serviceDescription">Название *</label>
+                    <input type="text" id="serviceDescription" placeholder="Gmail, Facebook, Wi-Fi...">
+                </div>
+                <div class="control-group">
+                    <label for="serviceEmail">Email / логин</label>
+                    <input type="text" id="serviceEmail" placeholder="ivanov@company.com">
+                </div>
+                <div class="control-group">
+                    <label for="servicePassword">Пароль *</label>
+                    <div class="password-display" id="passwordService"></div>
+                </div>
+                <div class="control-group">
+                    <label for="serviceUrl">Ссылка на ресурс</label>
+                    <input type="url" id="serviceUrl" placeholder="https://project.example.com">
+                </div>
+                <div class="control-group full-width">
+                    <label for="serviceProjectDescription">Описание проекта</label>
+                    <textarea id="serviceProjectDescription" placeholder="Что это за проект, важные детали"></textarea>
+                </div>
+                <div class="inline-fields">
+                    <div class="control-group">
+                        <label for="serviceStartDate">Дата начала</label>
+                        <input type="date" id="serviceStartDate">
+                    </div>
+                    <div class="control-group">
+                        <label for="serviceEndDate">Дата окончания</label>
+                        <input type="date" id="serviceEndDate">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="servicePaymentInfo">Оплата / комментарий</label>
+                    <input type="text" id="servicePaymentInfo" placeholder="Например: безнал, 12 000 ₽">
+                </div>
+                <div class="control-group full-width">
+                    <label for="serviceTagInput">Теги</label>
+                    <div class="price-group-input">
+                        <input type="text" id="serviceTagInput" placeholder="Например: работа, важное...">
+                        <button type="button" class="manage-price-group-btn" id="addServiceTagBtn">Добавить тег</button>
+                    </div>
+                    <div class="selected-price-groups" id="selectedServiceTags">
+                        <span class="placeholder">Теги не выбраны</span>
+                    </div>
+                </div>
+            </div>
+            <button class="save-btn" id="saveBtn">Сохранить пароль</button>
+        </div>
+
+        <!-- ВКЛАДКА: Note (Заметки) -->
+        <div class="tab-content hidden" id="noteTab" role="tabpanel" aria-labelledby="note">
+            <!-- Панель управления заметками -->
+            <div class="notes-header">
+                <button class="notes-new-btn" id="createNoteBtn">
+                    <span>✨</span> Новая заметка
+                </button>
+                <div class="notes-search-container">
+                    <input type="text" class="notes-search-input" id="notesSearchInput" placeholder="🔍 Поиск по заметкам...">
+                </div>
+            </div>
+
+            <!-- Layout заметок -->
+            <div class="notes-layout">
+                <!-- Боковая панель со списком заметок -->
+                <div class="notes-sidebar">
+                    <div class="notes-list" id="notesList">
+                        <div class="notes-empty-state">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            <p>Заметок пока нет</p>
+                            <small>Создайте первую заметку</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Редактор заметок -->
+                <div class="notes-editor-container hidden" id="notesEditorContainer">
+                    <div class="notes-editor-header">
+                        <input type="text" class="notes-title-input" id="noteTitle" placeholder="Название заметки">
+                        <div class="notes-editor-actions">
+                            <button class="notes-action-btn" id="togglePreviewBtn" title="Переключить предпросмотр">
+                                <span>👁️</span>
+                            </button>
+                            <button class="notes-action-btn notes-save-btn" id="saveNoteBtn" title="Сохранить">
+                                <span>💾</span>
+                            </button>
+                            <button class="notes-action-btn notes-delete-btn" id="deleteNoteBtn" title="Удалить">
+                                <span>🗑️</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Управление тегами -->
+                    <div class="notes-tags-section">
+                        <div class="notes-tags-input-group">
+                            <input type="text" id="noteTagInput" placeholder="Добавить тег...">
+                            <button class="notes-add-tag-btn" id="addNoteTagBtn">+</button>
+                        </div>
+                        <div class="notes-tags-list" id="noteTagsList">
+                            <span class="notes-tags-placeholder">Теги не добавлены</span>
+                        </div>
+                    </div>
+
+                    <!-- Markdown редактор с превью и ПАНЕЛЬЮ ИНСТРУМЕНТОВ -->
+                    <div class="notes-editor-layout" id="notesEditorLayout">
+                        <div class="notes-editor-pane">
+                            <!-- НОВАЯ ПАНЕЛЬ ИНСТРУМЕНТОВ -->
+                            <div class="notes-editor-pane-header">
+                                <div class="markdown-toolbar">
+                                    <!-- Форматирование текста -->
+                                    <button class="markdown-toolbar-btn bold" data-action="bold" title="Жирный текст">
+                                        <span class="markdown-toolbar-btn-icon">B</span>
+                                    </button>
+                                    <button class="markdown-toolbar-btn italic" data-action="italic" title="Курсив">
+                                        <span class="markdown-toolbar-btn-icon">I</span>
+                                    </button>
+                                    <button class="markdown-toolbar-btn" data-action="strikethrough" title="Зачеркнутый">
+                                        <span class="markdown-toolbar-btn-icon">S̶</span>
+                                    </button>
+
+                                    <div class="markdown-toolbar-separator"></div>
+
+                                    <!-- Заголовки -->
+                                    <button class="markdown-toolbar-btn" data-action="heading1" title="Заголовок 1">
+                                        <span class="markdown-toolbar-btn-icon">H1</span>
+                                    </button>
+                                    <button class="markdown-toolbar-btn" data-action="heading2" title="Заголовок 2">
+                                        <span class="markdown-toolbar-btn-icon">H2</span>
+                                    </button>
+                                    <button class="markdown-toolbar-btn" data-action="heading3" title="Заголовок 3">
+                                        <span class="markdown-toolbar-btn-icon">H3</span>
+                                    </button>
+
+                                    <div class="markdown-toolbar-separator"></div>
+
+                                    <!-- Списки -->
+                                    <button class="markdown-toolbar-btn" data-action="list-ul" title="Маркированный список">
+                                        <span class="markdown-toolbar-btn-icon">☰</span>
+                                    </button>
+                                    <button class="markdown-toolbar-btn" data-action="list-ol" title="Нумерованный список">
+                                        <span class="markdown-toolbar-btn-icon">⒈</span>
+                                    </button>
+                                    <button class="markdown-toolbar-btn" data-action="task" title="Список задач">
+                                        <span class="markdown-toolbar-btn-icon">☑</span>
+                                    </button>
+
+                                    <div class="markdown-toolbar-separator"></div>
+
+                                    <!-- Код -->
+                                    <button class="markdown-toolbar-btn code" data-action="code-inline" title="Встроенный код">
+                                        <span class="markdown-toolbar-btn-icon">&lt;/&gt;</span>
+                                    </button>
+                                    <button class="markdown-toolbar-btn" data-action="code-block" title="Блок кода">
+                                        <span class="markdown-toolbar-btn-icon">{ }</span>
+                                    </button>
+
+                                    <div class="markdown-toolbar-separator"></div>
+
+                                    <!-- Вставки -->
+                                    <button class="markdown-toolbar-btn" data-action="link" title="Ссылка">
+                                        <span class="markdown-toolbar-btn-icon">🔗</span>
+                                    </button>
+                                    <button class="markdown-toolbar-btn" data-action="image" title="Изображение">
+                                        <span class="markdown-toolbar-btn-icon">🖼️</span>
+                                    </button>
+                                    <button class="markdown-toolbar-btn" data-action="quote" title="Цитата">
+                                        <span class="markdown-toolbar-btn-icon">❝</span>
+                                    </button>
+
+                                    <div class="markdown-toolbar-separator"></div>
+
+                                    <!-- Дополнительно -->
+                                    <button class="markdown-toolbar-btn" data-action="table" title="Таблица">
+                                        <span class="markdown-toolbar-btn-icon">⊞</span>
+                                    </button>
+                                    <button class="markdown-toolbar-btn" data-action="hr" title="Горизонтальная линия">
+                                        <span class="markdown-toolbar-btn-icon">―</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <textarea class="notes-markdown-editor" id="noteContent" placeholder="# Начните писать заметку в Markdown
+
+## Поддерживаемые возможности:
+- **Жирный текст**
+- *Курсив*
+- `Код`
+- [Ссылки](https://example.com)
+- ![Изображения](url)
+
+### Списки
+1. Нумерованный
+2. Список
+
+- Маркированный
+- Список
+
+> Цитата
+
+```javascript
+// Блок кода
+console.log('Hello World');
+```"></textarea>
+                        </div>
+                        <div class="notes-preview-pane" id="notesPreviewPane">
+                            <div class="notes-editor-pane-header">Предпросмотр</div>
+                            <div class="notes-preview-content" id="notePreview">
+                                <p class="notes-preview-placeholder">Предпросмотр появится здесь...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Заглушка для пустого состояния -->
+                <div class="notes-empty-editor" id="notesEmptyEditor">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <h3>Выберите заметку или создайте новую</h3>
+                    <p>Создавайте красивые заметки с Markdown</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="message" id="message"></div>
+    </div>
+
+    <div class="container">
+        <h1>Сохранённые пароли</h1>
+
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Поиск по email, паролю, тегам, описанию...">
+        </div>
+
+        <div class="filter-tags" id="filterTags"></div>
+
+        <div class="saved-passwords" id="employeePasswordsList" data-category="employee">
+            <div class="empty-state">
+                <svg fill="#9ca3af" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
+                    <path d="M7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/>
+                </svg>
+                <p>Паролей сотрудников пока нет</p>
+            </div>
+        </div>
+
+        <div class="saved-passwords hidden" id="servicePasswordsList" data-category="service">
+            <div class="empty-state">
+                <svg fill="#9ca3af" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
+                    <path d="M7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/>
+                </svg>
+                <p>Паролей сервисов пока нет</p>
+            </div>
+        </div>
+
+        <!-- Блок заметок скрыт когда активна вкладка Note -->
+        <div class="saved-passwords hidden" id="noteContent" data-category="note">
+            <div class="empty-state">
+                <svg fill="#9ca3af" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
+                    <path d="M7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/>
+                </svg>
+                <p>Используйте вкладку Note для заметок</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="tagModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Выбор тегов</h2>
+            <button class="modal-close" id="modalCloseBtn">×</button>
+        </div>
+
+        <div class="modal-search">
+            <input type="text" id="modalSearchInput" placeholder="Поиск тегов...">
+        </div>
+
+        <div class="modal-new-tag">
+            <input type="text" id="modalNewTagInput" placeholder="Создать новый тег...">
+            <button id="createTagBtn">Создать</button>
+        </div>
+
+        <div class="selected-tags-preview">
+            <div class="selected-tags-preview-title">Выбранные теги</div>
+            <div class="tags-list" id="modalSelectedTags">
+                <span style="color: #9ca3af; font-size: 12px;">Теги не выбраны</span>
+            </div>
+        </div>
+
+        <div class="modal-tags-list" id="modalTagsList">
+            <p style="color: #9ca3af; text-align: center; font-size: 13px;">Нет доступных тегов. Создайте новый!</p>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="modal-save-btn" id="modalSaveBtn">Сохранить пароль</button>
+            <button class="modal-cancel-btn" id="modalCancelBtn">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js?v=6"></script>
+<script src="notes-system.js?v=6"></script>
+</body>
+</html>

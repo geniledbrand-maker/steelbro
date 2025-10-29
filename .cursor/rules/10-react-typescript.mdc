@@ -1,0 +1,277 @@
+---
+description: React and TypeScript best practices
+globs: ["**/*.tsx", "**/*.jsx", "**/*.ts"]
+---
+
+# REACT & TYPESCRIPT BEST PRACTICES
+
+## COMPONENT STRUCTURE
+
+- **Functional components only** (no class components)
+- One component per file
+- Order: imports → types → component → exports
+- Props destructuring in function params
+
+## COMPONENT TEMPLATE
+
+```typescript
+// File: src/components/ComponentName.tsx
+// Created: YYYY-MM-DD
+// Modified: YYYY-MM-DD
+
+import React from 'react';
+import styles from './ComponentName.module.css';
+
+interface ComponentNameProps {
+  title: string;
+  onClick?: () => void;
+}
+
+/**
+ * Component description
+ */
+export const ComponentName: React.FC<ComponentNameProps> = ({
+  title,
+  onClick
+}) => {
+  // Hooks first
+  const [state, setState] = React.useState('');
+
+  // Event handlers
+  const handleClick = () => {
+    onClick?.();
+  };
+
+  // Render
+  return (
+    <div className={styles.container}>
+      <h2>{title}</h2>
+      <button onClick={handleClick}>Click</button>
+    </div>
+  );
+};
+
+// End of file: src/components/ComponentName.tsx
+// Last modified: YYYY-MM-DD
+```
+
+## HOOKS RULES
+
+- Call hooks at **top level only**
+- Don't call hooks in conditions/loops
+- Custom hooks start with 'use'
+- useEffect cleanup functions for subscriptions
+- Proper dependency arrays in useEffect/useMemo/useCallback
+
+## STATE MANAGEMENT
+
+- `useState` for local state
+- `useReducer` for complex state logic
+- Context for global state (use sparingly)
+- Consider Zustand/Redux for large apps
+
+## TYPESCRIPT BEST PRACTICES
+
+### Strict Typing
+
+- Enable strict mode in `tsconfig.json`
+- Avoid `any` type - use `unknown` if needed
+- Define interfaces for all data structures
+- Use type guards for runtime checks
+- Export types from modules
+
+### Type Definitions
+
+```typescript
+// API Response
+interface ApiResponse<T> {
+  data: T;
+  error?: string;
+  status: number;
+}
+
+// React Component Props
+interface ButtonProps {
+  onClick: () => void;
+  children: React.ReactNode;
+  disabled?: boolean;
+}
+
+// Function signatures
+type Handler = (event: Event) => void;
+```
+
+### Type vs Interface
+
+- Use `type` for unions/intersections
+- Use `interface` for object shapes (can extend)
+
+### Avoid
+
+- ❌ `any` (use `unknown` or proper types)
+- ❌ Type assertions without validation
+- ❌ Ignoring TypeScript errors with `@ts-ignore`
+- ❌ Empty interfaces
+
+## PERFORMANCE OPTIMIZATION
+
+- Use `React.memo()` for expensive components
+- Use `useMemo()` for expensive calculations
+- Use `useCallback()` for functions passed as props
+- Avoid inline function definitions in JSX
+- Lazy load components: `React.lazy()`
+- Code splitting for large bundles
+
+## CONDITIONAL RENDERING
+
+```typescript
+// Simple condition - use &&
+{isLoggedIn && <UserProfile />}
+
+// If/else - use ternary
+{isLoggedIn ? <UserProfile /> : <LoginButton />}
+
+// Complex conditions - extract to variable
+const shouldShowModal = isLoggedIn && hasPermission && !isLoading;
+{shouldShowModal && <Modal />}
+
+// Avoid nested ternaries
+```
+
+## LISTS
+
+```typescript
+// Always use unique, stable keys
+{items.map(item => (
+  <Item key={item.id} data={item} />
+))}
+
+// Don't use index as key if list can change
+// Bad ❌
+{items.map((item, index) => (
+  <Item key={index} data={item} />
+))}
+```
+
+## CUSTOM HOOKS PATTERN
+
+```typescript
+// File: src/hooks/useFetch.ts
+// Created: YYYY-MM-DD
+// Modified: YYYY-MM-DD
+
+import { useState, useEffect } from 'react';
+
+function useFetch<T>(url: string) {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(url);
+        const json = await response.json();
+        if (!cancelled) {
+          setData(json);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err as Error);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => { cancelled = true; };
+  }, [url]);
+
+  return { data, loading, error };
+}
+
+export default useFetch;
+
+// End of file: src/hooks/useFetch.ts
+// Last modified: YYYY-MM-DD
+```
+
+## COMMON CUSTOM HOOKS
+
+- `useLocalStorage` - persist state to localStorage
+- `useDebounce` - debounce values
+- `useMediaQuery` - responsive design
+- `useOnClickOutside` - detect clicks outside element
+- `useAsync` - handle async operations
+- `usePrevious` - get previous value
+
+## FORM HANDLING
+
+### Recommended Libraries
+
+- **React Hook Form** (recommended)
+- Validation: **Zod** or **Yup**
+
+### Example with Zod
+
+```typescript
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const schema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Min 8 characters'),
+});
+
+const { register, handleSubmit, formState: { errors } } = useForm({
+  resolver: zodResolver(schema)
+});
+```
+
+## STYLING
+
+### CSS Modules (Recommended)
+
+```typescript
+import styles from './Button.module.css';
+
+<button className={styles.button}>Click</button>
+```
+
+### Tailwind
+
+- Use utility classes
+- Extract repeated patterns to components
+- Configure theme in `tailwind.config.js`
+
+## NAMING CONVENTIONS
+
+- Components: `PascalCase` (UserProfile, NavBar)
+- Files: `PascalCase` (UserProfile.tsx)
+- Props interfaces: `ComponentNameProps`
+- Hooks: `camelCase` starting with 'use' (useFetch, useAuth)
+- Constants: `UPPER_SNAKE_CASE` (API_URL, MAX_RETRIES)
+
+## ACCESSIBILITY
+
+- Use semantic HTML elements
+- Add `aria-label` for icon buttons
+- Proper label associations with inputs
+- Keyboard navigation support
+- Alt text for images
+
+## REMEMBER
+
+- Think in components
+- Keep components small and focused
+- Extract reusable logic to hooks
+- Type everything with TypeScript
+- Test critical components

@@ -1,0 +1,331 @@
+---
+description: Debugging strategies and emergency fixes
+globs: ["**/*"]
+---
+
+# DEBUGGING & EMERGENCY FIXES
+
+## WHEN CODE FAILS
+
+Follow this checklist:
+
+1. **Read the FULL error message** carefully
+2. Check the **line number** and context
+3. Verify **file paths** exist
+4. Check **variable types**
+5. Add console.log/print to **track values**
+6. Test with **simpler input** first
+
+## COMMON MISTAKES TO CHECK
+
+- ✓ Typos in variable names
+- ✓ Wrong file paths (use absolute when debugging)
+- ✓ Missing imports
+- ✓ Missing `await` for async functions
+- ✓ JSON parse errors (check format)
+- ✓ Type mismatches
+- ✓ Undefined variables
+
+## DEBUGGING TOOLS
+
+### PowerShell
+
+```powershell
+# Output for debugging
+Write-Host "Debug: value = $value"
+
+# Check file contents
+Get-Content file.txt
+
+# Verify path exists
+Test-Path "C:\path\to\file"
+
+# Show variable type
+$value.GetType()
+```
+
+### Node.js
+
+```javascript
+// Simple logging
+console.log('value:', value);
+
+// Detailed object inspection
+console.dir(object, { depth: null });
+
+// Table format
+console.table(arrayOfObjects);
+
+// Type checking
+console.log(typeof value);
+
+// Stack trace
+console.trace();
+```
+
+### Python
+
+```python
+# Quick checks
+print(f'value: {value}')
+
+# Type checking
+print(type(value))
+
+# Pretty print
+from pprint import pprint
+pprint(data)
+
+# Full traceback
+import traceback
+traceback.print_exc()
+```
+
+## EMERGENCY FIXES
+
+### IF CURSOR KEEPS LOOPING
+
+**STOP immediately** and:
+
+1. State clearly: "I'm stuck, let me try different approach"
+2. Ask user for more context
+3. Break problem into smaller parts
+4. Try completely different solution
+5. Maximum 3 attempts, then ask for help
+
+### IF FILE OPERATIONS FAIL
+
+```powershell
+# PowerShell debugging
+
+# Check if file exists
+if (Test-Path "file.txt") {
+    Write-Host "File exists"
+} else {
+    Write-Host "File not found"
+}
+
+# Check permissions
+Get-Acl "file.txt" | Format-List
+
+# Try absolute path
+$absolutePath = Resolve-Path "file.txt"
+Get-Content $absolutePath
+```
+
+### IF API CALLS FAIL
+
+**Checklist:**
+
+1. Check internet connection
+   ```powershell
+   Test-NetConnection google.com
+   ```
+
+2. Verify API key is set
+   ```powershell
+   echo $env:API_KEY
+   ```
+
+3. Check API endpoint URL
+   ```javascript
+   console.log('API URL:', API_BASE_URL);
+   ```
+
+4. Test with simpler request
+   ```powershell
+   Invoke-RestMethod -Uri "https://api.example.com/health"
+   ```
+
+5. Add detailed error logging
+   ```javascript
+   try {
+     const response = await fetch(url);
+     console.log('Status:', response.status);
+     console.log('Headers:', response.headers);
+     const data = await response.json();
+     console.log('Data:', data);
+   } catch (error) {
+     console.error('Full error:', error);
+     console.error('Error message:', error.message);
+     console.error('Error stack:', error.stack);
+   }
+   ```
+
+### IF IMPORTS FAIL
+
+**Checklist:**
+
+1. Verify package is installed
+   ```powershell
+   npm list package-name
+   ```
+
+2. Check spelling of import
+   ```javascript
+   // Wrong ❌
+   import { Buton } from './Button';
+   
+   // Correct ✅
+   import { Button } from './Button';
+   ```
+
+3. Check path is correct
+   ```javascript
+   // Check relative path
+   import { helper } from '../utils/helpers';
+   
+   // Or use absolute with @
+   import { helper } from '@/utils/helpers';
+   ```
+
+4. Try reinstalling
+   ```powershell
+   npm uninstall package-name
+   npm install package-name
+   ```
+
+### IF BUILD FAILS
+
+**Checklist:**
+
+1. Read FULL error message
+2. Check for TypeScript errors
+   ```powershell
+   npx tsc --noEmit
+   ```
+
+3. Check for missing dependencies
+   ```powershell
+   npm install
+   ```
+
+4. Clear cache and reinstall
+   ```powershell
+   Remove-Item -Recurse -Force node_modules
+   Remove-Item package-lock.json
+   npm install
+   ```
+
+5. Check Node version compatibility
+   ```powershell
+   node -v
+   ```
+
+## STEP-BY-STEP DEBUGGING PROCESS
+
+### 1. Reproduce the Error
+
+- Can you make it happen consistently?
+- What are the exact steps?
+- What input causes the error?
+
+### 2. Isolate the Problem
+
+```javascript
+// Add logging at each step
+console.log('Step 1: Starting process');
+const data = loadData();
+console.log('Step 2: Data loaded:', data);
+
+const processed = processData(data);
+console.log('Step 3: Data processed:', processed);
+
+const result = saveData(processed);
+console.log('Step 4: Data saved:', result);
+```
+
+### 3. Test Assumptions
+
+```javascript
+// Check your assumptions
+console.assert(data !== null, 'Data should not be null');
+console.assert(Array.isArray(items), 'Items should be an array');
+console.assert(typeof id === 'number', 'ID should be a number');
+```
+
+### 4. Simplify
+
+- Remove complexity
+- Test with minimal input
+- Use hardcoded values temporarily
+- Comment out suspicious code
+
+### 5. Search for Similar Issues
+
+```powershell
+# Search in project files
+Select-String -Path "*.js" -Pattern "error_message"
+
+# Check git history
+git log --all --grep="similar issue"
+```
+
+## ANTI-LOOP STRATEGY
+
+If you're repeating the same failed solution:
+
+**STOP and change approach:**
+
+1. ✋ Recognize you're looping
+2. 🤔 Think: "Why didn't this work?"
+3. 🔄 Try COMPLETELY different approach
+4. ❓ If still stuck after 3 attempts - ASK FOR HELP
+
+**Example:**
+
+```
+Attempt 1: Try method A → Failed
+Attempt 2: Try method A with tweaks → Failed
+🛑 STOP - this is looping!
+Attempt 3: Try method B (completely different) → Success!
+```
+
+## COMMON ERROR PATTERNS
+
+### "Cannot read property of undefined"
+
+```javascript
+// Problem
+const name = user.profile.name; // Error if user or profile is undefined
+
+// Solution
+const name = user?.profile?.name ?? 'Unknown';
+```
+
+### "Module not found"
+
+```javascript
+// Check path
+import { func } from './utils'; // Missing file extension?
+import { func } from './utils.js'; // Add extension
+
+// Check case sensitivity
+import { func } from './Utils'; // Wrong case?
+import { func } from './utils'; // Match filename exactly
+```
+
+### "JSON.parse unexpected token"
+
+```javascript
+// Problem
+const data = JSON.parse(response); // Response might not be JSON
+
+// Solution
+try {
+  const data = JSON.parse(response);
+} catch (error) {
+  console.error('Invalid JSON:', response);
+  console.error('Error:', error.message);
+}
+```
+
+## REMEMBER
+
+- Read error messages completely
+- Test assumptions with assertions
+- Isolate the problem systematically
+- Don't loop - change approach after 2 failures
+- Use debugging tools effectively
+- Log everything when debugging
+- Remove debug code before committing
