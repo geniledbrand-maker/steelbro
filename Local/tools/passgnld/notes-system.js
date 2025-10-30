@@ -1056,11 +1056,11 @@ function renderAvailableTags() {
         return '' +
             '<button type="button" class="notes-library-tag ' + (isActive ? 'active' : '') + '" data-library-tag="' + dataValue + '"' +
             ' style="background: linear-gradient(135deg, ' + backgroundStart + ' 0%, ' + backgroundEnd + ' 100%); border-color: ' + borderColor + '; color: ' + textColor + ';">' +
-                '<span class="notes-library-tag-color" style="background:' + color + ';"></span>' +
-                '<span class="notes-library-tag-label">' + label + '</span>' +
-                '<span class="notes-library-tag-count">' + count + '</span>' +
-                filterIndicator +
-                '<span class="notes-library-tag-remove" title="Удалить тег из всех заметок">×</span>' +
+            '<span class="notes-library-tag-color" style="background:' + color + ';"></span>' +
+            '<span class="notes-library-tag-label">' + label + '</span>' +
+            '<span class="notes-library-tag-count">' + count + '</span>' +
+            filterIndicator +
+            '<span class="notes-library-tag-remove" title="Удалить тег из всех заметок">×</span>' +
             '</button>';
     });
 
@@ -1093,8 +1093,8 @@ function renderTagFilters() {
         return '' +
             '<button type="button" class="notes-filter-chip' + (isActive ? ' active' : '') + '" data-filter-tag="' + escapeAttribute(tag) + '"' +
             ' style="background:' + base + '; border-color:' + border + '; color:' + textColor + ';">' +
-                '<span class="notes-filter-chip-label">' + escapeHtml(tag) + '</span>' +
-                (isActive ? '<span class="notes-filter-chip-remove">×</span>' : '') +
+            '<span class="notes-filter-chip-label">' + escapeHtml(tag) + '</span>' +
+            (isActive ? '<span class="notes-filter-chip-remove">×</span>' : '') +
             '</button>';
     });
 
@@ -1129,8 +1129,8 @@ function renderSavedColorChips() {
         const textColor = getReadableTextColor(normalized);
         return '' +
             '<button type="button" class="notes-saved-color-chip custom" data-apply-color="' + normalized + '" style="background:' + normalized + '; color:' + textColor + ';">' +
-                '<span class="notes-saved-color-label">' + normalized.toUpperCase() + '</span>' +
-                '<span class="notes-saved-color-remove" data-remove-color="' + index + '" title="Удалить цвет">×</span>' +
+            '<span class="notes-saved-color-label">' + normalized.toUpperCase() + '</span>' +
+            '<span class="notes-saved-color-remove" data-remove-color="' + index + '" title="Удалить цвет">×</span>' +
             '</button>';
     });
 
@@ -1138,7 +1138,7 @@ function renderSavedColorChips() {
         const textColor = getReadableTextColor(color);
         return '' +
             '<button type="button" class="notes-saved-color-chip default" data-apply-color="' + color + '" style="background:' + color + '; color:' + textColor + ';">' +
-                '<span class="notes-saved-color-label">' + color.toUpperCase() + '</span>' +
+            '<span class="notes-saved-color-label">' + color.toUpperCase() + '</span>' +
             '</button>';
     });
 
@@ -1354,17 +1354,17 @@ function renderTagManager() {
 
         return '' +
             '<div class="notes-tag-manager-row' + (isSelected ? ' selected' : '') + '" data-manager-tag="' + escapeAttribute(tag) + '">' +
-                '<div class="notes-tag-manager-row-main">' +
-                    '<span class="notes-tag-manager-chip" style="background:' + color + '; color:' + textColor + ';">' + escapeHtml(tag) + '</span>' +
-                    '<span class="notes-tag-manager-count" title="Заметок с этим тегом">' + count + '</span>' +
-                '</div>' +
-                '<div class="notes-tag-manager-row-actions">' +
-                    '<label class="notes-tag-manager-color-picker" title="Выбрать цвет для тега">' +
-                        '<input type="color" value="' + color + '" data-tag-color-input="' + escapeAttribute(tag) + '">' +
-                        '<span>Цвет</span>' +
-                    '</label>' +
-                    '<button type="button" class="notes-tag-manager-remove" data-tag-remove="' + escapeAttribute(tag) + '">Удалить</button>' +
-                '</div>' +
+            '<div class="notes-tag-manager-row-main">' +
+            '<span class="notes-tag-manager-chip" style="background:' + color + '; color:' + textColor + ';">' + escapeHtml(tag) + '</span>' +
+            '<span class="notes-tag-manager-count" title="Заметок с этим тегом">' + count + '</span>' +
+            '</div>' +
+            '<div class="notes-tag-manager-row-actions">' +
+            '<label class="notes-tag-manager-color-picker" title="Выбрать цвет для тега">' +
+            '<input type="color" value="' + color + '" data-tag-color-input="' + escapeAttribute(tag) + '">' +
+            '<span>Цвет</span>' +
+            '</label>' +
+            '<button type="button" class="notes-tag-manager-remove" data-tag-remove="' + escapeAttribute(tag) + '">Удалить</button>' +
+            '</div>' +
             '</div>';
     });
 

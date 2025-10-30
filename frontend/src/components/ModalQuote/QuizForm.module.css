@@ -1,0 +1,200 @@
+/* ============================================================================
+   QuizForm — стили для блока с выбором услуг (квиз)
+   ============================================================================ */
+
+.quiz {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 20px;
+    width: 100%;
+    overflow: visible;
+    box-sizing: border-box;
+}
+
+/* ---------- Заголовок квиза ---------- */
+.quizTitle {
+    font-weight: 600;
+    text-align: left;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    color: #fff;
+    font-size: clamp(16px, 4.2vw, 20px);
+    max-width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+/* ---------- Сетка карточек ---------- */
+.servicesGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    justify-items: center;
+    align-items: stretch;
+    overflow: visible;
+    padding: 0;
+}
+
+/* ---------- Карточка услуги ---------- */
+.serviceCard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0; /* ✅ убрали padding с карточки */
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 180px;
+    width: 100%;
+    box-sizing: border-box;
+    color: #fff;
+    font-family: 'Inter Tight', sans-serif;
+    overflow: hidden;
+    outline: none;
+}
+
+/* Затемнение для читаемости текста (только для НЕактивных карточек) */
+.serviceCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.6) 0%,
+            rgba(0, 0, 0, 0.3) 50%,
+            rgba(0, 0, 0, 0) 100%
+    );
+    z-index: 1; /* ✅ оверлей между иконкой и текстом */
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    opacity: 1;
+}
+
+/* Активная карточка - весь фон оранжевый */
+.serviceActive {
+    background-color: rgba(237, 107, 6, 1);
+}
+
+/* Активная карточка - убираем оверлей */
+.serviceActive::before {
+    opacity: 0;
+}
+/* Осветление при наведении на весь блок */
+.serviceCard:hover {
+    filter: brightness(1.2);
+}
+
+/* При наведении — картинка тоже светлеет */
+.serviceCard:hover .serviceIcon {
+    filter: brightness(1.25);
+}
+/* ---------- Иконка — фон карточки ---------- */
+.serviceIcon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: auto; /* ✅ автоматическая ширина */
+    height: 100%; /* ✅ на всю высоту карточки */
+    object-fit: cover;
+    object-position: right center; /* ✅ позиция справа по центру */
+    z-index: 0; /* ✅ ВАЖНО: иконка под всем */
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+/* ---------- Текст внутри карточки ---------- */
+.serviceCard span {
+    position: relative;
+    z-index: 2; /* ✅ текст поверх всего */
+    font-size: clamp(12px, 3.5vw, 14px);
+    font-weight: 200; /* ✅ из документа */
+    line-height: 1.3;
+    text-align: left;
+    color: #fff;
+    max-width: 80%;
+    white-space: pre-line;
+    padding: 8px; /* ✅ padding только у текста */
+}
+
+/* ---------- Кнопка "Далее" ---------- */
+.submit {
+    background: #ed6b06;
+    border: none;
+    color: #fff;
+    font-size: clamp(15px, 4vw, 17px);
+    font-weight: 600;
+    border-radius: 5px;
+    padding: clamp(12px, 3vw, 14px);
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 100%;
+    margin-top: auto;
+}
+
+.submit:hover {
+    background: #ff8722;
+}
+
+/* ---------- Адаптив под планшеты ---------- */
+@media (max-width: 900px) {
+    .servicesGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .serviceCard {
+        min-height: 160px;
+    }
+
+    .serviceIcon {
+        height: 100%;
+    }
+}
+
+/* ---------- Адаптив под телефоны ---------- */
+@media (max-width: 600px) {
+    .servicesGrid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin: 0;
+        width: 100%;
+        overflow: visible;
+        max-width: calc(100% - 32px);
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 2px;
+    }
+
+    .serviceCard {
+        min-height: 140px;
+        padding: 0;
+    }
+
+    .serviceCard span {
+        font-size: 16px;
+        max-width: 90%;
+    }
+
+    .serviceIcon {
+        height: 100%;
+    }
+}
+
+/* ---------- Подстраховка: если у модалки узкие отступы ---------- */
+@media (max-width: 400px) {
+    .servicesGrid {
+        max-width: calc(100% - 24px);
+    }
+}

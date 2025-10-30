@@ -1,0 +1,77 @@
+/* ============================
+   Стеклянная панель контактов
+   ============================ */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 998;
+}
+
+.overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 380px;
+    height: 100vh;
+    background: rgba(20, 20, 20, 0.45);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    transform: translateX(100%);
+    transition: transform 0.35s ease-in-out;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 28px;
+    color: #fff;
+    overflow: hidden;
+}
+
+.menu.open {
+    transform: translateX(0);
+}
+
+.closeBtn {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 30px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.closeBtn:hover {
+    opacity: 1;
+}
+
+.content {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 480px) {
+    .menu {
+        width: 100%;
+        padding: 20px;
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+}

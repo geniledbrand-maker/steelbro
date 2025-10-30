@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./ModalQuote.module.css";
+import styles from "./QuizForm.module.css";
 
 interface ServiceOption {
     id: string;
@@ -8,12 +8,12 @@ interface ServiceOption {
 }
 
 const services: ServiceOption[] = [
-    { id: "pipe", name: "Лазерная резка труб", icon: "/icons/pipe.svg" },
-    { id: "sheet", name: "Лазерная резка металла", icon: "/icons/sheet.svg" },
-    { id: "bend", name: "Гибка металла", icon: "/icons/bend.svg" },
-    { id: "weld", name: "Сварка металлоконструкций", icon: "/icons/weld.svg" },
-    { id: "paint", name: "Покраска металла", icon: "/icons/paint.svg" },
-    { id: "laserweld", name: "Лазерная сварка металла", icon: "/icons/laserweld.svg" },
+    { id: "pipe", name: "Лазерная\nрезка труб", icon: "/img/icons/lazerrezkatrub.png" },
+    { id: "sheet", name: "Лазерная резка\nметалла", icon: "/img/icons/lazernayarezka.png" },
+    { id: "bend", name: "Гибка\nметалла", icon: "/img/icons/gibkametalla.png" },
+    { id: "weld", name: "Сварка\nметаллоконструкций", icon: "/img/icons/svarkametallokonstrukcii.png" },
+    { id: "paint", name: "Покраска\nметалла", icon: "/img/icons/pokraskametalla.png" },
+    { id: "laserweld", name: "Лазерная сварка\nметалла", icon: "/img/icons/lazernayasvarka.png" },
 ];
 
 export default function QuizForm() {
@@ -42,14 +42,18 @@ export default function QuizForm() {
                         }`}
                         onClick={() => handleSelect(s.id)}
                     >
-                        <img src={s.icon} alt="" className={styles.serviceIcon} />
+                        <img
+                            src={s.icon}
+                            alt="" /* ✅ ИЗМЕНЕНО: пустой alt */
+                            className={styles.serviceIcon}
+                        />
                         <span>{s.name}</span>
                     </div>
                 ))}
             </div>
 
             <button type="submit" className={styles.submit}>
-                Далее
+                Отправить
             </button>
         </form>
     );

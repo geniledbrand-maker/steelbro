@@ -34,7 +34,10 @@ export default function ModalQuote({ isOpen, onClose }: ModalQuoteProps) {
                     ×
                 </button>
 
-                <h2 className={styles.title}>Получите расчет стоимости и сроков вашего проекта за 10 минут</h2>
+                <h2 className={styles.title}>
+                    Получите расчет стоимости и сроков вашего проекта<br />
+                    <span className={styles.accent}>за 10 минут</span>
+                </h2>
 
                 {/* Кнопки выбора */}
                 <div className={styles.choiceButtons}>
@@ -44,7 +47,7 @@ export default function ModalQuote({ isOpen, onClose }: ModalQuoteProps) {
                         }`}
                         onClick={() => togglePanel("quiz")}
                     >
-                        Пройти короткий квиз
+                        Пройти опрос
                     </button>
                     <button
                         className={`${styles.choiceBtn} ${
@@ -52,18 +55,16 @@ export default function ModalQuote({ isOpen, onClose }: ModalQuoteProps) {
                         }`}
                         onClick={() => togglePanel("quick")}
                     >
-                        Быстро оставить заявку
+                        Оставить заявку
                     </button>
                 </div>
 
                 {/* Панели с анимацией */}
                 <div
                     className={`${slide.panel} ${
-                        activePanel === "quiz"
+                        activePanel === "quiz" || activePanel === "quick"
                             ? slide.panelVisible
-                            : activePanel === "quick"
-                                ? slide.panelVisible
-                                : ""
+                            : ""
                     }`}
                 >
                     {activePanel === "quiz" && (

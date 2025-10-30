@@ -1,0 +1,17 @@
+.item a,
+.item span {
+    font-size: 1.05rem;
+    color: #fff;
+    opacity: 0.9;
+    text-decoration: none;
+    transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.item a:hover {
+    opacity: 1;
+    color: #ff7a00;
+}
+
+.item {
+    line-height: 1.6;
+}

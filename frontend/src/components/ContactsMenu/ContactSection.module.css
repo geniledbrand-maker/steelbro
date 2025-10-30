@@ -1,0 +1,128 @@
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.title {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+    letter-spacing: 0.05em;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* ================================
+   Кнопка "Заказать звонок"
+   ================================ */
+.callBtn {
+    align-self: flex-start;
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #fff;
+    background: linear-gradient(90deg, #ff7a00, #ffb347);
+    box-shadow: 0 0 6px rgba(255, 122, 0, 0.35);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(8px);
+    max-width: 75%;
+}
+
+.callBtn:hover {
+    box-shadow: 0 0 10px rgba(255, 180, 70, 0.5);
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+}
+
+/* ================================
+   Карта под адресом
+   ================================ */
+.mapWrapper {
+    margin-top: 14px;
+    border-radius: 16px 16px 0 0; /* верх скруглён, низ прямой */
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.mapWrapper iframe {
+    width: 100%;
+    height: 240px;
+    border: none;
+}
+
+/* ================================
+   Кнопка "Как проехать"
+   ================================ */
+.routeBtn {
+    width: 100%;
+    padding: 11px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: none; /* сливаемся с нижним краем карты */
+    border-radius: 0 0 16px 16px; /* скругляем только низ */
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.1s ease, filter 0.15s ease, background 0.25s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    user-select: none;
+}
+
+.routeBtn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+/* ✅ Анимация нажатия (реакция на click/touch) */
+.routeBtn:active {
+    transform: translateY(1px) scale(0.98);
+    filter: brightness(0.9);
+}
+
+.routeIcon {
+    width: 20px;
+    height: 20px;
+    color: #ffb347;
+    transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.routeBtn:hover .routeIcon {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 4px rgba(255, 180, 70, 0.6));
+}
+
+/* Адаптив */
+@media (max-width: 480px) {
+    .callBtn {
+        max-width: 100%;
+        width: 100%;
+        font-size: 0.9rem;
+        padding: 9px 16px;
+    }
+
+    .mapWrapper iframe {
+        height: 200px;
+    }
+}

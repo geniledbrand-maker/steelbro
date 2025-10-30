@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./ModalQuote.module.css";
+import styles from "./QuickForm.module.css";
 
 export default function QuickForm() {
     const [phone, setPhone] = useState("+7 ");
@@ -29,7 +29,7 @@ export default function QuickForm() {
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
-            <input type="text" placeholder="Ваше имя" required />
+            <input type="text" placeholder="Имя" required />
 
             <input
                 type="tel"
@@ -41,11 +41,10 @@ export default function QuickForm() {
             />
 
             <textarea
-                placeholder="Комментарий или описание проекта"
-                rows={3}
+                placeholder="Опишите задачу"
             ></textarea>
 
-            {/* 📎 Прикрепление файлов + подсказка форматов */}
+            {/* 📤 Прикрепление файлов со стрелкой вверх */}
             <div className={styles.fileRow}>
                 <label className={styles.fileLabel}>
                     <input
@@ -54,29 +53,17 @@ export default function QuickForm() {
                         onChange={handleFileChange}
                         className={styles.fileInput}
                     />
-                    <span className={styles.fileButton}>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={2}
-                            stroke="currentColor"
-                            className={styles.clipIcon}
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M21 13V7a4 4 0 00-8 0v9a3 3 0 106 0V9m-6 4H9a4 4 0 100 8h8a4 4 0 000-8z"
-                            />
-                        </svg>
-                        Прикрепить файлы
-                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="34" viewBox="0 0 15 34" fill="none" className={styles.uploadIcon}>
+                        <path d="M8.07039 0.292892C7.67987 -0.0976295 7.0467 -0.0976296 6.65618 0.292892L0.292215 6.65685C-0.0983098 7.04738 -0.0983098 7.68054 0.292215 8.07107C0.682739 8.46159 1.3159 8.46159 1.70643 8.07107L7.36328 2.41421L13.0201 8.07107C13.4107 8.46159 14.0438 8.46159 14.4344 8.07107C14.8249 7.68054 14.8249 7.04738 14.4344 6.65685L8.07039 0.292892ZM7.36328 34L8.36328 34L8.36328 1L7.36328 1L6.36328 1L6.36328 34L7.36328 34Z" fill="#D26008"/>
+                    </svg>
                 </label>
 
-                <div className={styles.fileFormats}>
-                    Форматы: PDF / JPEG / STEP /
-                    <br />
-                    SLDPRT / DXF / IPT / PRT / SAT
+                <div className={styles.fileTextContainer}>
+                    <div className={styles.fileTitle}>Прикрепить файлы</div>
+                    <div className={styles.fileFormats}>
+                        PDF / JPEG / STEP / SLDPRT /<br />
+                        DXF / IPT / PRT / SAT
+                    </div>
                 </div>
             </div>
 
@@ -89,7 +76,7 @@ export default function QuickForm() {
             )}
 
             <button type="submit" className={styles.submit}>
-                Отправить
+                Узнать стоимость
             </button>
         </form>
     );

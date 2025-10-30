@@ -3,9 +3,10 @@
 .navbar * {
     font-family: 'Inter Tight', sans-serif !important;
 }
+
 /* ============================================================================
    Навигационное меню — SteelBro
-   Версия: v2.6 (контакты 24px от края плашки)
+   Версия: v2.7 (улучшенная адаптивность)
    ============================================================================ */
 
 /* ---------- ОСНОВНАЯ ПЛАШКА ---------- */
@@ -15,6 +16,7 @@
     left: 50%;
     transform: translateX(-50%);
     width: calc(100% - 272px);
+    max-width: 1920px; /* ✅ ограничение для сверхшироких экранов */
     height: 75px;
 
     display: flex;
@@ -25,11 +27,18 @@
     pointer-events: auto;
 
     background: rgba(34, 34, 34, 0.37);
+    -webkit-backdrop-filter: blur(13px); /* ✅ Safari поддержка */
     backdrop-filter: blur(13px);
-    -webkit-backdrop-filter: blur(13px);
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     box-sizing: border-box;
+}
+
+/* Fallback для браузеров без backdrop-filter */
+@supports not ((-webkit-backdrop-filter: blur(13px)) or (backdrop-filter: blur(13px))) {
+    .navbar {
+        background: rgba(34, 34, 34, 0.92);
+    }
 }
 
 /* ---------- ЛОГОТИП (фиксированный размер и выравнивание) ---------- */
@@ -38,28 +47,16 @@
     align-items: center;
     justify-content: flex-start;
     gap: 12px;
-
-    /* отступ от левого края плашки */
     margin-left: 24px;
-
-    /* выравнивание по центру плашки */
     height: 75px;
-    line-height: 75px;
 }
 
 .logo svg {
-    width: 138px;     /* ✅ фиксированная ширина логотипа */
-    height: 33px;     /* ✅ фиксированная высота логотипа */
+    width: 138px;
+    height: 33px;
     display: block;
-    object-fit: contain;
 }
 
-.logo span {
-    color: #ed6b06;
-    line-height: 1;
-}
-
-/* ---------- АНИМАЦИЯ ЛОГОТИПА ---------- */
 .logoLink {
     display: inline-flex;
     align-items: center;
@@ -68,37 +65,11 @@
     transition: transform 0.3s ease, filter 0.3s ease;
 }
 
-/* лёгкое масштабирование и подсветка при наведении */
 .logoLink:active {
     transform: scale(0.98);
     filter: drop-shadow(0 0 3px rgba(237, 107, 6, 0.4));
 }
 
-/* ---------- АНИМАЦИЯ ЗНАЧКА ЛОГО ---------- */
-/* Только анимация для группы S */
-.logoLink:hover :global(.sGroup) {
-    transform-style: preserve-3d;
-    perspective: 800px;
-}
-
-.logoLink:hover :global(.sLetter) {
-    animation: spinS 1.2s ease-in-out;
-    transform-origin: center;
-    transform-box: fill-box;
-}
-
-@keyframes spinS {
-    0% {
-        transform: rotateY(0deg);
-    }
-    50% {
-        transform: rotateY(180deg);
-        filter: brightness(1.2);
-    }
-    100% {
-        transform: rotateY(360deg);
-    }
-}
 /* ---------- ЦЕНТРАЛЬНОЕ МЕНЮ ---------- */
 .links {
     display: flex;
@@ -115,6 +86,7 @@
     text-decoration: none;
     font-size: 16px;
     transition: color 0.25s;
+    white-space: nowrap; /* ✅ предотвращаем перенос */
 }
 
 .links a:hover {
@@ -126,7 +98,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    margin-right: 24px; /* ✅ точный отступ от края плашки */
+    margin-right: 24px;
     gap: 16px;
 }
 
@@ -141,11 +113,17 @@
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+    white-space: nowrap;
 }
 
 .contactBtn:hover {
     background: #ff861c;
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(237, 107, 6, 0.4);
+}
+
+.contactBtn:active {
+    transform: translateY(0);
 }
 
 /* ---------- БУРГЕР ---------- */
@@ -153,25 +131,94 @@
     display: none;
 }
 
-/* ---------- АДАПТИВ ---------- */
-@media (max-width: 1400px) {
+/* Скрываем мобильную кнопку на десктопе */
+.mobileOnly {
+    display: none;
+}
+
+/* ============================================================================
+   АДАПТИВНЫЕ BREAKPOINTS (Mobile-First подход)
+   ============================================================================ */
+
+/* Extra-Large Desktops: 1441px+ */
+@media (min-width: 1441px) {
     .navbar {
-        width: calc(100% - 200px);
+        width: calc(100% - 320px); /* ✅ больше отступы на больших экранах */
+    }
+
+    .links {
+        gap: 48px; /* ✅ увеличиваем расстояние между пунктами */
     }
 }
 
+/* Large Desktops: 1281px - 1440px */
+@media (max-width: 1440px) {
+    .navbar {
+        width: calc(100% - 272px);
+    }
+}
+
+/* Standard Desktops: 1025px - 1280px */
+@media (max-width: 1280px) {
+    .navbar {
+        width: calc(100% - 200px);
+    }
+
+    .links {
+        gap: 32px;
+    }
+}
+
+/* Small Desktops: 1025px - 1200px */
 @media (max-width: 1200px) {
     .navbar {
         width: calc(100% - 160px);
     }
-}
 
-@media (max-width: 1024px) {
-    .navbar {
-        width: calc(100% - 96px);
+    .links {
+        gap: 28px;
+    }
+
+    .links a {
+        font-size: 15px;
     }
 }
 
+/* Large Tablets (Landscape): 769px - 1024px */
+@media (max-width: 1024px) {
+    .navbar {
+        width: calc(100% - 120px);
+    }
+
+    .links {
+        gap: 24px;
+    }
+
+    .links a {
+        font-size: 14px;
+    }
+
+    .logo {
+        margin-left: 20px;
+    }
+
+    .actions {
+        margin-right: 20px;
+    }
+}
+
+/* Small Tablets: 601px - 900px */
+@media (max-width: 900px) {
+    .navbar {
+        width: calc(100% - 80px);
+    }
+
+    .links {
+        gap: 20px;
+    }
+}
+
+/* Mobile & Small Tablets: до 768px */
 @media (max-width: 768px) {
     .navbar {
         width: calc(100% - 40px);
@@ -181,7 +228,23 @@
         padding: 0 8px;
     }
 
+    .logo {
+        margin-left: 12px;
+        height: 64px;
+    }
+
+    .logo svg {
+        width: 110px;
+        height: 26px;
+    }
+
+    /* Скрываем десктопное меню */
     .links {
+        display: none;
+    }
+
+    /* Скрываем кнопку "Контакты" в шапке */
+    .actions .contactBtn {
         display: none;
     }
 
@@ -189,6 +252,7 @@
         margin-right: 12px;
     }
 
+    /* Показываем бургер */
     .burger {
         display: flex;
         flex-direction: column;
@@ -197,6 +261,11 @@
         border: none;
         cursor: pointer;
         padding: 8px;
+        transition: transform 0.3s ease;
+    }
+
+    .burger:active {
+        transform: scale(0.95);
     }
 
     .burger span {
@@ -204,37 +273,86 @@
         height: 2px;
         background: #fff;
         border-radius: 2px;
+        transition: all 0.3s ease;
     }
 
+    /* Мобильное меню (раскрытое) */
     .active {
         display: flex;
         flex-direction: column;
         position: absolute;
         top: 72px;
         left: 0;
+        right: 0;
         width: 100%;
         background: rgba(34, 34, 34, 0.95);
-        backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
         padding: 24px 0;
         text-align: center;
         gap: 18px;
         z-index: 90;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     }
 
     .active a {
         font-size: 18px;
+        padding: 8px 0;
     }
 
-    /* кнопка внутри раскрытого меню */
-    .active .contactBtn {
+    /* Показываем кнопку в мобильном меню */
+    .mobileOnly {
         display: inline-block;
-        margin-top: 12px;
-        padding: 12px 24px;
+        width: auto;
+        max-width: 200px;
+        margin: 12px auto 0;
+    }
+}
+
+/* Extra Small Mobile: до 480px */
+@media (max-width: 480px) {
+    .navbar {
+        width: calc(100% - 24px);
+        top: 8px;
     }
 
-    /* скрываем кнопку на шапке */
-    .contactBtn {
-        display: none;
+    .logo {
+        margin-left: 8px;
+    }
+
+    .logo svg {
+        width: 90px;
+        height: 22px;
+    }
+
+    .actions {
+        margin-right: 8px;
+    }
+
+    .burger span {
+        width: 20px;
+    }
+
+    .active {
+        top: 60px;
+        padding: 20px 0;
+        gap: 16px;
+    }
+
+    .active a {
+        font-size: 16px;
+    }
+}
+
+/* Very Small Mobile (iPhone SE, старые Android): до 360px */
+@media (max-width: 360px) {
+    .navbar {
+        width: calc(100% - 16px);
+    }
+
+    .logo svg {
+        width: 80px;
+        height: 20px;
     }
 }
