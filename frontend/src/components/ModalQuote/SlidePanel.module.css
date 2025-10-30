@@ -1,0 +1,50 @@
+/* ============================================================================
+   SlidePanel — плавное переключение панелей без прыжков (с поддержкой скролла)
+   ============================================================================ */
+
+.panel {
+    position: relative;
+    width: 100%;
+    height: auto;              /* ✅ теперь тянется под контент */
+    min-height: 360px;         /* всё ещё есть базовая высота */
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: visible;         /* ✅ скролл теперь работает */
+    transition: min-height 0.3s ease;
+}
+
+/* Каждая внутренняя панель (quiz/quick) */
+.inner {
+    position: relative;        /* ✅ не absolute, чтобы контент занимал естественную высоту */
+    width: 100%;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition:
+            opacity 0.35s ease,
+            transform 0.35s ease;
+}
+
+/* ✅ Активная панель красиво проявляется */
+.panelVisible .inner {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* ---------- Скролл ---------- */
+.panel::-webkit-scrollbar {
+    width: 6px;
+}
+.panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+}
+
+/* ---------- Адаптив ---------- */
+@media (max-width: 768px) {
+    .panel {
+        min-height: 280px;
+    }
+}
